@@ -14,7 +14,7 @@
     "html-to-pdfmake": "^2.4.6",
     "jspdf": "^2.5.1",
     "pdfmake": "^0.2.5",
-    "read-excel-file": "^5.5.0",
+    "read-excel-file": "^5.5.1",
     "v-calendar": "^3.0.0-alpha.8",
     "vue": "^3.2.37",
     "vue-router": "^4.0.15",
