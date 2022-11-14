@@ -26,14 +26,14 @@ connectDatabaseEmulator(db, "192.168.100.187", 9000);
 // connectDatabaseEmulator(db, "localhost", 9000);
 
 export const auth = getAuth();
-// connectAuthEmulator(auth, "http://192.168.100.187:9099");
-connectAuthEmulator(auth, "http://localhost:9099");
+connectAuthEmulator(auth, "http://192.168.100.187:9099");
+// connectAuthEmulator(auth, "http://localhost:9099");
 
 const functions = getFunctions();
-// connectFunctionsEmulator(functions, "192.168.100.187", 5001);
-connectFunctionsEmulator(functions, "localhost", 5001);
+connectFunctionsEmulator(functions, "192.168.100.187", 5001);
+// connectFunctionsEmulator(functions, "localhost", 5001);
 
 const storage = getStorage();
-// connectStorageEmulator(storage, "192.168.100.187", 9199)
-connectStorageEmulator(storage, "localhost", 9199)
+connectStorageEmulator(storage, "192.168.100.187", 9199)
+// connectStorageEmulator(storage, "localhost", 9199)
 

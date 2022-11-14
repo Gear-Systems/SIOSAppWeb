@@ -16,19 +16,21 @@
             </h1>
           </div>
           <!-- errores -->
-          <div
-            v-if="errorMessage"
-            class="mb-10 flex w-[80%] place-content-around items-center rounded-md bg-red-400"
-          >
-            <ExclamationIcon class="h-5 w-5 text-white" aria-hidden="true" />
-            <span class="py-0.5 text-center text-sm text-white">{{
-              errorMessage
-            }}</span>
-            <XIcon
-              class="h-5 w-5 text-white hover:cursor-pointer"
-              @click="vaciarErrores"
-              aria-hidden="true"
-            />
+          <div class="flex justify-center">
+            <div
+              v-if="errorMessage"
+              class="mb-10 flex w-[60%] place-content-around items-center justify-center space-x-4 rounded-md bg-red-400"
+            >
+              <ExclamationIcon class="h-5 w-5 text-white" aria-hidden="true" />
+              <span class="py-0.5 text-center text-sm text-white">{{
+                errorMessage
+              }}</span>
+              <XIcon
+                class="h-5 w-5 text-white hover:cursor-pointer"
+                @click="vaciarErrores"
+                aria-hidden="true"
+              />
+            </div>
           </div>
           <div class="flex w-full flex-col">
             <form
@@ -84,7 +86,7 @@
                 >
               </div>
             </form>
-            <div class="flex justify-center mt-14 text-sm">
+            <div class="mt-14 flex justify-center text-sm">
               <span>IOS Comunicaciones {{ new Date().getFullYear() }}</span>
             </div>
           </div>
