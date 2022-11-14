@@ -29,15 +29,11 @@
         </div>
       </div>
     </div>
-    <div class="flex">
-      <button type="button" @click="logout">Cerrar Sesión</button>
-    </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
-import { getAuth, signOut } from "firebase/auth";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import ModalDatosCorrectivo from '@/views/Correctivo/ModalDatosCorrectivo.vue';
@@ -45,7 +41,6 @@ import ModalDatosPreventivo from "@/views/Preventivo/ModalDatosPreventivo.vue";
 
 const i = ref(0);
 const arreglo = ref([]);
-const auth = getAuth();
 const router = useRouter();
 const store = useStore();
 const isOpen = ref(false);
@@ -56,11 +51,6 @@ const control = ref(true);
 
 store.commit('cerrarModalCorrectivo');
 
-const logout = () => {
-  signOut(auth).then(() => {
-    router.push("/");
-  });
-};
 function toggleModalCorrectivo() {
   store.commit('abrirModalCorrectivo');
 };
