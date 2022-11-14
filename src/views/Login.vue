@@ -13,7 +13,7 @@
             <span class="text-center text-white text-sm py-0.5">{{errorMessage}}</span>
             <XIcon class="h-5 w-5 text-white hover:cursor-pointer" @click="vaciarErrores" aria-hidden="true"/>
         </div>
-        <div class="flex w-full flex-col items-center justify-center space-y-14">
+        <div class="flex w-full flex-col items-center justify-center">
             <form @submit.prevent="login" class="flex flex-col items-center justify-center space-y-14" method="post" autocomplete="on">
                 <input
                   class="font-bold text-black"

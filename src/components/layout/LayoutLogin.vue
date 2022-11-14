@@ -1,40 +1,93 @@
 <template>
-  <div class="flex h-screen w-screen items-center justify-center min-h-screen">
-    <div class="flex h-[70%] w-[70%] bg-red-200 min-h-[500px]">
+  <div class="flex h-screen min-h-screen w-screen items-center justify-center">
+    <div class="flex h-full min-h-[500px] w-full">
       <div
-        class="flex h-[100%] w-[50%] border-r-2 border-black bg-green-200"
+        class="flex h-[100%] w-[40%] border-r-2 border-black bg-azul-marino"
       ></div>
-      <div class="flex h-[100%] w-[50%] flex-col items-center bg-orange-200">
-        <div class="mt-10 mb-10 flex w-full justify-center">
-          <span class="text-3xl font-semibold tracking-wide">Iniciar Sesión</span>
-        </div>
-        <div v-if="errorMessage" class="flex w-[80%] items-center place-content-around bg-red-400 rounded-md mb-10">
-            <ExclamationIcon class="h-5 w-5 text-white" aria-hidden="true"/>
-            <span class="text-center text-white text-sm py-0.5">{{errorMessage}}</span>
-            <XIcon class="h-5 w-5 text-white hover:cursor-pointer" @click="vaciarErrores" aria-hidden="true"/>
-        </div>
-        <div class="flex w-full flex-col items-center justify-center space-y-14">
-            <form @submit.prevent="login" class="flex flex-col items-center justify-center space-y-14" method="post" autocomplete="on">
+      <div class="flex h-[100%] w-[60%] flex-col items-center justify-center">
+        <!-- Formulario -->
+        <div class="w-full">
+          <div class="mb-12 flex justify-center">
+            <img src="img/SiosApp.svg" width="140" />
+          </div>
+          <div class="flex w-full justify-center">
+            <h1 class="py-8 text-2xl font-semibold tracking-wide">
+              Iniciar Sesión
+            </h1>
+          </div>
+          <!-- errores -->
+          <div
+            v-if="errorMessage"
+            class="mb-10 flex w-[80%] place-content-around items-center rounded-md bg-red-400"
+          >
+            <ExclamationIcon class="h-5 w-5 text-white" aria-hidden="true" />
+            <span class="py-0.5 text-center text-sm text-white">{{
+              errorMessage
+            }}</span>
+            <XIcon
+              class="h-5 w-5 text-white hover:cursor-pointer"
+              @click="vaciarErrores"
+              aria-hidden="true"
+            />
+          </div>
+          <div class="flex w-full flex-col">
+            <form
+              @submit.prevent="login"
+              class="flex flex-col items-center justify-center"
+              method="post"
+              autocomplete="on"
+            >
+              <!-- input usuario -->
+              <div class="group flex w-[360px] flex-col">
+                <label
+                  class="font-medium text-gray-400 transition-all duration-500 group-hover:text-primario"
+                  >Usuario</label
+                >
                 <input
-                  class="font-bold text-black"
+                  class="rounded-lg border-secundario bg-secundario font-medium text-black transition-all duration-500 group-hover:border group-hover:border-primario group-hover:placeholder:text-secundario"
                   type="text"
                   id="correo"
                   v-model="correo"
-                  placeholder="Correo"
+                  placeholder="Nombre de usuario"
                   required
                 />
+              </div>
+              <!-- input contraseña -->
+              <div class="group mt-4 flex w-[360px] flex-col">
+                <label
+                  class="font-medium text-gray-400 transition-all duration-500 group-hover:text-primario"
+                  >Contraseña</label
+                >
                 <input
-                  class="font-bold text-black"
+                  class="rounded-lg border-secundario bg-secundario font-medium text-black transition-all duration-500 group-hover:border group-hover:border-primario group-hover:placeholder:text-secundario"
                   type="password"
                   id="pass"
                   v-model="pass"
-                  placeholder="Contraseña"
+                  placeholder="Ingresar contraseña"
                   required
                   minlength="6"
                 />
-                <span class="font-bold text-black text-sm">Olvidé mi contraseña</span>
-                <button type="submit" class="bg-[#C4C4C4] hover:bg-[#C4C4C4]/80 px-20 py-2">Entrar</button>
+              </div>
+              <div class="mt-12">
+                <button
+                  type="submit"
+                  class="rounded-lg bg-primario px-8 py-2 text-white hover:bg-primario/60"
+                >
+                  Iniciar sesión
+                </button>
+              </div>
+              <div class="mt-12">
+                <a
+                  href="#"
+                  class="rounded-lg px-12 py-4 font-medium text-primario transition-all duration-500 hover:bg-secundario"
+                  >Olvidé mi contraseña</a
+                >
+              </div>
             </form>
+            <div class="flex justify-center mt-14 text-sm">
+              <span>IOS Comunicaciones {{ new Date().getFullYear() }}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -45,8 +98,8 @@
 import { ref } from "vue";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { validacion } from "@/validaciones/login.js";
-import { ExclamationIcon, XIcon } from '@heroicons/vue/solid';
-import { useRouter } from 'vue-router';
+import { ExclamationIcon, XIcon } from "@heroicons/vue/solid";
+import { useRouter } from "vue-router";
 
 const correo = ref("");
 const pass = ref("");
@@ -54,16 +107,18 @@ const auth = getAuth();
 const errorMessage = ref("");
 const router = useRouter();
 
-const login = () =>{
-    signInWithEmailAndPassword(auth, correo.value, pass.value).then((userCredential)=>{
-        console.log(userCredential);
-        // localStorage.setItem('toggleButton', true);
-        router.push('/dashboard');
-    }).catch((error)=>{
-        errorMessage.value = validacion(error);
+const login = () => {
+  signInWithEmailAndPassword(auth, correo.value, pass.value)
+    .then((userCredential) => {
+      console.log(userCredential);
+      // localStorage.setItem('toggleButton', true);
+      router.push("/dashboard");
+    })
+    .catch((error) => {
+      errorMessage.value = validacion(error);
     });
-}
+};
 const vaciarErrores = () => {
-    errorMessage.value = '';
-}
+  errorMessage.value = "";
+};
 </script>

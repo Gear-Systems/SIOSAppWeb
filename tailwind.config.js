@@ -12,6 +12,7 @@ module.exports = {
         'gris-claro': '#C4C4C4',
         'primario': '#2166E5',
         'secundario': '#E9F0FC',
+        'azul-marino': '#101D2D',
       },
       transitionDuration: {
         '0': '0ms',

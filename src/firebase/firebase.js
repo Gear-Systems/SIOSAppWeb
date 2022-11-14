@@ -22,8 +22,8 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase();
-// connectDatabaseEmulator(db, "192.168.100.187", 9000);
-connectDatabaseEmulator(db, "localhost", 9000);
+connectDatabaseEmulator(db, "192.168.100.187", 9000);
+// connectDatabaseEmulator(db, "localhost", 9000);
 
 export const auth = getAuth();
 // connectAuthEmulator(auth, "http://192.168.100.187:9099");

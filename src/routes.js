@@ -8,6 +8,7 @@ import CapturarFolio from "./views/CapturarFolio.vue";
 import Correctivo from "./views/Correctivo/Correctivo.vue";
 import Configuraciones from "./views/Configuraciones.vue";
 import ConsultarFolios from "./views/ConsultarFolios.vue";
+import Mantenimiento from "./views/Mantenimiento.vue";
 
 /** @type {import('vue-router').RouterOptions['routes']} */
 export const routes = [
@@ -32,14 +33,14 @@ export const routes = [
     name: "capturarPreventivo",
     component: Preventivo,
     meta: { title: "Folios preventivos", authorization: true },
-    props: { control: false }
+    props: { control: false },
   },
   {
     path: "/capturar-folio/correctivo/:id",
     name: "capturarCorrectivo",
     component: Correctivo,
     meta: { title: "Folios Correctivos", authorization: true },
-    props: { control: false }
+    props: { control: false },
   },
   {
     path: "/configuraciones",
@@ -51,6 +52,11 @@ export const routes = [
     path: "/about",
     meta: { title: "About", authorization: true },
     component: About,
+  },
+  {
+    path: "/mantenimiento/:tipoFolio/:folio",
+    meta: { title: "Mantenimiento", authorization: true },
+    component: Mantenimiento,
   },
   {
     path: "/consultar-folios",

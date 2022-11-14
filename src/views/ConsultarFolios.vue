@@ -46,8 +46,10 @@
     <!-- Filtro avanzado -->
     <div v-if="filtroAvanzado">filtro avanzado</div>
     <!-- Table -->
-    <div class="mt-8">
-      <ConsultarFoliosTable />
+    <div class="mt-8 px-8">
+      <Suspense>
+        <ConsultarFoliosTable />
+      </Suspense>
     </div>
   </div>
 </template>
