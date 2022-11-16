@@ -14,7 +14,6 @@ export const infoSelectFolio = async (incidencia) => {
 
   let creacion = await get(child(refDB(db), `catalogo`))
     .then((snapshot) => {
-      // console.log(snapshot.val());
       snapshot.forEach((element) => {
         switch (element.key) {
           case "tipoFolios":
@@ -54,7 +53,6 @@ export const infoSelectFolio = async (incidencia) => {
             break;
           case "fallas":
             element.forEach((elemento) => {
-              console.log(elemento);
               concentradoInfoSelect.fallas.push(elemento.key);
             });
             break;
@@ -70,17 +68,14 @@ export const infoSelectFolio = async (incidencia) => {
             break;
           case "supervisores":
             element.forEach((supervisor) => {
-              // console.log(supervisor.val());
               let objeto = Object.keys(supervisor.val().tecnicos);
               let tecnicos = {};
               objeto.forEach((item) => {
-                // console.log(item);
                 tecnicos[item] = {
                   nombre: supervisor.val().tecnicos[item].nombre,
                 };
               });
               concentradoInfoSelect.tecnicos[supervisor.key] = tecnicos;
-              // console.log(concentradoInfoSelect);
             });
             break;
         }

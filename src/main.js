@@ -8,7 +8,9 @@ import { auth } from "../src/firebase/firebase.js";
 import { onAuthStateChanged } from "firebase/auth";
 import 'v-calendar/dist/style.css';
 import 'flowbite';
+import { createPinia } from 'pinia'
 
+const pinia = createPinia()
 const app = createApp(App);
 
 const router = createRouter({
@@ -36,6 +38,7 @@ onAuthStateChanged(auth, (user) => {
   } else localStorage.setItem("user", false);
 });
 
+app.use(pinia)
 app.use(store);
 app.use(router);
 app.mount("#app");

@@ -342,6 +342,7 @@ const agregarSupervisores = (evt) => {
     ),
     {
       nombre: evt.added.element.name,
+      uid: evt.added.element.key
     }
   );
 };

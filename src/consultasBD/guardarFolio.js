@@ -6,10 +6,11 @@ export const guardarFolio = async (infoConcentradoFolio, incidencia) => {
   await update(
     child(
       refDB(db),
-      `folios/` + (incidencia == 1 ? `preventivos` : `correctivos`) + `/${infoConcentradoFolio.tipoFolio}/${infoConcentradoFolio.folio}`
+      `folios/` + (incidencia == 1 ? `preventivos` : `correctivos`) + `/${infoConcentradoFolio.folio}`
     ),
     {
         causa: infoConcentradoFolio.causa, 
+        tipoFolio: infoConcentradoFolio.tipoFolio,
         cluster: infoConcentradoFolio.cluster, 
         distrito: infoConcentradoFolio.distrito, 
         falla: infoConcentradoFolio.falla, 
@@ -31,9 +32,10 @@ export const actualizarFolioBD = async (infoConcentradoFolio, incidencia, folioP
 
   if(folioPrevio == infoConcentradoFolio.folio){
     update(child(refDB(db), 
-        `folios/` + (incidencia == 1 ? `preventivos` : `correctivos`) + `/${infoConcentradoFolio.tipoFolio}/${infoConcentradoFolio.folio}`), 
+        `folios/` + (incidencia == 1 ? `preventivos` : `correctivos`) + `/${infoConcentradoFolio.folio}`), 
         {
           causa: infoConcentradoFolio.causa, 
+          tipoFolio: infoConcentradoFolio.tipoFolio,
           cluster: infoConcentradoFolio.cluster, 
           distrito: infoConcentradoFolio.distrito, 
           falla: infoConcentradoFolio.falla, 
@@ -45,20 +47,21 @@ export const actualizarFolioBD = async (infoConcentradoFolio, incidencia, folioP
     )
     .catch(function (err) {});
   }else{
-    await get(child(refDB(db), `folios/` + (incidencia == 1 ? `preventivos` : `correctivos`) + `/${tipoFolioPrevio}/${folioPrevio}`))
+    await get(child(refDB(db), `folios/` + (incidencia == 1 ? `preventivos` : `correctivos`) + `/${folioPrevio}`))
     .then((snapshot) => {
       // console.log(snapshot);
       update(child(refDB(db), 
-        `folios/` + (incidencia == 1 ? `preventivos` : `correctivos`) + `/${infoConcentradoFolio.tipoFolio}/${infoConcentradoFolio.folio}`), 
+        `folios/` + (incidencia == 1 ? `preventivos` : `correctivos`) + `/${infoConcentradoFolio.folio}`), 
         snapshot.val())
         .then(()=>{
           update(
             child(
               refDB(db),
-              `folios/` + (incidencia == 1 ? `preventivos` : `correctivos`) + `/${infoConcentradoFolio.tipoFolio}/${infoConcentradoFolio.folio}`
+              `folios/` + (incidencia == 1 ? `preventivos` : `correctivos`) + `/${infoConcentradoFolio.folio}`
             ),
             {
                 causa: infoConcentradoFolio.causa, 
+                tipoFolio: infoConcentradoFolio.tipoFolio,
                 cluster: infoConcentradoFolio.cluster, 
                 distrito: infoConcentradoFolio.distrito, 
                 falla: infoConcentradoFolio.falla, 
@@ -85,7 +88,7 @@ export const eliminarFolioPrevio = async (folioPrevio, incidencia, tipoFolio) =>
   await set(
     child(
       refDB(db),
-      `folios/` + (incidencia == 1 ? `preventivos` : `correctivos`) + `/${tipoFolio}/${folioPrevio}`
+      `folios/` + (incidencia == 1 ? `preventivos` : `correctivos`) + `/${folioPrevio}`
     ),
     (null)
   )

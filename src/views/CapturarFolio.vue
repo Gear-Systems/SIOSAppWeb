@@ -11,10 +11,6 @@
         >
           <div class="h-12 w-12 rounded-xl bg-[#D9D9D9]"></div>
           <div>Folio Preventivo</div>
-          <Suspense>
-            <ModalDatosPreventivo
-            ></ModalDatosPreventivo>
-          </Suspense>
         </div>
         <div
           class="flex cursor-pointer items-center space-x-5"
@@ -22,10 +18,6 @@
         >
           <div class="h-12 w-12 rounded-xl bg-[#D9D9D9]"></div>
           <div>Folio Correctivo</div>
-          <Suspense>
-            <ModalDatosCorrectivo
-            ></ModalDatosCorrectivo>
-          </Suspense>
         </div>
       </div>
     </div>

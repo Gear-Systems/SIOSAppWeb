@@ -627,10 +627,10 @@
     "@vue/compiler-dom" "3.2.37"
     "@vue/shared" "3.2.37"
 
-"@vue/devtools-api@^6.0.0", "@vue/devtools-api@^6.0.0-beta.11":
-  "integrity" "sha512-IiA0SvDrJEgXvVxjNkHPFfDx6SXw0b/TUkqMcDZWNg9fnCAHbTpoo59YfJ9QLFkwa3raau5vSlRVzMSLDnfdtQ=="
-  "resolved" "https://registry.npmjs.org/@vue/devtools-api/-/devtools-api-6.1.4.tgz"
-  "version" "6.1.4"
+"@vue/devtools-api@^6.0.0", "@vue/devtools-api@^6.0.0-beta.11", "@vue/devtools-api@^6.4.4":
+  "integrity" "sha512-JD5fcdIuFxU4fQyXUu3w2KpAJHzTVdN+p4iOX2lMWSHMOoQdMAcpFLZzm9Z/2nmsoZ1a96QEhZ26e50xLBsgOQ=="
+  "resolved" "https://registry.npmjs.org/@vue/devtools-api/-/devtools-api-6.4.5.tgz"
+  "version" "6.4.5"
 
 "@vue/reactivity-transform@3.2.37":
   "integrity" "sha512-IWopkKEb+8qpu/1eMKVeXrK0NLw9HicGviJzhJDEyfxTR9e1WtpnnbYkJWurX6WwoFP0sz10xQg8yL8lgskAZg=="
@@ -695,9 +695,9 @@
     "vue-demi" "^0.13.4"
 
 "@xmldom/xmldom@^0.8.2":
-  "integrity" "sha512-Lv2vySXypg4nfa51LY1nU8yDAGo/5YwF+EY/rUZgIbfvwVARcd67ttCM8SMsTeJy51YhHYavEq+FS6R0hW9PFQ=="
-  "resolved" "https://registry.npmjs.org/@xmldom/xmldom/-/xmldom-0.8.3.tgz"
-  "version" "0.8.3"
+  "integrity" "sha512-uRjjusqpoqfmRkTaNuLJ2VohVr67Q5YwDATW3VU7PfzTj6IRaihGrYI7zckGZjxQPBIp63nfvJbM+Yu5ICh0Bg=="
+  "resolved" "https://registry.npmjs.org/@xmldom/xmldom/-/xmldom-0.8.6.tgz"
+  "version" "0.8.6"
 
 "acorn-node@^1.3.0", "acorn-node@^1.8.2":
   "integrity" "sha512-8mt+fslDufLYntIoPAaIMUe/lrbrehIiwmR3t2k9LljIzoigEPF27eLk2hy8zSGzmR/ogr7zbRKINMo1u0yh5A=="
@@ -1887,6 +1887,14 @@
   "resolved" "https://registry.npmjs.org/pify/-/pify-2.3.0.tgz"
   "version" "2.3.0"
 
+"pinia@^2.0.23":
+  "integrity" "sha512-N15hFf4o5STrxpNrib1IEb1GOArvPYf1zPvQVRGOO1G1d74Ak0J0lVyalX/SmrzdT4Q0nlEFjbURsmBmIGUR5Q=="
+  "resolved" "https://registry.npmjs.org/pinia/-/pinia-2.0.23.tgz"
+  "version" "2.0.23"
+  dependencies:
+    "@vue/devtools-api" "^6.4.4"
+    "vue-demi" "*"
+
 "png-js@^1.0.0":
   "integrity" "sha512-k+YsbhpA9e+EFfKjTCH3VW6aoKlyNYI6NYdTfDL4CIvFnvsuO84ttonmZE7rc+v23SLTH8XX+5w/Ak9v0xGY4g=="
   "resolved" "https://registry.npmjs.org/png-js/-/png-js-1.0.0.tgz"
@@ -2446,6 +2454,11 @@
   optionalDependencies:
     "fsevents" "~2.3.2"
 
+"vue-demi@*":
+  "integrity" "sha512-IR8HoEEGM65YY3ZJYAjMlKygDQn25D5ajNFNoKh9RSDMQtlzCxtfQjdQgv9jjK+m3377SsJXY8ysq8kLCZL25A=="
+  "resolved" "https://registry.npmjs.org/vue-demi/-/vue-demi-0.13.11.tgz"
+  "version" "0.13.11"
+
 "vue-demi@^0.13.4":
   "integrity" "sha512-02NYpxgyGE2kKGegRPYlNQSL1UWfA/+JqvzhGCOYjhfbLWXU5QQX0+9pAm/R2sCOPKr5NBxVIab7fvFU0B1RxQ=="
   "resolved" "https://registry.npmjs.org/vue-demi/-/vue-demi-0.13.6.tgz"
@@ -2458,7 +2471,7 @@
   dependencies:
     "@vue/devtools-api" "^6.0.0"
 
-"vue@^3.0.0-0 || ^2.6.0", "vue@^3.0.1", "vue@^3.0.2", "vue@^3.1.0", "vue@^3.2.0", "vue@^3.2.25", "vue@^3.2.37", "vue@>= 3", "vue@3.2.37":
+"vue@^2.6.14 || ^3.2.0", "vue@^3.0.0-0 || ^2.6.0", "vue@^3.0.1", "vue@^3.0.2", "vue@^3.1.0", "vue@^3.2.0", "vue@^3.2.25", "vue@^3.2.37", "vue@>= 3", "vue@3.2.37":
   "integrity" "sha512-bOKEZxrm8Eh+fveCqS1/NkG/n6aMidsI6hahas7pa0w/l7jkbssJVsRhVDs07IdDq7h9KHswZOgItnwJAgtVtQ=="
   "resolved" "https://registry.npmjs.org/vue/-/vue-3.2.37.tgz"
   "version" "3.2.37"

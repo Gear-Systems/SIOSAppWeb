@@ -160,7 +160,7 @@ const actualizarEstado = async (actualizacion_estatus, actualizacion_estado) => 
   // console.log(props.folio)
   response = await update(
       child(
-      refDB(db), `folios/` + (props.incidencia == 1 ? `preventivos` : `correctivos`) + `/${props.tipoFolio}/${props.folio}`
+      refDB(db), `folios/` + (props.incidencia == 1 ? `preventivos` : `correctivos`) + `/${props.folio}`
       ), 
       {
           estatus: actualizacion_estatus,
