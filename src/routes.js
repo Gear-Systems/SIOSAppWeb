@@ -40,7 +40,7 @@ export const routes = [
     name: "capturarCorrectivo",
     component: Correctivo,
     meta: { title: "Folios Correctivos", authorization: true },
-    props: { control: false },
+    props: { control: true },
   },
   {
     path: "/configuraciones",

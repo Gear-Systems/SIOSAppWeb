@@ -3,6 +3,7 @@
     <Suspense>
       <template #default>
         <div class="mt-6 flex h-auto w-[100%] flex-col items-center px-10">
+          {{ infoData2 }}
           <div class="flex h-[70%] w-full">
             <div class="flex w-[20%] flex-col space-y-3">
               <div class="flex w-[100%] select-none items-center">
@@ -68,7 +69,7 @@
               <div class="flex flex-col space-y-1">
                 <div class="flex w-[90%] select-none">
                   Tipo:
-                  <span class="pl-5 font-semibold">{{ infoData.tipo }}</span>
+                  <span class="pl-5 font-semibold">{{ infoData2.tipoFolio }}</span>
                 </div>
                 <div class="flex w-[90%] flex-col">
                   <span class="select-none">Número de folio:</span>
@@ -130,9 +131,9 @@
           </Suspense>
           <Suspense>
             <ModalEdicionFolio
-              :folio="infoData.folio"
-              :incidencia="2"
-              :tipoFolio="infoData.tipo"
+              :folio="$route.params.id"
+              :incidencia="'correctivo'"
+              :infoData="infoData2"
               @actualizarFolio="actualizarFolio"
             ></ModalEdicionFolio>
           </Suspense>
@@ -174,14 +175,26 @@ import Step1 from "@/views/Correctivo/Steps/Step1.vue";
 import Step2 from "@/views/Correctivo/Steps/Step2.vue";
 import Step3 from "@/views/Correctivo/Steps/Step3.vue";
 import { arrayActiveHora, arrayActiveMinuto } from "@/JS/arreglosHorario.js";
+import { db, auth } from "@/firebase/firebase";
 import {
   actualizarFolioBD,
   eliminarFolioPrevio,
 } from "@/consultasBD/guardarFolio.js";
 
-const auth = getAuth();
+const infoData2 = reactive({
+  tipoFolio: "",
+  distrito: "",
+  estatus: "",
+  causa: "",
+  clientesAfectados: 0,
+  cluster: "",
+  falla: "",
+  olt: "",
+  supervisor: "",
+  tecnico: "",
+  asignado: false,
+})
 const router = useRouter();
-const db = getDatabase();
 const route = useRoute();
 const functions = getFunctions();
 const storeVuex = useStore();
@@ -190,6 +203,14 @@ const infoData = ref({
   tipo: route.params.tipoFolio,
   estado: 1,
 });
+
+const fetchData = async () => {
+  get(refDB(db, `folios/correctivos/${route.params.id}`)).then((snapshot) => {
+    Object.assign(infoData2, snapshot.val())
+  });
+};
+
+fetchData();
 
 // Función que se encarga de escuchar el nodo del folio creado previamente
 const escucharFolio = () => {
@@ -244,7 +265,7 @@ const logout = () => {
   });
 };
 const openEdicion = () => {
-  storeVuex.commit("abrirModalEdicionCorrectivo");
+  storeVuex.commit("abrirModalEdicion");
 };
 const openManejoFolio = () => {
   storeVuex.commit("abrirModalManejoFolio");
@@ -253,28 +274,26 @@ const actualizarFolio = async (data) => {
   let llave = infoData.value.folio;
   let tipoFolio = infoData.value.tipo;
 
-  if(data[0].folio != llave || data[0].tipoFolio != tipoFolio){
+  if (data[0].folio != llave || data[0].tipoFolio != tipoFolio) {
     off(
       refDB(db, `folios/correctivos/${tipoFolio}/${llave}`),
       "child_changed",
       (snapshot) => {
-        console.log("se dejó de escuchar", snapshot.val());
       }
     );
-  
+
     infoData.value.folio = data[0].folio;
     infoData.value.tipo = data[0].tipoFolio;
-  
+
     await actualizarFolioBD(data[0], 2, llave, tipoFolio);
-  
+
     if (llave != infoData.value.folio) {
       await eliminarFolioPrevio(llave, 2, tipoFolio);
     }
     escucharFolio();
-  }else{
+  } else {
     await actualizarFolioBD(data[0], 2, llave, tipoFolio);
   }
-
 };
 
 // Función para asignar folio al técnico
@@ -300,7 +319,6 @@ const asignarFolio = async () => {
       router.push("/capturar-folio");
     })
     .catch((error) => {
-      console.log(error.code, error.message, error.details);
       console.log(`Error: ${error}`);
     });
 };

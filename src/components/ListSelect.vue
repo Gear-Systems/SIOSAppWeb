@@ -1,11 +1,24 @@
 <template>
-  <Listbox v-model="seleccionado" :disabled="props.dataArray.length == 0 ? true : false" >
+  <Listbox
+    v-model="seleccionado"
+    :model-value="props.default"
+    :disabled="props.dataArray.length == 0 ? true : false"
+  >
     <div class="relative mt-1 w-full">
       <ListboxButton
-        :class="['relative w-full cursor-default rounded-lg border-2 border-[#E5E5E5] bg-white py-2 pl-3 pr-10 text-left text-black focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm', props.dataArray.length == 0 ? 'bg-gray-200 cursor-not-allowed' : '']"
+        :class="[
+          'relative w-full cursor-default rounded-lg border-2 border-[#E5E5E5] bg-white py-2 pl-3 pr-10 text-left text-black focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm',
+          props.dataArray.length == 0 ? 'cursor-not-allowed bg-gray-200' : '',
+        ]"
       >
         <span class="block truncate">{{
-          seleccionado ? seleccionado.name ? seleccionado.name : seleccionado.nombre ? seleccionado.nombre : seleccionado : props.label
+          seleccionado
+            ? seleccionado.name
+              ? seleccionado.name
+              : seleccionado.nombre
+              ? seleccionado.nombre
+              : seleccionado
+            : props.label
         }}</span>
         <span
           class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
@@ -28,7 +41,7 @@
             :value="element"
             as="template"
           >
-          <li
+            <li
               :class="[
                 active ? 'bg-[#E9F0FC] text-black' : 'text-black',
                 'relative cursor-default select-none py-2 pl-10 pr-4',
@@ -47,12 +60,12 @@
                     : element
                 }}</span
               >
-              <span
+              <!-- <span
                 v-if="selected"
                 class="absolute inset-y-0 left-0 flex items-center pl-3 text-black"
               >
                 <CheckIcon class="h-5 w-5" aria-hidden="true" />
-              </span>
+              </span> -->
             </li>
           </ListboxOption>
         </ListboxOptions>
@@ -62,7 +75,7 @@
 </template>
 
 <script setup>
-import { watch, ref } from "vue";
+import { watch, ref, onMounted, onUpdated } from "vue";
 import {
   Listbox,
   ListboxLabel,
@@ -73,8 +86,34 @@ import {
 import { CheckIcon, SelectorIcon } from "@heroicons/vue/solid";
 
 const seleccionado = ref();
-const props = defineProps(["dataArray", "label"]);
+const oldValueDefault = ref();
+const props = defineProps(["dataArray", "label", "default"]);
 const emits = defineEmits(["inputValue"]);
+
+// onMounted(() => {
+//   if (props.default) {
+//     seleccionado.value = props.default
+//   }
+// });
+
+// onUpdated(() => {
+//   if (props.default != undefined) {
+//     if (oldValueDefault.value != props.default) {
+//         console.log(props.label);
+//         seleccionado.value = props.default;
+//         oldValueDefault.value = props.default;
+//       }
+//   }
+// });
+
+onMounted(() => {
+  if (props.default != undefined) {
+    if (oldValueDefault.value != props.default) {
+      seleccionado.value = props.default;
+      oldValueDefault.value = props.default;
+    }
+  }
+});
 
 watch(seleccionado, (value) => {
   emits("inputValue", value);

@@ -239,17 +239,18 @@
                       :disabled="buttonDisabled || loadingSubmit"
                       type="button"
                       :class="[
-                        'flex justify-center rounded-md border border-transparent bg-primario px-4 py-2 text-sm font-medium   focus-visible:ring-blue-500 min-w-[150px]',
+                        'flex min-w-[150px] justify-center rounded-md border border-transparent bg-primario px-4 py-2 text-sm   font-medium focus-visible:ring-blue-500',
                         buttonDisabled
                           ? 'cursor-not-allowed bg-gray-300'
-                          : 'text-white hover:bg-primario/80', loadingSubmit ? 'bg-primario/80' : ''
+                          : 'text-white hover:bg-primario/80',
+                        loadingSubmit ? 'bg-primario/80' : '',
                       ]"
                       @click="submitCorrectivo()"
                     >
                       <svg
                         v-if="loadingSubmit"
                         aria-hidden="true"
-                        class="duration-900 animate-spin h-6 w-7 fill-secundario text-gray-200 dark:text-gray-600"
+                        class="duration-900 h-6 w-7 animate-spin fill-secundario text-gray-200 dark:text-gray-600"
                         viewBox="0 0 100 101"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
@@ -293,7 +294,9 @@ import {
   Switch,
 } from "@headlessui/vue";
 import { useFolios } from "@/store/folios";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const folios = useFolios();
 const crearFolio = httpsCallable(functions, "crearFolioCorrectivo");
 const store = useStore();
@@ -473,8 +476,9 @@ const submitCorrectivo = async () => {
   }
   await crearFolio(infoSelected)
     .then((result) => {
-      console.log(result);
       loading.value = false;
+      store.commit("cerrarModalCorrectivo");
+      router.push({ name: "capturarCorrectivo", params:{ id: infoSelected.folio } });
     })
     .catch((error) => {
       loading.value = false;

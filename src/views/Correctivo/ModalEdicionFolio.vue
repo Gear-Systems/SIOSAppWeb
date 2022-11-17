@@ -2,14 +2,14 @@
   <div>
     <TransitionRoot
       appear
-      :show="$store.state.a.modalEdicionFolioCorrectivo"
+      :show="$store.state.a.modalEdicionFolio"
       as="template"
       class="z-50"
     >
-      <Dialog as="div" @close="closeModal" class="relative z-[300]">
+      <Dialog as="div" @close="closeModal" class="relative z-[999]">
         <TransitionChild
           as="template"
-          enter="duration-150 ease-out"
+          enter="duration-300 ease-out"
           enter-from="opacity-0"
           enter-to="opacity-100"
           leave="duration-200 ease-in"
@@ -33,637 +33,204 @@
               leave-to="opacity-0 scale-95"
             >
               <DialogPanel
-                class="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+                class="w-full max-w-2xl transform rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
               >
                 <DialogTitle
                   as="div"
                   class="mb-5 flex items-center text-lg font-medium leading-6 text-gray-900"
                 >
                   <div class="flex w-[80%] text-2xl font-bold">
-                    <h3 v-if="props.incidencia == 1">Folio Preventivo</h3>
-                    <h3 v-if="props.incidencia == 2">Folio Correctivo</h3>
+                    <h3>Folio Correctivo</h3>
+                    {{ infoSelected }}
                   </div>
                   <div class="flex w-[20%] justify-end">
                     <XCircleIcon
-                      @click="closeModal"
+                      @click="closeModal()"
                       class="h-6 w-6 cursor-pointer"
                     />
                   </div>
                 </DialogTitle>
-                <Suspense>
-                  <div class="flex w-[100%] flex-col items-center justify-center">
-                    <div class="my-2 flex w-[100%] items-center justify-center">
-                      <div
-                        class="flex w-2/3 flex-col text-xs font-normal text-[#C4C4C4]"
+                <div class="flex w-[100%] flex-col items-center justify-center">
+                  <div class="my-2 flex w-[100%] items-center justify-center">
+                    <div
+                      class="flex w-2/3 flex-col text-xs font-normal text-[#C4C4C4]"
+                    >
+                      Ingresar folio
+                      <input
+                        v-model="infoSelected.folio"
+                        placeholder="000"
+                        :class="[
+                          'mt-1 h-10 w-[95%] rounded-lg border-2 border-[#E5E5E5] bg-white text-black',
+                          errores.folio.error ? 'border-red-400' : '',
+                          loading
+                            ? 'animate-pulse bg-gray-100 text-gray-500'
+                            : '',
+                        ]"
+                        type="text"
+                        name="folio"
+                        id="folio"
+                      />
+                      <Transition
+                        leave-active-class="transition duration-200 ease-in"
+                        leave-from-class="opacity-100"
+                        leave-to-class="opacity-0"
+                        enter-active-class="transition duration-200 ease-in"
+                        enter-from-class="opacity-0"
+                        enter-to-class="opacity-100"
                       >
-                        Ingresar folio
-                          <input
-                            v-model="infoFolioCaptuado.folio"
-                            @blur="validaciones(0)"
-                            @focus="ocultarError(0)"
-                            :placeholder="holder"
-                            class="mt-1 h-10 w-[95%] rounded-lg border-2 border-[#E5E5E5] bg-white text-black"
-                            :class="[errores.folio != '' ? 'border-red-400' : '']"
-                            type="text"
-                            name="folio"
-                            id="folio"
-                          />
-                        <Transition
-                            leave-active-class="transition duration-200 ease-in"
-                            leave-from-class="opacity-100"
-                            leave-to-class="opacity-0"
-                            enter-active-class="transition duration-200 ease-in"
-                            enter-from-class="opacity-0"
-                            enter-to-class="opacity-100"
-                        >
-                          <span v-if="errores.folio != ''" class="text-red-400">
-                          {{ errores.folio }}</span>
-                        </Transition>
-                      </div>
-                      <div
-                        class="flex w-1/3 flex-col text-xs font-normal text-[#C4C4C4]"
-                      >
-                        Tipo
-                        <div class="flex w-[100%]">
-                          <Listbox v-model="infoFolioCaptuado.tipoFolio">
-                            <div class="relative mt-1 w-full">
-                              <ListboxButton
-                                class="relative w-full rounded-lg border-2 border-[#E5E5E5] bg-white py-2 pl-3 pr-10 text-left cursor-pointer text-black focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
-                              >
-                                <span class="block truncate">{{
-                                  infoFolioCaptuado.tipoFolio
-                                }}</span>
-                                <span
-                                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
-                                >
-                                  <SelectorIcon
-                                    class="h-5 w-5"
-                                    aria-hidden="true"
-                                  />
-                                </span>
-                              </ListboxButton>
-  
-                              <transition
-                                leave-active-class="transition duration-100 ease-in"
-                                leave-from-class="opacity-100"
-                                leave-to-class="opacity-0"
-                              >
-                                <ListboxOptions
-                                  class="absolute z-20 mt-1 max-h-40 w-[100%] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
-                                >
-                                  <ListboxOption
-                                    v-slot="{ active, selected }"
-                                    v-for="element in Object.keys(
-                                      datosSelect.tiposFolio[0]
-                                    )"
-                                    :key="element"
-                                    :value="element"
-                                    as="template"
-                                  >
-                                    <li
-                                      @click="validacionTipoFolio(element)"
-                                      :class="[
-                                        active
-                                          ? 'bg-[#E9F0FC] text-black'
-                                          : 'text-black',
-                                        'relative cursor-default select-none py-2 pl-10 pr-4',
-                                      ]"
-                                    >
-                                      <span
-                                        :class="[
-                                          selected
-                                            ? 'font-medium'
-                                            : 'font-normal',
-                                          'block truncate',
-                                        ]"
-                                        >{{ element }}</span
-                                      >
-                                      <span
-                                        v-if="selected"
-                                        class="absolute inset-y-0 left-0 flex items-center pl-3 text-black"
-                                      >
-                                        <CheckIcon
-                                          class="h-5 w-5"
-                                          aria-hidden="true"
-                                        />
-                                      </span>
-                                    </li>
-                                  </ListboxOption>
-                                </ListboxOptions>
-                              </transition>
-                            </div>
-                          </Listbox>
-                        </div>
-                      </div>
+                        <span v-if="errores.folio.error" class="text-red-400">
+                          {{ errores.folio.message }}
+                        </span>
+                      </Transition>
                     </div>
-                    <div class="mb-4 flex w-[100%] items-center justify-between">
-                      <div
-                        class="mr-2 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]"
-                      >
-                        Distrito
-                        <div class="flex w-[100%]">
-                          <Listbox v-model="infoFolioCaptuado.distrito">
-                            <div class="relative mt-1 w-full">
-                              <ListboxButton
-                                class="relative w-full cursor-default rounded-lg border-2 border-[#E5E5E5] bg-white py-2 pl-3 pr-10 text-left text-black hover:cursor-pointer focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
-                              >
-                                <span class="block truncate">{{
-                                  infoFolioCaptuado.distrito
-                                }}</span>
-                                <span
-                                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
-                                >
-                                  <SelectorIcon
-                                    class="h-5 w-5"
-                                    aria-hidden="true"
-                                  />
-                                </span>
-                              </ListboxButton>
-  
-                              <transition
-                                leave-active-class="transition duration-100 ease-in"
-                                leave-from-class="opacity-100"
-                                leave-to-class="opacity-0"
-                              >
-                                <ListboxOptions
-                                  class="absolute z-20 mt-1 max-h-40 w-[100%] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
-                                >
-                                  <ListboxOption
-                                    v-slot="{ active, selected }"
-                                    v-for="element in datosSelect.distritos"
-                                    :key="element.distrito"
-                                    :value="element.distrito"
-                                    as="template"
-                                  >
-                                    <li
-                                      class="hover:cursor-pointer"
-                                      :class="[
-                                        active
-                                          ? 'bg-[#E9F0FC] text-black'
-                                          : 'text-black',
-                                        'relative cursor-default select-none py-2 pl-10 pr-4',
-                                      ]"
-                                    >
-                                      <span
-                                        :class="[
-                                          selected
-                                            ? 'font-medium'
-                                            : 'font-normal',
-                                          'block truncate',
-                                        ]"
-                                        >{{ element.distrito }}</span
-                                      >
-                                      <span
-                                        v-if="selected"
-                                        class="absolute inset-y-0 left-0 flex items-center pl-3 text-black"
-                                      >
-                                        <CheckIcon
-                                          class="h-5 w-5"
-                                          aria-hidden="true"
-                                        />
-                                      </span>
-                                    </li>
-                                  </ListboxOption>
-                                </ListboxOptions>
-                              </transition>
-                            </div>
-                          </Listbox>
-                        </div>
-                      </div>
-                      <div
-                        class="ml-2 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]"
-                      >
-                        Cluster
-                        <div class="flex w-[100%]">
-                          <Listbox v-model="infoFolioCaptuado.cluster">
-                            <div class="relative mt-1 w-full">
-                              <ListboxButton
-                                :disabled="
-                                  infoFolioCaptuado.distrito ==
-                                  'Selecciona un distrito'
-                                    ? true
-                                    : false
-                                "
-                                class="relative w-full cursor-default rounded-lg border-2 border-[#E5E5E5] bg-white py-2 pl-3 pr-10 text-left text-black hover:cursor-pointer focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-black/50 sm:text-sm"
-                              >
-                                <span class="block truncate">{{
-                                  infoFolioCaptuado.cluster
-                                }}</span>
-                                <span
-                                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
-                                >
-                                  <SelectorIcon
-                                    class="h-5 w-5"
-                                    aria-hidden="true"
-                                  />
-                                </span>
-                              </ListboxButton>
-  
-                              <transition
-                                leave-active-class="transition duration-100 ease-in"
-                                leave-from-class="opacity-100"
-                                leave-to-class="opacity-0"
-                              >
-                                <ListboxOptions
-                                  class="absolute z-20 mt-1 max-h-40 max-h-40 w-[100%] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
-                                >
-                                  <ListboxOption
-                                    v-slot="{ active, selected }"
-                                    v-for="element in clusters"
-                                    :key="element"
-                                    :value="element"
-                                    as="template"
-                                  >
-                                    <li
-                                      class="hover:cursor-pointer"
-                                      :class="[
-                                        active
-                                          ? 'bg-[#E9F0FC] text-black'
-                                          : 'text-black',
-                                        'relative cursor-default select-none py-2 pl-10 pr-4',
-                                      ]"
-                                    >
-                                      <span
-                                        :class="[
-                                          selected
-                                            ? 'font-medium'
-                                            : 'font-normal',
-                                          'block truncate',
-                                        ]"
-                                        >{{ element }}</span
-                                      >
-                                      <span
-                                        v-if="selected"
-                                        class="absolute inset-y-0 left-0 flex items-center pl-3 text-black"
-                                      >
-                                        <CheckIcon
-                                          class="h-5 w-5"
-                                          aria-hidden="true"
-                                        />
-                                      </span>
-                                    </li>
-                                  </ListboxOption>
-                                </ListboxOptions>
-                              </transition>
-                            </div>
-                          </Listbox>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="mb-4 flex w-[100%] items-center justify-between">
-                      <div
-                        class="mr-2 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]"
-                      >
-                        Supervisor
-                        <div class="flex w-[100%]">
-                          <Listbox v-model="infoFolioCaptuado.supervisor">
-                            <div class="relative mt-1 w-full">
-                              <ListboxButton
-                                class="relative w-full cursor-default rounded-lg border-2 border-[#E5E5E5] bg-white py-2 pl-3 pr-10 text-left text-black hover:cursor-pointer focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-black/50 sm:text-sm"
-                              >
-                                <span class="block truncate">{{
-                                  infoFolioCaptuado.supervisor
-                                }}</span>
-                                <span
-                                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
-                                >
-                                  <SelectorIcon
-                                    class="h-5 w-5"
-                                    aria-hidden="true"
-                                  />
-                                </span>
-                              </ListboxButton>
-  
-                              <transition
-                                leave-active-class="transition duration-100 ease-in"
-                                leave-from-class="opacity-100"
-                                leave-to-class="opacity-0"
-                              >
-                                <ListboxOptions
-                                  class="absolute z-20 mt-1 max-h-40 w-[100%] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
-                                >
-                                  <ListboxOption
-                                    v-slot="{ active, selected }"
-                                    v-for="(supervisor, key) in supervisores"
-                                    :key="supervisor.key"
-                                    :value="supervisor.nombre"
-                                    as="template"
-                                  >
-                                    <li
-                                      @click="llenarLlaveSupervisor(supervisor.key)"
-                                      class="hover:cursor-pointer"
-                                      :class="[
-                                        active
-                                          ? 'bg-[#E9F0FC] text-black'
-                                          : 'text-black',
-                                        'relative cursor-default select-none py-2 pl-10 pr-4',
-                                      ]"
-                                    >
-                                      <span
-                                        :class="[
-                                          selected
-                                            ? 'font-medium'
-                                            : 'font-normal',
-                                          'block truncate',
-                                        ]"
-                                        >{{ supervisor.nombre }}</span
-                                      >
-                                      <span
-                                        v-if="selected"
-                                        class="absolute inset-y-0 left-0 flex items-center pl-3 text-black"
-                                      >
-                                        <CheckIcon
-                                          class="h-5 w-5"
-                                          aria-hidden="true"
-                                        />
-                                      </span>
-                                    </li>
-                                  </ListboxOption>
-                                </ListboxOptions>
-                              </transition>
-                            </div>
-                          </Listbox>
-                        </div>
-                      </div>
-                      <div
-                        class="ml-2 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]"
-                      >
-                        Técnico
-                        <div class="flex w-[100%]">
-                          <Listbox v-model="infoFolioCaptuado.tecnico">
-                            <div class="relative mt-1 w-full">
-                              <ListboxButton
-                                :disabled="
-                                  infoFolioCaptuado.supervisor ==
-                                  'Selecciona un supervisor'
-                                    ? true
-                                    : false
-                                "
-                                class="relative w-full cursor-default rounded-lg border-2 border-[#E5E5E5] bg-white py-2 pl-3 pr-10 text-left text-black hover:cursor-pointer focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-black/50 sm:text-sm"
-                              >
-                                <span class="block truncate">{{
-                                  infoFolioCaptuado.tecnico
-                                }}</span>
-                                <span
-                                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
-                                >
-                                  <SelectorIcon
-                                    class="h-5 w-5"
-                                    aria-hidden="true"
-                                  />
-                                </span>
-                              </ListboxButton>
-  
-                              <transition
-                                leave-active-class="transition duration-100 ease-in"
-                                leave-from-class="opacity-100"
-                                leave-to-class="opacity-0"
-                              >
-                                <ListboxOptions
-                                  class="absolute z-20 mt-1 max-h-40 w-[100%] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
-                                >
-                                  <ListboxOption
-                                    v-slot="{ active, selected }"
-                                    v-for="(tecnico, key) in tecnicos"
-                                    :key="tecnico.llave"
-                                    :value="tecnico.nombre"
-                                    as="template"
-                                  >
-                                    <li
-                                      @click="llenarLlaveTecnico(tecnico.llave)"
-                                      class="hover:cursor-pointer"
-                                      :class="[
-                                        active
-                                          ? 'bg-[#E9F0FC] text-black'
-                                          : 'text-black',
-                                        'relative cursor-default select-none py-2 pl-10 pr-4',
-                                      ]"
-                                    >
-                                      <span
-                                        :class="[
-                                          selected
-                                            ? 'font-medium'
-                                            : 'font-normal',
-                                          'block truncate',
-                                        ]"
-                                        >{{ tecnico.nombre }}</span
-                                      >
-                                      <span
-                                        v-if="selected"
-                                        class="absolute inset-y-0 left-0 flex items-center pl-3 text-black"
-                                      >
-                                        <CheckIcon
-                                          class="h-5 w-5"
-                                          aria-hidden="true"
-                                        />
-                                      </span>
-                                    </li>
-                                  </ListboxOption>
-                                </ListboxOptions>
-                              </transition>
-                            </div>
-                          </Listbox>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="mb-4 flex w-[80%] items-center self-start">
-                      <div
-                        class="mr-2 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]"
-                      >
-                        Ingresar OLT
-                        <input
-                          v-model="infoFolioCaptuado.olt"
-                          @blur="validaciones(1)"
-                          @focus="ocultarError(1)"
-                          :placeholder="holder"
-                          class="mt-1 h-10 w-[100%] rounded-lg border-2 border-[#E5E5E5] text-black"
-                          :class="[errores.olt != '' ? 'border-red-400' : '']"
-                          type="text"
-                          name="folio"
-                          id="folio"
-                        />
-                        <Transition
-                          leave-active-class="transition duration-200 ease-in"
-                          leave-from-class="opacity-100"
-                          leave-to-class="opacity-0"
-                          enter-active-class="transition duration-200 ease-in"
-                          enter-from-class="opacity-0"
-                          enter-to-class="opacity-100"
-                        >
-                          <span v-if="errores.olt != ''" class="text-red-400">
-                          {{ errores.olt }}</span>
-                        </Transition>
-                      </div>
-                      <div
-                        class="ml-2 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]"
-                      >
-                        Falla
-                        <div class="flex w-[100%]">
-                          <Listbox v-model="infoFolioCaptuado.falla">
-                            <div class="relative mt-1 w-full">
-                              <ListboxButton
-                                class="relative w-full cursor-default rounded-lg border-2 border-[#E5E5E5] bg-white py-2 pl-3 pr-10 text-left text-black hover:cursor-pointer focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
-                              >
-                                <span class="block truncate">{{
-                                  infoFolioCaptuado.falla
-                                }}</span>
-                                <span
-                                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
-                                >
-                                  <SelectorIcon
-                                    class="h-5 w-5"
-                                    aria-hidden="true"
-                                  />
-                                </span>
-                              </ListboxButton>
-  
-                              <transition
-                                leave-active-class="transition duration-100 ease-in"
-                                leave-from-class="opacity-100"
-                                leave-to-class="opacity-0"
-                              >
-                                <ListboxOptions
-                                  class="absolute z-20 max-h-40 w-[100%] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
-                                >
-                                  <ListboxOption
-                                    v-slot="{ active, selected }"
-                                    v-for="element in datosSelect.fallas[0]"
-                                    :key="element"
-                                    :value="element"
-                                    as="template"
-                                  >
-                                    <li
-                                      class="hover:cursor-pointer"
-                                      :class="[
-                                        active
-                                          ? 'bg-[#E9F0FC] text-black'
-                                          : 'text-black',
-                                        'relative cursor-default select-none py-2 pl-10 pr-4',
-                                      ]"
-                                    >
-                                      <span
-                                        :class="[
-                                          selected
-                                            ? 'font-medium'
-                                            : 'font-normal',
-                                          'block truncate',
-                                        ]"
-                                        >{{ element }}</span
-                                      >
-                                      <span
-                                        v-if="selected"
-                                        class="absolute inset-y-0 left-0 flex items-center pl-3 text-black"
-                                      >
-                                        <CheckIcon
-                                          class="h-5 w-5"
-                                          aria-hidden="true"
-                                        />
-                                      </span>
-                                    </li>
-                                  </ListboxOption>
-                                </ListboxOptions>
-                              </transition>
-                            </div>
-                          </Listbox>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="mb-4 flex w-[80%] items-center self-start">
-                      <div
-                        class="mr-1.5 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]"
-                      >
-                        Causa
-                        <div class="flex w-[100%]">
-                          <Listbox v-model="infoFolioCaptuado.causa">
-                            <div class="relative mt-1 w-full">
-                              <ListboxButton
-                                class="relative w-full cursor-default rounded-lg border-2 border-[#E5E5E5] bg-white py-2 pl-3 pr-10 text-left text-black hover:cursor-pointer focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
-                              >
-                                <span class="block truncate">{{
-                                  infoFolioCaptuado.causa
-                                }}</span>
-                                <span
-                                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
-                                >
-                                  <SelectorIcon
-                                    class="h-5 w-5"
-                                    aria-hidden="true"
-                                  />
-                                </span>
-                              </ListboxButton>
-  
-                              <transition
-                                leave-active-class="transition duration-100 ease-in"
-                                leave-from-class="opacity-100"
-                                leave-to-class="opacity-0"
-                              >
-                                <ListboxOptions
-                                  class="absolute z-20 -mt-[205px] max-h-40 w-[100%] overflow-auto rounded-md bg-white py-1 text-base shadow-customized ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
-                                >
-                                  <ListboxOption
-                                    v-slot="{ active, selected }"
-                                    v-for="element in datosSelect.causas[0]"
-                                    :key="element"
-                                    :value="element"
-                                    as="template"
-                                  >
-                                    <li
-                                      class="hover:cursor-pointer"
-                                      :class="[
-                                        active
-                                          ? 'bg-[#E9F0FC] text-black'
-                                          : 'text-black',
-                                        'relative cursor-default select-none py-2 pl-10 pr-4',
-                                      ]"
-                                    >
-                                      <span
-                                        :class="[
-                                          selected
-                                            ? 'font-medium'
-                                            : 'font-normal',
-                                          'block truncate',
-                                        ]"
-                                        >{{ element }}</span
-                                      >
-                                      <span
-                                        v-if="selected"
-                                        class="absolute inset-y-0 left-0 flex items-center pl-3 text-black"
-                                      >
-                                        <CheckIcon
-                                          class="h-5 w-5"
-                                          aria-hidden="true"
-                                        />
-                                      </span>
-                                    </li>
-                                  </ListboxOption>
-                                </ListboxOptions>
-                              </transition>
-                            </div>
-                          </Listbox>
-                        </div>
-                      </div>
-                      <div
-                        class="ml-2 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]"
-                      >
-                        Clientes afectados
-                        <input
-                          v-model="infoFolioCaptuado.clientesAfectados"
-                          @blur="
-                            actualizarClientesAfectados(
-                              infoFolioCaptuado.clientesAfectados
-                            )
-                          "
-                          class="mt-1 h-10 w-[100%] rounded-lg border-2 border-[#E5E5E5] text-black"
-                          type="number"
-                          name="folio"
-                          id="folio"
-                          min="0"
-                          max="9999"
+                    <div
+                      class="flex w-1/3 flex-col text-xs font-normal text-[#C4C4C4]"
+                    >
+                      Tipo
+                      <div class="flex w-[100%]">
+                        <ListSelect
+                          :dataArray="infoData.tipoFolios"
+                          :label="'Tipo de folio'"
+                          :default="infoDefault.tipoFolio"
+                          @inputValue="validarTipoFolio($event)"
                         />
                       </div>
                     </div>
                   </div>
-                </Suspense>
+                  <div class="mb-4 flex w-[100%] items-center justify-between">
+                    <div
+                      class="mr-2 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]"
+                    >
+                      Distrito
+                      <div class="flex w-[100%]">
+                        <ListSelect
+                          :dataArray="infoData.distritos"
+                          :label="'Selecciona un distrito'"
+                          :default="infoDefault.distrito"
+                          @inputValue="infoSelected.distrito = $event"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="ml-2 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]"
+                    >
+                      Cluster
+                      <div class="flex w-[100%]">
+                        <ListSelect
+                          :dataArray="
+                            infoSelected.distrito
+                              ? infoSelected.distrito.clusters
+                              : []
+                          "
+                          :default="infoDefault.clusters"
+                          :label="'Selecciona un cluster'"
+                          @inputValue="infoSelected.clusters = $event"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mb-4 flex w-[100%] items-center justify-between">
+                    <div
+                      class="mr-2 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]"
+                    >
+                      Supervisor
+                      <div class="flex w-[100%]">
+                        <ListSelect
+                          :dataArray="
+                            infoSelected.distrito
+                              ? infoSelected.distrito.supervisores
+                              : []
+                          "
+                          :default="infoDefault.supervisores"
+                          :label="'Selecciona un supervisor'"
+                          @inputValue="asignarSupervisor($event)"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="ml-2 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]"
+                    >
+                      Técnico
+                      <div class="flex w-[100%]">
+                        <ListSelect
+                          :dataArray="infoData.tecnicos"
+                          :default="infoDefault.tecnicos"
+                          :label="'Selecciona un técnico'"
+                          @inputValue="infoSelected.tecnicos = $event"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mb-4 flex w-[80%] items-center self-start">
+                    <div
+                      class="mr-2 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]"
+                    >
+                      Ingresar OLT
+                      <input
+                        v-model="infoSelected.olt"
+                        placeholder="000"
+                        class="mt-1 h-10 w-[100%] rounded-lg border-2 border-[#E5E5E5] text-black"
+                        type="text"
+                        name="folio"
+                        id="folio"
+                      />
+                      <Transition
+                        leave-active-class="transition duration-200 ease-in"
+                        leave-from-class="opacity-100"
+                        leave-to-class="opacity-0"
+                        enter-active-class="transition duration-200 ease-in"
+                        enter-from-class="opacity-0"
+                        enter-to-class="opacity-100"
+                      >
+                        <span v-if="errores.olt != ''" class="text-red-400">
+                          {{ errores.olt }}</span
+                        >
+                      </Transition>
+                    </div>
+                    <div
+                      class="ml-2 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]"
+                    >
+                      Falla
+                      <div class="flex w-[100%]">
+                        <ListSelect
+                          :dataArray="infoData.fallas"
+                          :default="infoDefault.falla"
+                          :label="'Selecciona una falla'"
+                          @inputValue="infoSelected.falla = $event"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mb-4 flex w-[80%] items-center self-start">
+                    <div
+                      class="mr-1.5 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]"
+                    >
+                      Causa
+                      <div class="flex w-[100%]">
+                        <ListSelect
+                          :dataArray="infoData.causas"
+                          :default="infoDefault.causa"
+                          :label="'Selecciona una causa'"
+                          @inputValue="infoSelected.causa = $event"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="ml-2 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]"
+                    >
+                      Clientes afectados
+                      <input
+                        v-model="infoSelected.clientesAfectados"
+                        class="mt-1 h-10 w-[100%] rounded-lg border-2 border-[#E5E5E5] text-black"
+                        type="number"
+                        name="folio"
+                        id="folio"
+                        min="0"
+                        max="9999"
+                      />
+                    </div>
+                  </div>
+                </div>
                 <div class="mt-4 flex justify-around">
                   <div class="flex w-1/2 justify-center">
                     <button
@@ -676,23 +243,35 @@
                   </div>
                   <div class="flex w-1/2 justify-center">
                     <button
-                      v-if="
-                        mostrarBoton[0] &&
-                        infoFolioCaptuado.distrito !=
-                          'Selecciona un distrito' &&
-                        infoFolioCaptuado.cluster != 'Selecciona un cluster' &&
-                        infoFolioCaptuado.supervisor !=
-                          'Selecciona un supervisor' &&
-                        infoFolioCaptuado.tecnico != 'Selecciona un técnico' &&
-                        mostrarBoton[1] &&
-                        infoFolioCaptuado.falla != 'Selecciona una falla' &&
-                        infoFolioCaptuado.causa != 'Selecciona una causa'
-                      "
+                      :disabled="buttonDisabled || loadingSubmit"
                       type="button"
-                      class="flex justify-center rounded-md border border-transparent bg-[#E5E5E5] px-4 py-2 text-sm font-medium text-black hover:bg-[#E9F0FC] hover:text-[#2166E5] focus-visible:ring-blue-500"
-                      @click="actualizarFolio()"
+                      :class="[
+                        'flex min-w-[150px] justify-center rounded-md border border-transparent bg-primario px-4 py-2 text-sm   font-medium focus-visible:ring-blue-500',
+                        buttonDisabled
+                          ? 'cursor-not-allowed bg-gray-300'
+                          : 'text-white hover:bg-primario/80',
+                        loadingSubmit ? 'bg-primario/80' : '',
+                      ]"
+                      @click="submitCorrectivo()"
                     >
-                      Actualizar
+                      <svg
+                        v-if="loadingSubmit"
+                        aria-hidden="true"
+                        class="duration-900 h-6 w-7 animate-spin fill-secundario text-gray-200 dark:text-gray-600"
+                        viewBox="0 0 100 101"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                          fill="currentColor"
+                        />
+                        <path
+                          d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                          fill="currentFill"
+                        />
+                      </svg>
+                      <div v-else>Siguiente</div>
                     </button>
                   </div>
                 </div>
@@ -706,236 +285,296 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
-import { getAuth, signOut } from "firebase/auth";
-import { useRouter } from "vue-router";
+import { ref, reactive, computed, watch, onMounted } from "vue";
 import { useStore } from "vuex";
 import { XCircleIcon } from "@heroicons/vue/outline";
+import { ref as refDB, get, set, child } from "@firebase/database";
+import { httpsCallable } from "firebase/functions";
+import { db, functions } from "@/firebase/firebase";
+import ListSelect from "@/components/ListSelect.vue";
 import {
   TransitionRoot,
   TransitionChild,
   Dialog,
   DialogPanel,
   DialogTitle,
+  Switch,
 } from "@headlessui/vue";
-import {
-  Listbox,
-  ListboxLabel,
-  ListboxButton,
-  ListboxOptions,
-  ListboxOption,
-} from "@headlessui/vue";
-import { CheckIcon, SelectorIcon } from "@heroicons/vue/solid";
-import { infoSelectFolio, infoCapturadaEditable } from "@/consultasBD/consultaSelectFolio.js";
-import {
-  validacionFolio,
-  validacionOLT,
-} from "@/validaciones/modalCorrectivo.js";
+import { useFolios } from "@/store/folios";
+import { useRouter } from "vue-router";
 
-import { guardarFolio, actualizarFolioBD } from '@/consultasBD/guardarFolio.js'
-
-const i = ref(0);
+const props = defineProps(["folio", "incidencia", "infoData"]);
 const router = useRouter();
+const folios = useFolios();
+const crearFolio = httpsCallable(functions, "crearFolioCorrectivo");
 const store = useStore();
-const props = defineProps(["folio", "incidencia", "tipoFolio"]);
-const emit = defineEmits(['actualizarFolio']);
-// Funcion para llenar la info que fue capturada en
-// la base de datos 
-const infoFolioCaptuado = ref(await infoCapturadaEditable(props.folio, props.incidencia, props.tipoFolio));
-const folioPrevio = ref(props.folio);
-const tipoFolioPrevio = ref(props.tipoFolio);
-const olt = ref(infoFolioCaptuado.value.olt);
-// Función de consulta a la base de datos para
-// obtener información para la captura de folios
-const datosSelect = ref(await infoSelectFolio(props.incidencia));
-const holder = ref("000");
-const mostrarBoton = ref([true, true]);
-const errores = ref({ folio: "", olt: "" });
+const catalogoRef = refDB(db, "catalogo");
+const loading = ref(false);
+const loadingSubmit = ref(false);
+const buttonDisabled = ref(true);
+const update = reactive({
+  distrito: false,
+});
+const emit = defineEmits(["abrirModalManejoFolio"]);
 
-const llenarSupervisores = async () => {
-  let temp_supervisores = [];
-  datosSelect.value.distritos.forEach((distritos) => {
-    if (distritos.distrito == infoFolioCaptuado.value.distrito) {
-        distritos.supervisores.forEach((supervisor)=>{
-          temp_supervisores.push({key: supervisor.key, nombre: supervisor.nombre});
-        });
-    }
-  });
-  return temp_supervisores;
-};
+const errores = reactive({
+  folio: { message: "", error: false },
+  tipoFolio: { message: "", error: false },
+  distrito: { message: "", error: false },
+  cluster: { message: "", error: false },
+  supervisor: { message: "", error: false },
+  tecnico: { message: "", error: false },
+  falla: { message: "", error: false },
+  causa: { message: "", error: false },
+  clientesAfectados: { message: "", error: false },
+});
 
-const llenarTecnicos = async () => {
-  let temp_tecnicos = [];
-  Object.entries(datosSelect.value.tecnicos).forEach(([key, tecnicosArray]) => {
-      if(key == infoFolioCaptuado.value.llave_supervisor){
-        Object.entries(tecnicosArray).forEach(([key, tecnico]) => {
-          temp_tecnicos.push({llave: key, nombre: tecnico})
-        });
-      }
-    });
-  return temp_tecnicos;
-};
+const oldValues = reactive({
+  folio: "",
+  tipoFolio: "",
+});
 
-const llenarClusters = async () => {
-  let temp_clusters = [];
-  datosSelect.value.distritos.forEach((element) => {
-    if (element.distrito == infoFolioCaptuado.value.distrito) {
-      element.clusters.forEach((elemento) => {
-        temp_clusters.push(elemento);
-      });
-    }
-  });
-  temp_clusters.sort();
-  return temp_clusters;
-};
+const infoData = reactive({
+  tipoFolios: [],
+  distritos: [],
+  fallas: [],
+  causas: [],
+  tecnicos: [],
+});
 
-const clusters = ref(await llenarClusters());
-const supervisores = ref(await llenarSupervisores());
-const tecnicos = ref(await llenarTecnicos());
+const infoDefault = reactive({
+  tipoFolio: "",
+  distrito: "",
+  falla: "",
+  causa: "",
+  clusters: "",
+  supervisores: "",
+  tecnicos: "",
+})
 
-watch(
-  () => infoFolioCaptuado.value.distrito,
-  () => {
-    clusters.value = [];
-    infoFolioCaptuado.value.cluster = "Selecciona un cluster";
-    supervisores.value = [];
-    infoFolioCaptuado.value.supervisor = "Selecciona un supervisor";
-    llenarClusters().then((respuesta)=>{
-      clusters.value = respuesta;
-    });
-    llenarSupervisores().then((respuesta)=>{
-      supervisores.value = respuesta;
-    });
-  }
-);
+const infoSelected = reactive({
+  folio: "",
+  tipoFolio: "",
+  distrito: "",
+  falla: "",
+  causa: "",
+  clusters: "",
+  supervisores: "",
+  tecnicos: "",
+  olt: "",
+  clientesAfectados: 0,
+});
 
-watch(
-  () => infoFolioCaptuado.value.supervisor,
-  () => {
-    tecnicos.value = [];
-    infoFolioCaptuado.value.tecnico = "Selecciona un técnico";
-    llenarTecnicos().then((respuesta)=>{
-      tecnicos.value = respuesta;
-    });
-  }
-);
-
-watch(
-  () => infoFolioCaptuado.value.tipoFolio,
-  () => {
-    validaciones(0);
-  }
-);
-
-const cambiarCorrectivo = () => {
-  router.push("/correctivo");
-};
-function closeModal() {
-  store.commit("cerrarModalEdicionCorrectivo");
-}
-const actualizarClientesAfectados = (clientesAfectados) => {
-  if (
-    clientesAfectados == "" ||
-    clientesAfectados == null ||
-    clientesAfectados < 0
-  ) {
-    infoFolioCaptuado.value.clientesAfectados = 1;
-  }
-};
-const llenarLlaveSupervisor = (llave) => {
-  infoFolioCaptuado.value.llave_supervisor = llave;
-}
-const llenarLlaveTecnico = (llave) => {
-  infoFolioCaptuado.value.llave_tecnico = llave;
-}
-const validaciones = async (validacion, seleccion) => {
-  let respuesta = false;
-  switch (validacion) {
-    case 0:
-      errores.value.folio = "";
-      if(infoFolioCaptuado.value.folio != props.folio){
-        if(infoFolioCaptuado.value.folio == ''){
-          infoFolioCaptuado.value.folio = props.folio;
-        }else{
-          errores.value.folio = await validacionFolio(
-            infoFolioCaptuado.value.folio,
-            infoFolioCaptuado.value.tipoFolio,
-            props.incidencia
-          );
+const fetchData = async () => {
+  await get(catalogoRef).then((snapshot) => {
+    snapshot.forEach((element) => {
+      // tipo de folios
+      if (element.key === "tipoFolios") {
+        for (let data in element.val().correctivo) {
+          infoData.tipoFolios.push({
+            name: data,
+            ...element.val().correctivo[data],
+          });
         }
       }
+      // distritos
+      if (element.key === "distritos") {
+        for (let data in element.val()) {
+          infoData.distritos.push({ name: data, ...element.val()[data] });
+        }
+      }
+      // fallas
+      if (element.key === "fallas") {
+        for (let data in element.val()) {
+          infoData.fallas.push({ name: data, ...element.val()[data] });
+        }
+      }
+      //Causas
+      if (element.key === "causas") {
+        for (let data in element.val()) {
+          infoData.causas.push({ name: data, ...element.val()[data] });
+        }
+      }
+      //Closter
+    });
+  });
 
-      if (errores.value.folio == "") {
-        mostrarBoton.value[0] = true;
-      } else if (errores.value.folio == "Folio existente, favor de verificar" && infoFolioCaptuado.value.folio == props.folio){
-          errores.value.folio = '';
-          mostrarBoton.value[0] = true;
-      } else {
-        mostrarBoton.value[0] = false;
-      }
-      break;
-    case 1:
-      errores.value.olt = "";
-      if(infoFolioCaptuado.value.olt == ''){
-        infoFolioCaptuado.value.olt = olt.value;
-      }else{
-        errores.value.olt = validacionOLT(infoFolioCaptuado.value.olt);
-      }
-      if (errores.value.olt == "") {
-        mostrarBoton.value[1] = true;
-      } else if (errores.value.folio == "Folio existente, favor de verificar" && infoFolioCaptuado.value.folio == props.folio){
-          errores.value.folio = '';
-          mostrarBoton.value[1] = true;
-      }else{
-        mostrarBoton.value[1] = false;
-      }
-      break;
-  }
+  infoSelected.folio = props.folio;
+  infoDefault.tipoFolio = infoData.tipoFolios.filter(
+    (tipo) => tipo.name === props.infoData.tipoFolio
+  )[0];
+  infoDefault.distrito = infoData.distritos.filter((distrito) =>
+    distrito.name === props.infoData.distrito ? distrito.name : ""
+  )[0];
+  infoDefault.clusters = props.infoData.cluster;
+  infoDefault.supervisores =
+    infoDefault.distrito.supervisores[props.infoData.supervisor];
+  await obtenerTecnicos({ uid: props.infoData.supervisor });
+  infoDefault.tecnicos = infoData.tecnicos.filter(
+    (tecnico) => tecnico.uid === props.infoData.tecnico
+  )[0];
+  infoSelected.olt = props.infoData.olt;
+  infoDefault.falla = infoData.fallas.filter(
+    (falla) => falla.name === props.infoData.falla
+  )[0];
+  infoDefault.causa = infoData.causas.filter(
+    (causa) => causa.name === props.infoData.causa
+  )[0];
+  infoSelected.clientesAfectados = props.infoData.clientesAfectados;
+  Object.assign(oldValues, {
+    folio: props.folio,
+    tipoFolio: infoData.tipoFolios.filter(
+      (tipo) => tipo.name === props.infoData.tipoFolio
+    )[0],
+  });
 };
 
-const validacionTipoFolio = async (tipoFolio) => {
-  errores.value.folio = "";
-  infoFolioCaptuado.value.tipoFolio = tipoFolio;
-  errores.value.folio = await validacionFolio(
-    infoFolioCaptuado.value.folio,
-    infoFolioCaptuado.value.tipoFolio,
-    props.incidencia
+const obtenerTecnicos = async (event) => {
+  // infoSelected.supervisores = event;
+  infoData.tecnicos = [];
+  console.log("obtenerTecnicos", event);
+  await get(refDB(db, `catalogo/supervisores/${event.uid}`)).then(
+    (snapshot) => {
+      snapshot.forEach((element) => {
+        if (element.key === "tecnicos") {
+          for (let data in element.val()) {
+            infoData.tecnicos.push({
+              name: element.val()[data].nombre,
+              uid: data,
+            });
+          }
+        }
+      });
+    }
   );
-
-  if (errores.value.folio == "") {
-    mostrarBoton.value[0] = true;
-  } else if (errores.value.folio == "Folio existente, favor de verificar" && 
-            infoFolioCaptuado.value.tipoFolio == tipoFolioPrevio.value){
-    errores.value.folio = "";
-    mostrarBoton.value[0] = true;
-  }else{
-    mostrarBoton.value[0] = false;
-  }
 };
 
-const ocultarError = (numError) => {
-  if (numError == 0) {
-    errores.value.folio = '';
-  } else {
-    errores.value.olt = '';
-  }
-};
-const actualizarFolio = async () => {
-  // let llave;
-  // await eliminarFolioPrevio(props.folio, props.incidencia, props.tipoFolio);
-  // llave = await actualizarFolioBD(infoFolioCaptuado.value, props.incidencia);
-  // await infoCapturadaEditable(props.folio, props.incidencia, props.tipoFolio)
+await fetchData();
 
-  store.commit("cerrarModalEdicionCorrectivo");
-  let response = await limpiarValores();
-
-  emit('actualizarFolio', [infoFolioCaptuado.value]);
-};
-const limpiarValores = async() => {
-  errores.value.olt = '';
-  errores.value.folio = '';
-  mostrarBoton.value[0] = true;
-  mostrarBoton.value[1] = true;
-  return 'ok;'
+function closeModal() {
+  store.commit("cerrarModalEdicion");
 }
+
+const validarTipoFolio = async (event) => {
+  infoSelected.tipoFolio = event;
+};
+
+// Validar existencia del folio en la base de datos.
+const validarExistencia = async (value) => {
+  loading.value = true;
+  if (infoSelected.folio.length < 7) {
+    Object.assign(errores.folio, {
+      message: "El folio no puede ser menor a 7 digitos",
+      error: true,
+    });
+    loading.value = false;
+    return false;
+  }
+
+  if (infoSelected.folio && infoSelected.tipoFolio) {
+    let result = await folios.validarExistencia(
+      infoSelected.folio,
+      infoSelected.tipoFolio.name
+    );
+    if (result) {
+      Object.assign(errores.folio, {
+        message: "El folio ya existe",
+        error: true,
+      });
+      loading.value = false;
+      return false;
+    }
+  }
+  loading.value = false;
+  return Object.assign(errores.folio, {
+    message: "",
+    error: false,
+  });
+};
+
+watch(infoSelected, async () => {
+  if (
+    ((oldValues.folio != infoSelected.folio ||
+      oldValues.tipoFolio != infoSelected.tipoFolio) &&
+      infoSelected.folio != props.folio) ||
+    infoSelected.tipoFolio !=
+      infoData.tipoFolios.filter(
+        (tipo) => tipo.name === props.infoData.tipoFolio
+      )[0]
+  ) {
+    await validarExistencia();
+    oldValues.folio = infoSelected.folio;
+    oldValues.tipoFolio = infoSelected.tipoFolio;
+  }
+
+  // cambio de distrito
+  if (
+    infoSelected.distrito !=
+      infoData.distritos.filter((distrito) =>
+        distrito.name === props.infoData.distrito ? distrito.name : ""
+      )[0] &&
+    !update.distrito
+  ) {
+    console.log("Entró a borrar");
+    infoSelected.tecnicos = "";
+    infoSelected.clusters = "";
+    infoSelected.supervisores = "";
+    update.distrito = true;
+  } else if (
+    infoSelected.distrito ===
+      infoData.distritos.filter((distrito) =>
+        distrito.name === props.infoData.distrito ? distrito.name : ""
+      )[0] &&
+    update.distrito
+  ) {
+    console.log("Ya no estoy actualizando distrito");
+    infoSelected.tecnicos = "";
+    infoSelected.clusters = "";
+    infoSelected.supervisores = "";
+    update.distrito = false;
+  }
+  // AQUI ESTAMOS
+
+  if (
+    infoSelected.folio &&
+    !errores.folio.error &&
+    infoSelected.clusters &&
+    infoSelected.supervisores &&
+    infoSelected.distrito &&
+    infoSelected.tipoFolio &&
+    infoSelected.tecnicos &&
+    infoSelected.falla &&
+    infoSelected.causa &&
+    infoSelected.clientesAfectados > 0
+  ) {
+    buttonDisabled.value = false;
+  } else {
+    buttonDisabled.value = true;
+  }
+});
+
+const asignarSupervisor = async (event) => {
+  infoSelected.supervisores = event;
+  console.log("supervisores tecnicos", event);
+  await obtenerTecnicos({ uid: event.uid });
+};
+
+const submitCorrectivo = async () => {
+  loadingSubmit.value = true;
+  if (!infoSelected.folio || errores.folio.error) {
+    return;
+  }
+  await crearFolio(infoSelected)
+    .then((result) => {
+      loading.value = false;
+      store.commit("cerrarModalCorrectivo");
+      router.push({
+        name: "capturarCorrectivo",
+        params: { id: infoSelected.folio },
+      });
+    })
+    .catch((error) => {
+      loading.value = false;
+    });
+};
 </script>

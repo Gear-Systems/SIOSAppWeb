@@ -26,9 +26,9 @@ router.beforeEach((to, from) => {
   if (to.name == 'login' && localStorage.getItem("user") === "true") {
     return { path: "/dashboard" };
   }
-  if (to.name == 'capturarCorrectivo'  && to.params.control == undefined) {
-    return { path: "/capturar-folio" };
-  }
+  // if (to.name == 'capturarCorrectivo'  && to.params.control == undefined) {
+  //   return { path: "/capturar-folio" };
+  // }
 });
 
 onAuthStateChanged(auth, (user) => {

@@ -39,21 +39,29 @@
                   as="div"
                   class="mb-5 flex items-center text-lg font-medium leading-6 text-gray-900"
                 >
-                  <div v-if="props.permitirCierre" class="flex w-[100%] justify-end">
+                  <div
+                    v-if="props.permitirCierre"
+                    class="flex w-[100%] justify-end"
+                  >
                     <XCircleIcon
                       @click="setIsOpen(close)"
                       class="h-6 w-6 cursor-pointer"
                     />
                   </div>
                 </DialogTitle>
-                <div class="mt-4 flex flex-col w-full">
-                  <div class="flex flex-col w-full justify-center text-center self-center">
-                    Asignar folio al técnico o ¿Continuar capturando la
+                <div class="mt-4 flex w-full flex-col">
+                  <div
+                    class="flex w-full flex-col justify-center self-center text-center"
+                  >
+                    ¿Asignar folio al técnico o continuar la captura de
                     información?
                     <slot name="mensaje"></slot>
                   </div>
                   <div class="mt-8 flex justify-around">
-                    <div v-if="!props.botonCapturar" class="flex w-1/2 justify-center">
+                    <div
+                      v-if="!props.botonCapturar"
+                      class="flex w-1/2 justify-center"
+                    >
                       <button
                         type="button"
                         class="flex justify-center rounded-md border border-transparent bg-[#E5E5E5] px-4 py-2 text-sm font-medium text-black hover:bg-[#E9F0FC] hover:text-[#2166E5] focus-visible:ring-blue-500"
@@ -66,12 +74,15 @@
                       <button
                         type="button"
                         class="flex justify-center rounded-md border-2 border-[#E5E5E5] px-4 py-2 text-sm font-medium text-black hover:border-transparent hover:bg-[#E9F0FC] hover:text-[#2166E5] focus-visible:ring-blue-500"
-                        @click="asignacionFolio()"
+                        @click="asignarFolio"
                       >
                         Asignar
                       </button>
                     </div>
-                    <div v-if="props.botonCapturar" class="flex w-1/2 justify-center">
+                    <div
+                      v-if="props.botonCapturar"
+                      class="flex w-1/2 justify-center"
+                    >
                       <button
                         type="button"
                         class="flex justify-center rounded-md border border-transparent bg-[#E5E5E5] px-4 py-2 text-sm font-medium text-black hover:bg-[#E9F0FC] hover:text-[#2166E5] focus-visible:ring-blue-500"
@@ -80,7 +91,6 @@
                         Capturar
                       </button>
                     </div>
-                    
                   </div>
                 </div>
               </DialogPanel>
@@ -105,33 +115,38 @@ import {
   DialogTitle,
 } from "@headlessui/vue";
 import { store } from "@/store";
+import { functions } from "@/firebase/firebase";
+import { httpsCallable } from "firebase/functions";
 
-const i = ref(0);
-const router = useRouter();
-// const store = useStore();
 const storeVuex = useStore();
-const emit = defineEmits(["asignarFolio", "capturarFolio"]);
-const props = defineProps(["botonCapturar", "permitirCierre"]);
+const props = defineProps(["botonCapturar", "permitirCierre", "infoSelected"]);
 const isOpen = ref(store.state.a.modalManejoFolio);
+const asignarFolioFirebase = httpsCallable(functions, "asignarFolioPreventivo");
 
 function closeModal() {
   storeVuex.commit("cerrarModalManejoFolio");
 }
 
-const asignacionFolio = () => {
-    storeVuex.commit('cerrarModalManejoFolio');
-    emit('asignarFolio');
+const asignarFolio = async () => {
+  await asignarFolioFirebase(props.infoSelected)
+    .then((result) => {
+      console.log(result);
+      closeModal();
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 };
 
 const capturaFolio = () => {
-  storeVuex.commit('cerrarModalManejoFolio');
-  emit('capturarFolio');
+  storeVuex.commit("cerrarModalManejoFolio");
 };
 
 function setIsOpen(value) {
-  // console.log(value);
-  if(props.permitirCierre){
-    storeVuex.commit(value ? 'abrirModalManejoFolio' : 'cerrarModalManejoFolio');
+  if (props.permitirCierre) {
+    storeVuex.commit(
+      value ? "abrirModalManejoFolio" : "cerrarModalManejoFolio"
+    );
   }
 }
 </script>

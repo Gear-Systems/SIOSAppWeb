@@ -6,7 +6,7 @@ const controlEstados = {
         modalCorrectivo: false,
         modalPreventivo: false,
         modalManejoFolio: false,
-        modalEdicionFolioCorrectivo: false,
+        modalEdicionFolio: false,
         validandoHorario: [false, false, false],
         errores: {coordenadas: ''},
         mostrarJustificacion: [true, true, true],
@@ -36,11 +36,11 @@ const controlEstados = {
         cerrarModalManejoFolio(state){
             state.modalManejoFolio = false;
         },
-        abrirModalEdicionCorrectivo(state){
-            state.modalEdicionFolioCorrectivo = true;
+        abrirModalEdicion(state){
+            state.modalEdicionFolio = true;
         },
-        cerrarModalEdicionCorrectivo(state){
-            state.modalEdicionFolioCorrectivo = false;
+        cerrarModalEdicion(state){
+            state.modalEdicionFolio = false;
         },
         horarioFechaAceptada(state){
             state.validandoHorario[0] = true;
