@@ -69,14 +69,16 @@
               <div class="flex flex-col space-y-1">
                 <div class="flex w-[90%] select-none">
                   Tipo:
-                  <span class="pl-5 font-semibold">{{ infoData2.tipoFolio }}</span>
+                  <span class="pl-5 font-semibold">{{
+                    infoData2.tipoFolio
+                  }}</span>
                 </div>
                 <div class="flex w-[90%] flex-col">
                   <span class="select-none">Número de folio:</span>
                   <div
                     class="mt-2 flex w-[70%] items-center justify-center rounded-lg bg-[#F2F2F2] py-2 font-semibold tracking-wider"
                   >
-                    {{ infoData.folio }}
+                    {{ infoData2.folio }}
                   </div>
                 </div>
                 <Notas
@@ -131,9 +133,10 @@
           </Suspense>
           <Suspense>
             <ModalEdicionFolio
-              :folio="$route.params.id"
+              :folio="infoData2.folio"
               :incidencia="'correctivo'"
               :infoData="infoData2"
+              :folioKey="$route.params.id"
               @actualizarFolio="actualizarFolio"
             ></ModalEdicionFolio>
           </Suspense>
@@ -182,6 +185,7 @@ import {
 } from "@/consultasBD/guardarFolio.js";
 
 const infoData2 = reactive({
+  folio: "",
   tipoFolio: "",
   distrito: "",
   estatus: "",
@@ -193,11 +197,12 @@ const infoData2 = reactive({
   supervisor: "",
   tecnico: "",
   asignado: false,
-})
+});
 const router = useRouter();
 const route = useRoute();
 const functions = getFunctions();
 const storeVuex = useStore();
+
 const infoData = ref({
   folio: route.params.id,
   tipo: route.params.tipoFolio,
@@ -206,7 +211,7 @@ const infoData = ref({
 
 const fetchData = async () => {
   get(refDB(db, `folios/correctivos/${route.params.id}`)).then((snapshot) => {
-    Object.assign(infoData2, snapshot.val())
+    Object.assign(infoData2, snapshot.val());
   });
 };
 
@@ -244,7 +249,7 @@ const asignarFolioCloud = httpsCallable(functions, "asignarFolio");
 
 onMounted(() => {
   infoData.value.folio =
-    infoData.value.folio == undefined ? route.params.id : infoData.value.folio;
+    infoData.value.folio == undefined ? infoData2.folio : infoData.value.folio;
   infoData.value.tipo =
     infoData.value.tipo == undefined
       ? route.params.tipoFolio
@@ -278,8 +283,7 @@ const actualizarFolio = async (data) => {
     off(
       refDB(db, `folios/correctivos/${tipoFolio}/${llave}`),
       "child_changed",
-      (snapshot) => {
-      }
+      (snapshot) => {}
     );
 
     infoData.value.folio = data[0].folio;

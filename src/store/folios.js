@@ -10,11 +10,13 @@ export const useFolios = defineStore({
       return new Promise(async (resolve, reject) => {
         await get(child(refDB(db), "folios"))
           .then((snapshot) => {
+            console.log(snapshot.val(), snapshot.key);
             snapshot.forEach((e) => {
+              
               e.forEach((folios) => {
                 if (
                   folios.val().tipoFolio === tipoFolio &&
-                  folios.key === folio
+                  folios.val().folio === folio
                 ) {
                   resolve(true);
                 }

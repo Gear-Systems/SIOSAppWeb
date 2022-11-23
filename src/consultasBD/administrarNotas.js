@@ -2,7 +2,7 @@ import { getDatabase, ref as refDB, child, update, set, push, remove } from "@fi
 
 export const guardarNuevaNota = async (folio, incidencia, tipoFolio,  msg, color_lateral, color_nuevo) => {
   const db = getDatabase();
-  const notasRef = refDB(db, `folios/` + (incidencia == 1 ? `preventivos` : `correctivos`) + `/${tipoFolio}/${folio}/notas`);
+  const notasRef = refDB(db, `folios/` + (incidencia == 1 ? `preventivos` : `correctivos`) + `/${folio}/notas`);
   const nuevaNotaRef = push(notasRef);
 
     update(nuevaNotaRef, {
@@ -18,7 +18,7 @@ export const actualizarNota = async (folio, incidencia, tipoFolio, msg, lateral_
       update(
         child(
           refDB(db),
-          (`folios/` + (incidencia == 1 ? `preventivos` : `correctivos`) + `/${tipoFolio}/${folio}/notas/${id_mensaje}`)
+          (`folios/` + (incidencia == 1 ? `preventivos` : `correctivos`) + `/${folio}/notas/${id_mensaje}`)
         ),
         {
           texto: msg,
@@ -34,7 +34,7 @@ export const actualizarNota = async (folio, incidencia, tipoFolio, msg, lateral_
       set(
         child(
           refDB(db),
-          (`folios/` + (incidencia == 1 ? `preventivos` : `correctivos`) + `/${tipoFolio}/${folio}/notas/${id_nota}`)
+          (`folios/` + (incidencia == 1 ? `preventivos` : `correctivos`) + `/${folio}/notas/${id_nota}`)
         ),
         (null)
       )

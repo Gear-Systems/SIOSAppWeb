@@ -462,7 +462,6 @@ watch(infoSelected, async () => {
 
 const submitPreventivo = async () => {
   loadingSubmit.value = true;
-  console.log(buttonDisabled.value);
   if (!infoSelected.folio || errores.folio.error) {
     return;
   }

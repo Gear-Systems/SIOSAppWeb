@@ -476,9 +476,10 @@ const submitCorrectivo = async () => {
   }
   await crearFolio(infoSelected)
     .then((result) => {
+      console.log(result);
       loading.value = false;
       store.commit("cerrarModalCorrectivo");
-      router.push({ name: "capturarCorrectivo", params:{ id: infoSelected.folio } });
+      router.push({ name: "capturarCorrectivo", params:{ id: result.data } });
     })
     .catch((error) => {
       loading.value = false;
