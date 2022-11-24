@@ -6,6 +6,8 @@
         :incidencia="props.incidencia"
         :folio="props.folio"
         :tipoFolio="props.tipoFolio"
+        :fechaInicioBD="props.data.horaInicio.fechaScript"
+        :horaInicioBD="props.data.horaInicio.hora"
         @validarFecha="validarFecha"
         @validarHora="validarHora"
         @validarMinuto="validarMinuto"
@@ -53,11 +55,11 @@
         <ExclamationCircleIcon class="ml-2 h-4 w-4 text-red-400" />
       </div>
     </div>
-    <div class="flex items-center h-full">
-        <ChevronRightIcon
-          @click="cambiarEstado()"
-          class="h-12 w-12 cursor-pointer rounded-full bg-[#D9D9D9] p-1.5"
-        />
+    <div class="flex h-full items-center">
+      <ChevronRightIcon
+        @click="cambiarEstado()"
+        class="h-12 w-12 cursor-pointer rounded-full bg-primario p-1.5 text-white"
+      />
     </div>
   </div>
 </template>
@@ -66,7 +68,14 @@
 import { ref } from "vue";
 import { getAuth, signOut } from "firebase/auth";
 import { useRouter, useRoute } from "vue-router";
-import { getDatabase, ref as refDB, get, set, child, update } from "@firebase/database";
+import {
+  getDatabase,
+  ref as refDB,
+  get,
+  set,
+  child,
+  update,
+} from "@firebase/database";
 import Horario from "@/views/Preventivo/Horario.vue";
 import { TransitionRoot } from "@headlessui/vue";
 import { ChevronRightIcon, ExclamationCircleIcon } from "@heroicons/vue/solid";
@@ -78,7 +87,13 @@ const router = useRouter();
 const db = getDatabase();
 const route = useRoute();
 const storeVuex = useStore();
-const props = defineProps(["incidencia", "folio", "estado", "tipoFolio"]);
+const props = defineProps([
+  "incidencia",
+  "folio",
+  "estado",
+  "tipoFolio",
+  "data",
+]);
 
 const fecha = ref();
 const hora = ref();
@@ -98,8 +113,8 @@ const validarFecha = async (data) => {
       validacionHorario.value[2]
     ) {
       error.value = false;
-    }else{
-    //   error.value = true;
+    } else {
+      //   error.value = true;
     }
   }
 };
@@ -114,8 +129,8 @@ const validarHora = async (data) => {
       validacionHorario.value[2]
     ) {
       error.value = false;
-    }else{
-    //   error.value = true;
+    } else {
+      //   error.value = true;
     }
   }
 };
@@ -131,19 +146,20 @@ const validarMinuto = async (data) => {
       validacionHorario.value[2]
     ) {
       error.value = false;
-    }else{
-    //   error.value = true;
+    } else {
+      //   error.value = true;
     }
   }
 };
 
 const cambiarEstado = async () => {
-  if (fecha.value && hora.value && minuto.value) {
+  console.log(fecha.value , hora.value , minuto.value)
+  if ((fecha.value && hora.value && minuto.value) || (props.data.horaInicio.fechaScript && props.data.horaInicio.fechaScript)) {
     if (props.incidencia == 1) {
       // console.log('si');
       error.value = await actualizarEstado(1, 2);
     } else if (props.incidencia == 2) {
-        storeVuex.commit("abrirModalManejoFolio");
+      storeVuex.commit("abrirModalManejoFolio");
     }
   } else {
     error.value = true;
@@ -154,18 +170,24 @@ const cambiarEstado = async () => {
     // return false;
   }
 };
-const actualizarEstado = async (actualizacion_estatus, actualizacion_estado) => {
+const actualizarEstado = async (
+  actualizacion_estatus,
+  actualizacion_estado
+) => {
   limpiarArreglosHorario();
   let response;
   // console.log(props.folio)
   response = await update(
-      child(
-      refDB(db), `folios/` + (props.incidencia == 1 ? `preventivos` : `correctivos`) + `/${props.folio}`
-      ), 
-      {
-          estatus: actualizacion_estatus,
-          estado: actualizacion_estado
-      }
+    child(
+      refDB(db),
+      `folios/` +
+        (props.incidencia == 1 ? `preventivos` : `correctivos`) +
+        `/${props.folio}`
+    ),
+    {
+      estatus: actualizacion_estatus,
+      estado: actualizacion_estado,
+    }
   );
   return response;
 };
@@ -176,5 +198,5 @@ const limpiarArreglosHorario = () => {
   arrayActiveMinuto.forEach((value, index) => {
     arrayActiveMinuto[index] = "";
   });
-}
+};
 </script>

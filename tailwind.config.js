@@ -13,6 +13,8 @@ module.exports = {
         'primario': '#2166E5',
         'secundario': '#E9F0FC',
         'azul-marino': '#101D2D',
+        'hover': '#E9F0FC',
+        'tipografia': "#7C8495",
       },
       transitionDuration: {
         '0': '0ms',
@@ -20,6 +22,7 @@ module.exports = {
       },
       boxShadow: {
         'customized': '0 2px 10px 2px rgba(0, 0, 0, 0.05)',
+        'box': '0 2px 10px 2px rgba(0, 0, 0, 0.09)',
         // 'costomized': 'inset 0 -5px 85px -47px rgba(0, 0, 0, 1)',
       },
       keyframes: {

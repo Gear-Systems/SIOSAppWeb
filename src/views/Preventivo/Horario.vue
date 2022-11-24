@@ -8,64 +8,17 @@
             <h1 class="select-none font-semibold">Fecha</h1>
           </div>
         </div>
-        <div
-          class="flex w-[90%] items-center justify-around rounded-lg py-4 shadow-customized"
-        >
-          <div
-            class="flex select-none flex-col items-center justify-center pl-2"
-          >
-            <input
-              v-model="horarioCaptura.dia"
-              class="flex w-[52px] rounded-lg border-transparent bg-[#F2F2F2] text-center text-xl font-semibold"
-              type="text"
-              disabled
-            />
-            <div
-              class="flex select-none items-center justify-center self-center text-center"
-            >
-              Día
-            </div>
-          </div>
-          <div
-            class="mb-5 flex select-none items-center justify-center text-xl font-bold text-gris-claro"
-          >
-            /
-          </div>
-          <div class="flex select-none flex-col items-center justify-center">
-            <input
-              v-model="horarioCaptura.mes"
-              class="flex w-[61px] rounded-lg border-transparent bg-[#F2F2F2] text-center text-xl font-semibold"
-              type="text"
-              disabled
-            />
-            <div class="flex w-[100%] select-none items-center justify-center">
-              Mes
-            </div>
-          </div>
-          <div
-            class="mb-5 flex select-none items-center justify-center text-xl font-bold text-gris-claro"
-          >
-            /
-          </div>
-          <div class="flex w-20 select-none flex-col">
-            <input
-              v-model="horarioCaptura.anio"
-              class="flex w-20 rounded-lg border-transparent bg-[#F2F2F2] text-center text-xl font-semibold"
-              type="text"
-              disabled
-            />
-            <div class="flex select-none items-center justify-center">Año</div>
-          </div>
-
+        <div class="flex w-[90%] items-center justify-around rounded-lg py-4">
+          <!-- AQUI -->
           <div class="flex self-start pt-[2%]">
             <Popover v-slot="{ close }" class="relative z-[200]">
               <PopoverButton
-                class="group inline-flex items-center rounded-md bg-transparent px-3 py-2 text-base font-medium text-black"
+                class="group inline-flex items-center rounded-md bg-transparent bg-[#90B3F2] p-2 text-base font-medium text-white"
               >
                 <CalendarIcon class="h-6 w-6 self-center" />
               </PopoverButton>
               <PopoverPanel
-                class="w-cover absolute z-10 max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl"
+                class="w-cover absolute z-[9999] max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl"
               >
                 <div
                   class="w-[250px] rounded-lg bg-white shadow-lg shadow-black/5 ring-1 ring-black ring-opacity-5"
@@ -91,6 +44,57 @@
               </PopoverPanel>
             </Popover>
           </div>
+          <div
+            class="flex select-none flex-col items-center justify-center pl-2"
+          >
+            <input
+              v-model="horarioCaptura.dia"
+              class="flex h-[56px] w-[56px] rounded-full border-transparent bg-hover text-center font-semibold"
+              type="text"
+              disabled
+            />
+            <div
+              class="mt-2 flex select-none items-center justify-center self-center text-center text-sm"
+            >
+              Día
+            </div>
+          </div>
+          <div
+            class="mb-5 flex select-none items-center justify-center text-xl font-bold text-gris-claro"
+          >
+            /
+          </div>
+          <div class="flex select-none flex-col items-center justify-center">
+            <input
+              v-model="horarioCaptura.mes"
+              class="flex h-[56px] w-[56px] rounded-full border-transparent bg-hover text-center font-semibold"
+              type="text"
+              disabled
+            />
+            <div
+              class="mt-2 flex select-none items-center justify-center self-center text-center text-sm"
+            >
+              Mes
+            </div>
+          </div>
+          <div
+            class="mb-5 flex select-none items-center justify-center text-xl font-bold text-gris-claro"
+          >
+            /
+          </div>
+          <div class="flex w-20 select-none flex-col">
+            <input
+              v-model="horarioCaptura.anio"
+              class="flex h-[56px] w-[56px] rounded-full border-transparent bg-hover text-center font-semibold"
+              type="text"
+              disabled
+            />
+            <div
+              class="mt-2 -ml-6 flex select-none items-center justify-center self-center text-center text-sm"
+            >
+              Año
+            </div>
+          </div>
         </div>
       </div>
       <!-- Fin Contenedor de fecha -->
@@ -101,38 +105,12 @@
             <h1 class="select-none font-semibold">Hora</h1>
           </div>
         </div>
-        <div
-          class="flex w-[90%] items-center justify-around rounded-lg py-4 shadow-customized"
-        >
-          <div
-            class="flex select-none flex-col items-center justify-center pl-2"
-          >
-            <input
-              v-model="horarioCaptura.hora"
-              class="flex w-[65px] rounded-lg border-transparent bg-[#F2F2F2] text-xl text-center font-semibold"
-              type="text"
-              disabled
-            />
-            <div class="flex items-center justify-center">Hora</div>
-          </div>
-          <div
-            class="mb-5 flex select-none items-center justify-center text-4xl font-bold text-gris-claro"
-          >
-            :
-          </div>
-          <div class="flex select-none flex-col">
-            <input
-              v-model="horarioCaptura.minuto"
-              class="flex w-[65px] rounded-lg border-transparent bg-[#F2F2F2] text-xl text-center font-semibold"
-              type="text"
-              disabled
-            />
-            <div class="flex items-center justify-center">Min</div>
-          </div>
-          <div class="flex select-none self-start pt-[2%] z-[999]">
+        <div class="flex w-[90%] items-center space-x-4 rounded-lg py-4">
+          <!-- AQUI -->
+          <div class="z-[999] flex select-none self-start pt-[2%]">
             <Popover v-slot="{ inputValue, open }" class="relative">
               <PopoverButton
-                class="group inline-flex items-center rounded-md bg-transparent px-3 py-2 text-base font-medium text-black"
+                class="group inline-flex items-center rounded-md bg-transparent bg-[#90B3F2] p-2 text-base font-medium text-white"
               >
                 <ClockIcon class="h-6 w-6 self-center" />
               </PopoverButton>
@@ -140,7 +118,7 @@
                 class="absolute -left-[150%] w-full max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl"
               >
                 <div
-                  class="z-[200] flex h-72 w-[120px] overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5"
+                  class="z-[200] flex h-72 w-[120px] rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5"
                 >
                   <div class="flex w-full flex-col">
                     <div class="flex h-[85%] w-full pt-4 pb-2">
@@ -216,8 +194,32 @@
               </PopoverPanel>
             </Popover>
           </div>
+          <div
+            class="flex select-none flex-col items-center justify-center pl-2"
+          >
+            <input
+              v-model="horarioCaptura.hora"
+              class="flex h-[56px] w-[56px] rounded-full border-transparent bg-hover text-center font-semibold"
+              type="text"
+              disabled
+            />
+            <div class="flex items-center justify-center">Hora</div>
+          </div>
+          <div
+            class="mb-5 flex select-none items-center justify-center text-4xl font-bold text-gris-claro"
+          >
+            :
+          </div>
+          <div class="flex select-none flex-col">
+            <input
+              v-model="horarioCaptura.minuto"
+              class="flex h-[56px] w-[56px] rounded-full border-transparent bg-hover text-center font-semibold"
+              type="text"
+              disabled
+            />
+            <div class="flex items-center justify-center">Min</div>
+          </div>
         </div>
-        
       </div>
       <!-- Fin contenedor de hora -->
     </div>
@@ -228,7 +230,14 @@
 import { ref, onMounted } from "vue";
 import { getAuth, signOut } from "firebase/auth";
 import { useRouter, useRoute } from "vue-router";
-import { getDatabase, ref as refDB, get, set, child } from "@firebase/database";
+import {
+  getDatabase,
+  ref as refDB,
+  get,
+  set,
+  child,
+  serverTimestamp,
+} from "@firebase/database";
 import { CalendarIcon, ClockIcon } from "@heroicons/vue/outline";
 import { SetupCalendar, Calendar, DatePicker } from "v-calendar";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
@@ -243,21 +252,28 @@ import {
 } from "@/consultasBD/guardarHorario";
 import { useStore } from "vuex";
 
-
 const auth = getAuth();
 const router = useRouter();
 const db = getDatabase();
 const route = useRoute();
 const store = useStore();
-const props = defineProps(["state", "incidencia", "folio", "tipoFolio"]);
+// const props = defineProps(["state", "incidencia", "folio", "tipoFolio", "fechaInicioBD"]);
+const props = defineProps({
+  state: Number,
+  incidencia: Number,
+  folio: String,
+  tipoFolio: String,
+  fechaInicioBD: String,
+  horaInicioBD: String,
+});
 
 // store.commit('cerrarModalCorrectivo');
 const horario = ref(new Date());
-const emit = defineEmits(['validarFecha', 'validarHora', 'validarMinuto']);
+const emit = defineEmits(["validarFecha", "validarHora", "validarMinuto"]);
 const horarioCaptura = ref({
   dia: "dd",
   mes: "mm",
-  anio: "yyyy",
+  anio: "yy",
   hora: "HH",
   minuto: "MM",
 });
@@ -269,17 +285,37 @@ const horaMinuto = ref({
 onMounted(() => {
   horaMinuto.value.hora = arrayActiveHora;
   horaMinuto.value.minuto = arrayActiveMinuto;
+  console.log(props.horaInicioBD)
+  if (props.fechaInicioBD) {
+    horarioCaptura.value.dia = props.fechaInicioBD.split("/")[0];
+    horarioCaptura.value.mes = props.fechaInicioBD.split("/")[1];
+    horarioCaptura.value.anio = props.fechaInicioBD.split("/")[2];
+  }
+  if (props.horaInicioBD) {
+    horarioCaptura.value.hora = props.horaInicioBD.split(":")[0]
+    horarioCaptura.value.minuto = props.horaInicioBD.split(":")[1]
+  }
 });
 
 const imprimir = () => {
-  if (horario.value === null || horario.value === undefined || horario.value == '') {
+  if (
+    horario.value === null ||
+    horario.value === undefined ||
+    horario.value == ""
+  ) {
     horario.value = new Date();
   }
-    if(horarioCaptura.value.dia != (horario.value.getDate() < 10 ? ('0' + horario.value.getDate().toString()) : horario.value.getDate().toString())
-    || horarioCaptura.value.mes != (horario.value.getMonth() + 1 < 10 ? ('0' + horario.value.getMonth().toString()) : horario.value.getMonth().toString())
-    || horarioCaptura.value.anio != horario.value.getFullYear() < 10
-  ){
-    
+  if (
+    horarioCaptura.value.dia !=
+      (horario.value.getDate() < 10
+        ? "0" + horario.value.getDate().toString()
+        : horario.value.getDate().toString()) ||
+    horarioCaptura.value.mes !=
+      (horario.value.getMonth() + 1 < 10
+        ? "0" + horario.value.getMonth().toString()
+        : horario.value.getMonth().toString()) ||
+    horarioCaptura.value.anio != horario.value.getFullYear() < 10
+  ) {
     horarioCaptura.value.dia =
       horario.value.getDate() < 10
         ? "0" + horario.value.getDate().toString()
@@ -289,12 +325,21 @@ const imprimir = () => {
         ? "0" + (horario.value.getMonth() + 1).toString()
         : (horario.value.getMonth() + 1).toString();
     horarioCaptura.value.anio = horario.value.getFullYear().toString();
+    horarioCaptura.value.anio = horarioCaptura.value.anio.substr(-2);
 
     switch (props.state) {
       case 1:
         guardarFechaInicio(
-          horarioCaptura.value.dia + "/" + horarioCaptura.value.mes + "/" + horarioCaptura.value.anio,
-          horarioCaptura.value.anio + "/" + horarioCaptura.value.mes + "/" + horarioCaptura.value.dia,
+          horarioCaptura.value.dia +
+            "/" +
+            horarioCaptura.value.mes +
+            "/" +
+            horarioCaptura.value.anio,
+          horarioCaptura.value.anio +
+            "/" +
+            horarioCaptura.value.mes +
+            "/" +
+            horarioCaptura.value.dia,
           props.folio,
           props.incidencia,
           props.tipoFolio
@@ -302,8 +347,16 @@ const imprimir = () => {
         break;
       case 2:
         guardarFechaLlegada(
-          horarioCaptura.value.dia + "/" + horarioCaptura.value.mes + "/" + horarioCaptura.value.anio,
-          horarioCaptura.value.anio + "/" + horarioCaptura.value.mes + "/" + horarioCaptura.value.dia,
+          horarioCaptura.value.dia +
+            "/" +
+            horarioCaptura.value.mes +
+            "/" +
+            horarioCaptura.value.anio,
+          horarioCaptura.value.anio +
+            "/" +
+            horarioCaptura.value.mes +
+            "/" +
+            horarioCaptura.value.dia,
           props.folio,
           props.incidencia,
           props.tipoFolio
@@ -312,8 +365,16 @@ const imprimir = () => {
       case 3:
         store.commit("asignarMuestraJustificacion", 0);
         guardarFechaActivacion(
-          horarioCaptura.value.dia + "/" + horarioCaptura.value.mes + "/" + horarioCaptura.value.anio,
-          horarioCaptura.value.anio + "/" + horarioCaptura.value.mes + "/" + horarioCaptura.value.dia,
+          horarioCaptura.value.dia +
+            "/" +
+            horarioCaptura.value.mes +
+            "/" +
+            horarioCaptura.value.anio,
+          horarioCaptura.value.anio +
+            "/" +
+            horarioCaptura.value.mes +
+            "/" +
+            horarioCaptura.value.dia,
           props.folio,
           props.incidencia,
           props.tipoFolio
@@ -321,7 +382,13 @@ const imprimir = () => {
         break;
     }
   }
-  emit('validarFecha', [horarioCaptura.value.dia, props.folio, props.incidencia, props.tipoFolio, props.state]);
+  emit("validarFecha", [
+    horarioCaptura.value.dia,
+    props.folio,
+    props.incidencia,
+    props.tipoFolio,
+    props.state,
+  ]);
 };
 
 const guardarHora = (hr) => {
@@ -366,7 +433,13 @@ const guardarHora = (hr) => {
       );
       break;
   }
-  emit('validarHora', [horarioCaptura.value.hora, props.folio, props.incidencia, props.tipoFolio, props.state])
+  emit("validarHora", [
+    horarioCaptura.value.hora,
+    props.folio,
+    props.incidencia,
+    props.tipoFolio,
+    props.state,
+  ]);
 };
 
 const guardarMinuto = (min) => {
@@ -412,10 +485,20 @@ const guardarMinuto = (min) => {
       );
       break;
   }
-  emit('validarMinuto', [horarioCaptura.value.minuto, props.folio, props.incidencia, props.tipoFolio, props.state])
+  emit("validarMinuto", [
+    horarioCaptura.value.minuto,
+    props.folio,
+    props.incidencia,
+    props.tipoFolio,
+    props.state,
+  ]);
 };
 const obtenerFechaActual = (close) => {
-  if(horarioCaptura.value.dia == 'dd' || horarioCaptura.value.mes == 'mm' || horarioCaptura.value.anio == 'yyyy'){
+  if (
+    horarioCaptura.value.dia == "dd" ||
+    horarioCaptura.value.mes == "mm" ||
+    horarioCaptura.value.anio == "yyyy"
+  ) {
     imprimir();
   }
   close();

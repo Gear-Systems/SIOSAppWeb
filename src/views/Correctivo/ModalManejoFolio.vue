@@ -121,21 +121,22 @@ import { httpsCallable } from "firebase/functions";
 const storeVuex = useStore();
 const props = defineProps(["botonCapturar", "permitirCierre", "infoSelected"]);
 const isOpen = ref(store.state.a.modalManejoFolio);
-const asignarFolioFirebase = httpsCallable(functions, "asignarFolioPreventivo");
-
+// const asignarFolioFirebase = httpsCallable(functions, "asignarFolioPreventivo");
+const emits = defineEmits("asignarFolio", "capturarFolio");
 function closeModal() {
   storeVuex.commit("cerrarModalManejoFolio");
 }
 
 const asignarFolio = async () => {
-  await asignarFolioFirebase(props.infoSelected)
-    .then((result) => {
-      console.log(result);
-      closeModal();
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  // await asignarFolioFirebase(props.infoSelected)
+  //   .then((result) => {
+  //     console.log(result);
+  //     closeModal();
+  //   })
+  //   .catch((error) => {
+  //     console.log(error);
+  //   });
+  emits("asignarFolio");
 };
 
 const capturaFolio = () => {

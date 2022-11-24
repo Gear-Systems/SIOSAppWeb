@@ -385,6 +385,8 @@ await fetchData();
 
 const obtenerTecnicos = (event) => {
   infoSelected.supervisores = event;
+  infoSelected.tecnicos = [];
+  infoData.tecnicos = [];
   get(refDB(db, `catalogo/supervisores/${event.uid}`)).then((snapshot) => {
     snapshot.forEach((element) => {
       if (element.key === "tecnicos") {

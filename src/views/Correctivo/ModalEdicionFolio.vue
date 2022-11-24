@@ -47,9 +47,9 @@
                       @click="restablecer()"
                       :class="[
                         'flex text-sm',
-                        buttonDisabled ? 'text-gray-400' : '',
+                        !actualizando ? 'text-gray-400' : '',
                       ]"
-                      :disabled="buttonDisabled"
+                      :disabled="!actualizando"
                     >
                       <RefreshIcon
                         class="mr-2 h-5 w-5"
@@ -788,8 +788,8 @@
                       :class="[
                         'flex min-w-[150px] justify-center rounded-md border border-transparent bg-primario px-4 py-2 text-sm   font-medium focus-visible:ring-blue-500',
                         buttonDisabled
-                          ? 'cursor-not-allowed bg-gray-300'
-                          : 'text-white hover:bg-primario/80',
+                          ? 'cursor-not-allowed bg-primario/60 text-white'
+                          : 'bg-primario text-white hover:bg-primario/80',
                         loadingSubmit ? 'bg-primario/80' : '',
                       ]"
                       @click="actualizarFolio()"
@@ -853,6 +853,7 @@ import { CheckIcon, SelectorIcon } from "@heroicons/vue/solid";
 
 const props = defineProps(["folio", "incidencia", "infoData", "folioKey"]);
 const restableciendo = ref(false);
+const actualizando = ref(false);
 const router = useRouter();
 const folios = useFolios();
 const actualizarFolioFirebase = httpsCallable(
@@ -1128,49 +1129,68 @@ watch(
   }
 );
 
-watch(
-  () => infoSelected.folio,
-  (value) => {
-    if (
-      value &&
-      infoSelected.tipoFolio &&
-      value != props.folio &&
-      infoSelected.tipoFolio != props.infoData.tipoFolio
-    ) {
-      validarExistencia();
-    }
-  }
-);
+// watch(
+//   () => infoSelected.folio,
+//   async (value) => {
+//     if (
+//       value &&
+//       infoSelected.tipoFolio &&
+// value != props.folio &&
+// infoSelected.tipoFolio != props.infoData.tipoFolio
+//     ) {
+//      await validarExistencia();
+//     }
+//   }
+// );
 
-watch(
-  () => infoSelected.tipoFolio,
-  (value) => {
-    if (
-      value &&
-      infoSelected.folio &&
-      value != props.infoData.tipoFolio &&
-      infoSelected.folio != props.folio
-    ) {
-      validarExistencia();
-    }
-  }
-);
+// watch(
+//   () => infoSelected.tipoFolio,
+//   (value) => {
+//     if (
+//       value &&
+//       infoSelected.folio &&
+//       value != props.infoData.tipoFolio &&
+//       infoSelected.folio != props.folio
+//     ) {
+//       validarExistencia();
+//     }
+//   }
+// );
 
-watch(infoSelected, (value) => {
-  console.log(value, props.infoData.tipoFolio);
+watch(infoSelected, async (value) => {
+  console.log(errores.folio.error);
   if (
-    (infoSelected.folio != props.folio ||
-      infoSelected.tipoFolio.name != props.infoData.tipoFolio ||
-      infoSelected.distrito.name != props.infoData.distrito ||
-      infoSelected.clusters != props.infoData.cluster ||
-      infoSelected.supervisores.uid != props.infoData.supervisor ||
-      infoSelected.tecnicos.uid != props.infoData.tecnico ||
-      infoSelected.olt != props.infoData.olt ||
-      infoSelected.falla.name != props.infoData.falla ||
-      infoSelected.causa.name != props.infoData.causa ||
-      infoSelected.clientesAfectados != props.infoData.clientesAfectados) &&
-    !errores.folio.error
+    infoSelected.folio != props.folio &&
+    infoSelected.tipoFolio != props.infoData.tipoFolio &&
+    (oldValues.folio != infoSelected.folio ||
+      oldValues.tipoFolio != infoSelected.tipoFolio)
   ) {
+    await validarExistencia();
+    oldValues.folio = infoSelected.folio;
+    oldValues.tipoFolio = infoSelected.tipoFolio;
+  } else {
+    errores.folio.error = false;
+    errores.folio.message = "";
+  }
+  // Comprobar si el folio se está actualizando
+  if (
+    infoSelected.folio != props.folio ||
+    infoSelected.tipoFolio.name != props.infoData.tipoFolio ||
+    infoSelected.distrito.name != props.infoData.distrito ||
+    infoSelected.clusters != props.infoData.cluster ||
+    infoSelected.supervisores.uid != props.infoData.supervisor ||
+    infoSelected.tecnicos.uid != props.infoData.tecnico ||
+    infoSelected.olt != props.infoData.olt ||
+    infoSelected.falla.name != props.infoData.falla ||
+    infoSelected.causa.name != props.infoData.causa ||
+    infoSelected.clientesAfectados != props.infoData.clientesAfectados
+  ) {
+    actualizando.value = true;
+  } else {
+    actualizando.value = false;
+  }
+  // Si el folio se está actualizando y no tiene errores activar botón
+  if (actualizando.value && !errores.folio.error) {
     buttonDisabled.value = false;
   } else {
     buttonDisabled.value = true;
