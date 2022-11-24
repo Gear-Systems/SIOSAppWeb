@@ -46,7 +46,7 @@ export const routes = [
     path: "/configuraciones",
     name: "Configuraciones",
     component: Configuraciones,
-    meta: { title: "Configuraciones", authorization: true },
+    meta: { title: "", authorization: true },
   },
   {
     path: "/about",
