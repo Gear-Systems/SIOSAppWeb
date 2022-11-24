@@ -8,7 +8,7 @@
       <div
         class="flex h-14 w-14 items-center justify-center rounded-full bg-azul-marino"
       >
-        <img src="img/user_ico.svg" width="25" />
+        <img src="https://firebasestorage.googleapis.com/v0/b/siosapp-335118.appspot.com/o/resource%2Ficons%2Fsvg%2Fsidebar%2Fusuario.svg?alt=media&token=e8deb6f4-06f3-4d0b-a903-0c1863c09f37" width="25" />
       </div>
       <TransitionRoot
         :show="$store.state.a.openSidebar"
