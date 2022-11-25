@@ -1,5 +1,6 @@
 import { getDatabase, ref as refDB, get, set, child } from "@firebase/database";
 import { guardarEta, guardarSla } from "./guardarTiempos";
+import moment from "moment";
 
 export const concentradoMaterialConcepto = () => {
   const db = getDatabase();
@@ -66,32 +67,36 @@ export const concentradoMaterialConcepto = () => {
   return concentradoMatConcept;
 };
 
-export const calculoEta = async (folio, incidencia, tipoFolio) => {
+export const calculoEta = async (folio, incidencia, horaInicio, horaLlegada) => {
   const db = getDatabase();
   let calculo = {
     tiempo: "--:--",
     color: ''
   };
+  let fecha1 = moment(horaInicio);
+  let fecha2 = moment(horaLlegada);
+
+  let eta = new Date(fecha2.diff(fecha1));
 
  
-    let llegada = {};
-    let inicio = {};
+    // let llegada = {};
+    // let inicio = {};
 
-    llegada = await obtenerHoraLlegada(db, folio, incidencia, tipoFolio);
-    inicio = await obtenerHoraInicio(db, folio, incidencia, tipoFolio);
+    // llegada = await obtenerHoraLlegada(db, folio, incidencia, tipoFolio);
+    // inicio = await obtenerHoraInicio(db, folio, incidencia, tipoFolio);
 
-    let diferencia = llegada.newDate.getTime() - inicio.newDate.getTime();
-    let minutos = 0;
+    // let diferencia = llegada.newDate.getTime() - inicio.newDate.getTime();
+    // let minutos = 0;
 
-    while (diferencia >= 60000) {
-        minutos = minutos + 1;
-        diferencia = diferencia - 60000;
-    }
-    calculo.tiempo = '00:' + (minutos < 10 ? "0" + minutos.toString() : minutos.toString());
-    calculo.color = minutos > 30 ? 'border-red-400' : '';
+    // while (diferencia >= 60000) {
+    //     minutos = minutos + 1;
+    //     diferencia = diferencia - 60000;
+    // }
+    // calculo.tiempo = '00:' + (minutos < 10 ? "0" + minutos.toString() : minutos.toString());
+    // calculo.color = minutos > 30 ? 'border-red-400' : '';
 
-  guardarEta(folio, calculo.tiempo, incidencia, tipoFolio);
-  return calculo;
+  guardarEta(folio, eta, incidencia);
+  return eta;
 };
 
 export const calculoSla = async (folio, incidencia, tipoFolio, tiempoMuerto) => {

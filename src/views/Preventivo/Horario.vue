@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-6 flex h-auto w-[100%] pl-2 z-50">
+  <div class="z-50 mt-6 flex h-auto w-[100%] pl-2">
     <div class="flex w-[100%] self-start">
       <!-- Contenedor de fecha -->
       <div class="flex w-1/2 flex-col">
@@ -21,7 +21,7 @@
                 class="w-cover absolute max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl"
               >
                 <div
-                  class="w-[250px]  rounded-lg bg-white shadow-lg shadow-black/5 ring-1 ring-black ring-opacity-5"
+                  class="w-[250px] rounded-lg bg-white shadow-lg shadow-black/5 ring-1 ring-black ring-opacity-5"
                 >
                   <div class="flex">
                     <DatePicker
@@ -48,7 +48,7 @@
             class="flex select-none flex-col items-center justify-center pl-2"
           >
             <input
-              v-model="horarioCaptura.dia"
+              :value="horario.getDate()"
               class="flex h-[56px] w-[56px] rounded-full border-transparent bg-hover text-center font-semibold"
               type="text"
               disabled
@@ -66,7 +66,7 @@
           </div>
           <div class="flex select-none flex-col items-center justify-center">
             <input
-              v-model="horarioCaptura.mes"
+              :value="horario.getMonth() + 1"
               class="flex h-[56px] w-[56px] rounded-full border-transparent bg-hover text-center font-semibold"
               type="text"
               disabled
@@ -84,7 +84,7 @@
           </div>
           <div class="flex w-20 select-none flex-col">
             <input
-              v-model="horarioCaptura.anio"
+              :value="horario.getFullYear().toString().slice(-2)"
               class="flex h-[56px] w-[56px] rounded-full border-transparent bg-hover text-center font-semibold"
               type="text"
               disabled
@@ -107,7 +107,7 @@
         </div>
         <div class="flex w-[90%] items-center space-x-4 rounded-lg py-4">
           <!-- AQUI -->
-          <div class=" flex select-none self-start pt-[2%]">
+          <div class="flex select-none self-start pt-[2%]">
             <Popover v-slot="{ inputValue, open }" class="relative">
               <PopoverButton
                 class="group inline-flex items-center rounded-md bg-transparent bg-[#90B3F2] p-2 text-base font-medium text-white"
@@ -118,77 +118,16 @@
                 class="absolute -left-[150%] w-full max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl"
               >
                 <div
-                  class=" flex h-72 w-[120px] rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5"
+                  class="w-[250px] rounded-lg bg-white shadow-lg shadow-black/5 ring-1 ring-black ring-opacity-5"
                 >
-                  <div class="flex w-full flex-col">
-                    <div class="flex h-[85%] w-full pt-4 pb-2">
-                      <div
-                        class="sin-barra flex w-[50%] appearance-none flex-col items-center overflow-auto border-r-2 border-[#C4C4C4]/30"
-                      >
-                        <div
-                          class="mb-1 flex w-[60%] justify-center border-b-2 border-black font-bold"
-                        >
-                          H
-                        </div>
-                        <ul
-                          id="horas"
-                          class="z-[200] flex flex-col justify-start"
-                        >
-                          <li
-                            v-for="(hr, index) in 25"
-                            class="flex justify-center rounded-md px-3 hover:cursor-pointer hover:bg-blue-100"
-                            :class="
-                              horaMinuto.hora[index] != '' ? 'bg-blue-100' : ''
-                            "
-                            @click="guardarHora(index)"
-                          >
-                            {{
-                              index < 10
-                                ? "0" + index.toString()
-                                : index.toString()
-                            }}
-                          </li>
-                        </ul>
-                      </div>
-                      <div
-                        class="sin-barra flex w-[50%] appearance-none flex-col items-center overflow-y-auto"
-                      >
-                        <div
-                          class="mb-1 flex w-[60%] justify-center border-b-2 border-black font-bold"
-                        >
-                          M
-                        </div>
-                        <ul
-                          id="minutos"
-                          class="z-[200] flex flex-col justify-start"
-                        >
-                          <li
-                            v-for="(min, index) in 60"
-                            class="flex justify-center rounded-md px-3 hover:cursor-pointer hover:bg-blue-100"
-                            :class="
-                              horaMinuto.minuto[index] != ''
-                                ? 'bg-blue-100'
-                                : ''
-                            "
-                            @click="guardarMinuto(index)"
-                          >
-                            {{
-                              index < 10
-                                ? "0" + index.toString()
-                                : index.toString()
-                            }}
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div class="flex h-[15%] w-[100%] justify-center">
-                      <PopoverButton
-                        class="m-2 flex w-[80%] justify-center rounded-md bg-[#E9F0FC] py-0.5"
-                        @click="close()"
-                      >
-                        Aceptar
-                      </PopoverButton>
-                    </div>
+                  <div class="flex">
+                    <DatePicker
+                      style="border: #000000"
+                      mode="time"
+                      class="flex"
+                      v-model="horario"
+                      @change="imprimir()"
+                    />
                   </div>
                 </div>
               </PopoverPanel>
@@ -198,7 +137,7 @@
             class="flex select-none flex-col items-center justify-center pl-2"
           >
             <input
-              v-model="horarioCaptura.hora"
+              :value="horario.getHours()"
               class="flex h-[56px] w-[56px] rounded-full border-transparent bg-hover text-center font-semibold"
               type="text"
               disabled
@@ -212,7 +151,7 @@
           </div>
           <div class="flex select-none flex-col">
             <input
-              v-model="horarioCaptura.minuto"
+              :value="horario.getMinutes()"
               class="flex h-[56px] w-[56px] rounded-full border-transparent bg-hover text-center font-semibold"
               type="text"
               disabled
@@ -243,12 +182,9 @@ import { SetupCalendar, Calendar, DatePicker } from "v-calendar";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
 import { arrayActiveHora, arrayActiveMinuto } from "@/JS/arreglosHorario.js";
 import {
-  guardarHorarioInicio,
   guardarFechaInicio,
   guardarFechaLlegada,
-  guardarHorarioLlegada,
   guardarFechaActivacion,
-  guardarHorarioActivacion,
 } from "@/consultasBD/guardarHorario";
 import { useStore } from "vuex";
 
@@ -256,22 +192,19 @@ const auth = getAuth();
 const timestamps = reactive({
   fecha: "",
   hora: "",
-})
+});
 const router = useRouter();
 const db = getDatabase();
 const route = useRoute();
 const store = useStore();
-// const props = defineProps(["state", "incidencia", "folio", "tipoFolio", "fechaInicioBD"]);
 const props = defineProps({
   state: Number,
   incidencia: Number,
   folio: String,
   tipoFolio: String,
-  fechaInicioBD: String,
-  horaInicioBD: String,
+  fechaInicioBD: Number,
 });
 
-// store.commit('cerrarModalCorrectivo');
 const horario = ref(new Date());
 const emit = defineEmits(["validarFecha", "validarHora", "validarMinuto"]);
 const horarioCaptura = ref({
@@ -290,228 +223,26 @@ onMounted(() => {
   horaMinuto.value.hora = arrayActiveHora;
   horaMinuto.value.minuto = arrayActiveMinuto;
   if (props.fechaInicioBD) {
-    horarioCaptura.value.dia = props.fechaInicioBD.split("/")[0];
-    horarioCaptura.value.mes = props.fechaInicioBD.split("/")[1];
-    horarioCaptura.value.anio = props.fechaInicioBD.split("/")[2];
-  }
-  if (props.horaInicioBD) {
-    horarioCaptura.value.hora = props.horaInicioBD.split(":")[0]
-    horarioCaptura.value.minuto = props.horaInicioBD.split(":")[1]
+    horario.value = new Date(props.fechaInicioBD);
+  } else {
+    imprimir();
   }
 });
 
-const guardarTimestamp = () => {
-
-  if(horario.value && horarioCaptura.value.hora && horarioCaptura.value.minuto) {
-    let test = new Date(horario.value.getDate());
-    console.log(test)
-  }
-}
-
 const imprimir = () => {
-  guardarTimestamp();
-  if (
-    horario.value === null ||
-    horario.value === undefined ||
-    horario.value == ""
-  ) {
-    horario.value = new Date();
-  }
-  if (
-    horarioCaptura.value.dia !=
-      (horario.value.getDate() < 10
-        ? "0" + horario.value.getDate().toString()
-        : horario.value.getDate().toString()) ||
-    horarioCaptura.value.mes !=
-      (horario.value.getMonth() + 1 < 10
-        ? "0" + horario.value.getMonth().toString()
-        : horario.value.getMonth().toString()) ||
-    horarioCaptura.value.anio != horario.value.getFullYear() < 10
-  ) {
-    horarioCaptura.value.dia =
-      horario.value.getDate() < 10
-        ? "0" + horario.value.getDate().toString()
-        : horario.value.getDate().toString();
-    horarioCaptura.value.mes =
-      horario.value.getMonth() + 1 < 10
-        ? "0" + (horario.value.getMonth() + 1).toString()
-        : (horario.value.getMonth() + 1).toString();
-    horarioCaptura.value.anio = horario.value.getFullYear().toString();
-    horarioCaptura.value.anio = horarioCaptura.value.anio.substr(-2);
-
-    switch (props.state) {
-      case 1:
-        guardarFechaInicio(
-          horarioCaptura.value.dia +
-            "/" +
-            horarioCaptura.value.mes +
-            "/" +
-            horarioCaptura.value.anio,
-          horarioCaptura.value.anio +
-            "/" +
-            horarioCaptura.value.mes +
-            "/" +
-            horarioCaptura.value.dia,
-          props.folio,
-          props.incidencia,
-        );
-        break;
-      case 2:
-        guardarFechaLlegada(
-          horarioCaptura.value.dia +
-            "/" +
-            horarioCaptura.value.mes +
-            "/" +
-            horarioCaptura.value.anio,
-          horarioCaptura.value.anio +
-            "/" +
-            horarioCaptura.value.mes +
-            "/" +
-            horarioCaptura.value.dia,
-          props.folio,
-          props.incidencia,
-        );
-        break;
-      case 3:
-        store.commit("asignarMuestraJustificacion", 0);
-        guardarFechaActivacion(
-          horarioCaptura.value.dia +
-            "/" +
-            horarioCaptura.value.mes +
-            "/" +
-            horarioCaptura.value.anio,
-          horarioCaptura.value.anio +
-            "/" +
-            horarioCaptura.value.mes +
-            "/" +
-            horarioCaptura.value.dia,
-          props.folio,
-          props.incidencia,
-        );
-        break;
-    }
-  }
-  emit("validarFecha", [
-    horarioCaptura.value.dia,
-    props.folio,
-    props.incidencia,
-    props.tipoFolio,
-    props.state,
-    `${horarioCaptura.value.anio}/${horarioCaptura.value.mes}/${horarioCaptura.value.dia}`
-  ]);
-};
-
-const guardarHora = (hr) => {
-  horarioCaptura.value.hora = hr < 10 ? "0" + hr.toString() : hr.toString();
-  horaMinuto.value.hora.forEach((valor, index) => {
-    if (valor != "" && index != hr) {
-      horaMinuto.value.hora[index] = "";
-    } else if (index == hr) {
-      horaMinuto.value.hora[index] = "bg-blue-100";
-    }
-  });
+  console.log("cambiar horario");
   switch (props.state) {
     case 1:
-      guardarHorarioInicio(
-        horarioCaptura.value.hora.toString() +
-          ":" +
-          horarioCaptura.value.minuto.toString(),
-        props.folio,
-        props.incidencia,
-        props.tipoFolio
-      );
+      guardarFechaInicio(props.folio, props.incidencia, horario.value);
       break;
     case 2:
-      guardarHorarioLlegada(
-        horarioCaptura.value.hora.toString() +
-          ":" +
-          horarioCaptura.value.minuto.toString(),
-        props.folio,
-        props.incidencia,
-        props.tipoFolio
-      );
+      guardarFechaLlegada(props.folio, props.incidencia, horario.value);
       break;
     case 3:
-      store.commit("asignarMuestraJustificacion", 1);
-      guardarHorarioActivacion(
-        horarioCaptura.value.hora.toString() +
-          ":" +
-          horarioCaptura.value.minuto.toString(),
-        props.folio,
-        props.incidencia,
-        props.tipoFolio
-      );
+      store.commit("asignarMuestraJustificacion", 0);
+      guardarFechaActivacion(props.folio, props.incidencia, horario.value);
       break;
   }
-  emit("validarHora", [
-    horarioCaptura.value.hora,
-    props.folio,
-    props.incidencia,
-    props.tipoFolio,
-    props.state,
-  ]);
-};
-
-const guardarMinuto = (min) => {
-  horarioCaptura.value.minuto =
-    min < 10 ? "0" + min.toString() : min.toString();
-  horaMinuto.value.minuto.forEach((valor, index) => {
-    if (valor != "" && index != min) {
-      horaMinuto.value.minuto[index] = "";
-    } else if (index == min) {
-      horaMinuto.value.minuto[index] = "bg-blue-100";
-    }
-  });
-  switch (props.state) {
-    case 1:
-      guardarHorarioInicio(
-        horarioCaptura.value.hora.toString() +
-          ":" +
-          horarioCaptura.value.minuto.toString(),
-        props.folio,
-        props.incidencia,
-        props.tipoFolio
-      );
-      break;
-    case 2:
-      guardarHorarioLlegada(
-        horarioCaptura.value.hora.toString() +
-          ":" +
-          horarioCaptura.value.minuto.toString(),
-        props.folio,
-        props.incidencia,
-        props.tipoFolio
-      );
-      break;
-    case 3:
-      store.commit("asignarMuestraJustificacion", 2);
-      guardarHorarioActivacion(
-        horarioCaptura.value.hora.toString() +
-          ":" +
-          horarioCaptura.value.minuto.toString(),
-        props.folio,
-        props.incidencia,
-        props.tipoFolio
-      );
-      break;
-  }
-  emit("validarMinuto", [
-    horarioCaptura.value.minuto,
-    props.folio,
-    props.incidencia,
-    props.tipoFolio,
-    props.state,
-  ]);
-};
-const obtenerFechaActual = (close) => {
-  if (
-    horarioCaptura.value.dia == "dd" ||
-    horarioCaptura.value.mes == "mm" ||
-    horarioCaptura.value.anio == "yyyy"
-  ) {
-    imprimir();
-  }
-  close();
 };
 </script>
 

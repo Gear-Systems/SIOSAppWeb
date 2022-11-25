@@ -5,8 +5,8 @@
       :incidencia="props.incidencia"
       :folio="props.folio"
       :tipoFolio="props.tipoFolio"
-      :fechaInicioBD="props.data.horaActivacion.fechaScript"
-      :horaInicioBD="props.data.horaActivacion.hora"
+      :fechaInicioBD="props.data.horaActivacion"
+      :horaInicioBD="props.data.horaActivacion"
       @validarFecha="validarFecha"
       @validarHora="validarHora"
       @validarMinuto="validarMinuto"
@@ -195,7 +195,11 @@
                   : infoCapturada.eta.color
               "
             >
-              {{ infoCapturada.eta.tiempo }}
+              {{
+                moment(props.data.horaLlegada).diff(
+                  moment(props.data.horaInicio), 'minutes'
+                )
+              }}
             </div>
           </div>
           <div class="flex w-[30%] flex-col">
@@ -967,13 +971,21 @@ import Horario from "@/views/Preventivo/Horario.vue";
 import { store } from "@/store";
 import { guardarCierre } from "@/consultasBD/guardarCierre.js";
 import { useRouter, useRoute } from "vue-router";
+import moment from "moment";
 
 const storeVuex = useStore();
 const router = useRouter();
+const route = useRoute();
 const db = getDatabase();
 const storage = getStorage();
 
-const props = defineProps(["incidencia", "folio", "estado", "tipoFolio", "data"]);
+const props = defineProps([
+  "incidencia",
+  "folio",
+  "estado",
+  "tipoFolio",
+  "data",
+]);
 const isOpen = ref(false);
 const modalConfirmacion = ref(false);
 const errorCoord = ref(false);
@@ -983,7 +995,12 @@ const validacionHorario = ref([false, false, false]);
 const infoCapturada = ref({
   justificacion: "Selecciona una justificación",
   tiempoMuerto: store.state.a.tiempoMuerto,
-  eta: await calculoEta(props.folio, props.incidencia, props.tipoFolio), // ETA
+  eta: await calculoEta(
+    route.params.id,
+    props.incidencia,
+    props.data.horaInicio,
+    props.data.horaLlegada
+  ), // ETA
   // Calculo realizado mediante la resta de la hora de
   // llegada menos la hora de inicio
   sla: store.state.a.sla, //SLA

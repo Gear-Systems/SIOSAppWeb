@@ -6,8 +6,8 @@
         :incidencia="props.incidencia"
         :folio="props.folio"
         :tipoFolio="props.tipoFolio"
-        :fechaInicioBD="props.data.horaInicio.fechaScript"
-        :horaInicioBD="props.data.horaInicio.hora"
+        :fechaInicioBD="props.data.horaInicio"
+        :horaInicioBD="props.data.horaInicio"
         @validarFecha="validarFecha"
         @validarHora="validarHora"
         @validarMinuto="validarMinuto"
@@ -153,21 +153,11 @@ const validarMinuto = async (data) => {
 };
 
 const cambiarEstado = async () => {
-  console.log(fecha.value , hora.value , minuto.value)
-  if ((fecha.value && hora.value && minuto.value) || (props.data.horaInicio.fechaScript && props.data.horaInicio.fechaScript)) {
-    if (props.incidencia == 1) {
-      // console.log('si');
-      error.value = await actualizarEstado(1, 2);
-    } else if (props.incidencia == 2) {
-      storeVuex.commit("abrirModalManejoFolio");
-    }
-  } else {
-    error.value = true;
-    rebotar.value = "animate-[bounce_200ms_ease-in-out_infinite]";
-    setTimeout(() => {
-      rebotar.value = "";
-    }, 300);
-    // return false;
+  if (props.incidencia == 1) {
+    // console.log('si');
+    error.value = await actualizarEstado(1, 2);
+  } else if (props.incidencia == 2) {
+    storeVuex.commit("abrirModalManejoFolio");
   }
 };
 const actualizarEstado = async (

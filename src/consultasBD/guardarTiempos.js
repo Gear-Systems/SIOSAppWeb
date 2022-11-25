@@ -2,7 +2,7 @@ import { getDatabase, ref as refDB, get, set, child, update } from "@firebase/da
 
 export const guardarEta = (folio, eta, incidencia, tipoFolio) => {
     const db = getDatabase();
-    update(child(refDB(db), `folios/` + (incidencia == 1 ? `preventivos` : `correctivos`) + `/${tipoFolio}/${folio}`), {
+    update(child(refDB(db), `folios/` + (incidencia == 1 ? `preventivos` : `correctivos`) + `/${folio}`), {
       eta: eta,
     });
 };
