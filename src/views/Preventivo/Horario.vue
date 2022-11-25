@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-6 flex h-auto w-[100%] pl-2">
+  <div class="mt-6 flex h-auto w-[100%] pl-2 z-50">
     <div class="flex w-[100%] self-start">
       <!-- Contenedor de fecha -->
       <div class="flex w-1/2 flex-col">
@@ -11,17 +11,17 @@
         <div class="flex w-[90%] items-center justify-around rounded-lg py-4">
           <!-- AQUI -->
           <div class="flex self-start pt-[2%]">
-            <Popover v-slot="{ close }" class="relative z-[200]">
+            <Popover v-slot="{ close }" class="relative">
               <PopoverButton
                 class="group inline-flex items-center rounded-md bg-transparent bg-[#90B3F2] p-2 text-base font-medium text-white"
               >
                 <CalendarIcon class="h-6 w-6 self-center" />
               </PopoverButton>
               <PopoverPanel
-                class="w-cover absolute z-[9999] max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl"
+                class="w-cover absolute max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl"
               >
                 <div
-                  class="w-[250px] rounded-lg bg-white shadow-lg shadow-black/5 ring-1 ring-black ring-opacity-5"
+                  class="w-[250px]  rounded-lg bg-white shadow-lg shadow-black/5 ring-1 ring-black ring-opacity-5"
                 >
                   <div class="flex">
                     <DatePicker
@@ -107,7 +107,7 @@
         </div>
         <div class="flex w-[90%] items-center space-x-4 rounded-lg py-4">
           <!-- AQUI -->
-          <div class="z-[999] flex select-none self-start pt-[2%]">
+          <div class=" flex select-none self-start pt-[2%]">
             <Popover v-slot="{ inputValue, open }" class="relative">
               <PopoverButton
                 class="group inline-flex items-center rounded-md bg-transparent bg-[#90B3F2] p-2 text-base font-medium text-white"
@@ -118,7 +118,7 @@
                 class="absolute -left-[150%] w-full max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl"
               >
                 <div
-                  class="z-[200] flex h-72 w-[120px] rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5"
+                  class=" flex h-72 w-[120px] rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5"
                 >
                   <div class="flex w-full flex-col">
                     <div class="flex h-[85%] w-full pt-4 pb-2">
@@ -227,7 +227,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, reactive } from "vue";
 import { getAuth, signOut } from "firebase/auth";
 import { useRouter, useRoute } from "vue-router";
 import {
@@ -253,6 +253,10 @@ import {
 import { useStore } from "vuex";
 
 const auth = getAuth();
+const timestamps = reactive({
+  fecha: "",
+  hora: "",
+})
 const router = useRouter();
 const db = getDatabase();
 const route = useRoute();
@@ -285,7 +289,6 @@ const horaMinuto = ref({
 onMounted(() => {
   horaMinuto.value.hora = arrayActiveHora;
   horaMinuto.value.minuto = arrayActiveMinuto;
-  console.log(props.horaInicioBD)
   if (props.fechaInicioBD) {
     horarioCaptura.value.dia = props.fechaInicioBD.split("/")[0];
     horarioCaptura.value.mes = props.fechaInicioBD.split("/")[1];
@@ -297,7 +300,16 @@ onMounted(() => {
   }
 });
 
+const guardarTimestamp = () => {
+
+  if(horario.value && horarioCaptura.value.hora && horarioCaptura.value.minuto) {
+    let test = new Date(horario.value.getDate());
+    console.log(test)
+  }
+}
+
 const imprimir = () => {
+  guardarTimestamp();
   if (
     horario.value === null ||
     horario.value === undefined ||
@@ -342,7 +354,6 @@ const imprimir = () => {
             horarioCaptura.value.dia,
           props.folio,
           props.incidencia,
-          props.tipoFolio
         );
         break;
       case 2:
@@ -359,7 +370,6 @@ const imprimir = () => {
             horarioCaptura.value.dia,
           props.folio,
           props.incidencia,
-          props.tipoFolio
         );
         break;
       case 3:
@@ -377,7 +387,6 @@ const imprimir = () => {
             horarioCaptura.value.dia,
           props.folio,
           props.incidencia,
-          props.tipoFolio
         );
         break;
     }
@@ -388,6 +397,7 @@ const imprimir = () => {
     props.incidencia,
     props.tipoFolio,
     props.state,
+    `${horarioCaptura.value.anio}/${horarioCaptura.value.mes}/${horarioCaptura.value.dia}`
   ]);
 };
 

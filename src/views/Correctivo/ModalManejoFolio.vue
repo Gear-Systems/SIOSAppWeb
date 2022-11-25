@@ -140,7 +140,7 @@ const asignarFolio = async () => {
 };
 
 const capturaFolio = () => {
-  storeVuex.commit("cerrarModalManejoFolio");
+  emits("capturarFolio");
 };
 
 function setIsOpen(value) {

@@ -6,6 +6,8 @@
         :incidencia="props.incidencia"
         :folio="props.folio"
         :tipoFolio="props.tipoFolio"
+        :fechaInicioBD="props.data.horaLlegada.fechaScript"
+        :horaInicioBD="props.data.horaLlegada.hora"
         @validarFecha="validarFecha"
         @validarHora="validarHora"
         @validarMinuto="validarMinuto"
@@ -107,7 +109,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { getAuth, signOut } from "firebase/auth";
 import { useRouter, useRoute } from "vue-router";
 import { getDatabase, ref as refDB, get, set, child, update } from "@firebase/database";
@@ -119,6 +121,7 @@ import { validacionCoordenadas } from '@/validaciones/coordenadas.js';
 import { arrayActiveHora, arrayActiveMinuto } from "@/JS/arreglosHorario.js";
 import { useStore } from "vuex";
 import { store } from "@/store";
+import moment from 'moment';
 
 const auth = getAuth();
 const router = useRouter();
@@ -126,7 +129,7 @@ const db = getDatabase();
 const route = useRoute();
 const storeVuex = useStore();
 const storage = getStorage();
-const props = defineProps(["incidencia", "folio", "estado", "tipoFolio"]);
+const props = defineProps(["incidencia", "folio", "estado", "tipoFolio", "data"]);
 const emit = defineEmits(['validarCoordenadasReturn']);
 // storeVuex.commit('cerrarModalCorrectivo');
 
@@ -138,6 +141,7 @@ const minuto = ref();
 const error = ref(false);
 const rebotar = ref("");
 const validacionHorario = ref([false, false, false]);
+const fechaData = ref("");
 const coordenada = ref();
 const fotos = ref({
   antes: {
@@ -149,6 +153,10 @@ const fotos = ref({
     file64: null
   }
 });
+
+onMounted(() => {
+  coordenadas.value = (props.data.coordenadas).trim()
+})
 
 watch(
   () => fotos.value.antes.file,
@@ -168,6 +176,8 @@ watch(
 const validarFecha = async (data) => {
   if (data) {
     fecha.value = true;
+    console.log(data)
+    fechaData.value = data[5];
     validacionHorario.value[0] = true;
     if (
       validacionHorario.value[0] &&
@@ -216,7 +226,7 @@ const validarMinuto = async (data) => {
 };
 
 const validarCoordenadas = async () => {
-  errores.value.coordenadas = await validacionCoordenadas(props.folio, props.incidencia, props.tipoFolio, coordenadas.value);
+  errores.value.coordenadas = await validacionCoordenadas(route.params.id, props.incidencia, props.tipoFolio, coordenadas.value);
   store.commit('agregarErroresCoord', errores.value.coordenadas);
   if(store.state.a.errores.coordenadas == ''){
     coordenada.value = true;
@@ -257,25 +267,26 @@ const vaciarErrores = () => {
 
 const cambiarEstado = async () => {
   if (fecha.value && hora.value && minuto.value && coordenada.value && props.incidencia == 1 ? (fotos.value.antes.file && fotos.value.durante.file) : true) {
-      error.value = await actualizarEstado(2, 3);
-      //Almacenamiento en base de datos del nombre de la imágen "Antes"
-      //Almacenamiento en storage de la imágen "Antes"
+    await actualizarEstado()
+      // error.value = await actualizarEstado(2, 3);
+      // //Almacenamiento en base de datos del nombre de la imágen "Antes"
+      // //Almacenamiento en storage de la imágen "Antes"
 
-      await uploadBytes(refStorage(storage, `imagenes/preventivos/antes/${props.tipoFolio}/${props.folio}`), fotos.value.antes.file)
-      .then(async (snapshot) => {
-        await update(child(refDB(db), `folios/preventivos/${props.tipoFolio}/${props.folio}/fotos/antes`), {
-          nombre: fotos.value.antes.file.name,
-        });
-      });
-      //Almacenamiento en base de datos del nombre de la imágen "Durante"
-      //Almacenamiento en storage de la imágen "Durante"
-      await uploadBytes(refStorage(storage, `imagenes/preventivos/durante/${props.tipoFolio}/${props.folio}`), fotos.value.durante.file)
-      .then(async (snapshot) => {
-        await update(child(refDB(db), `folios/preventivos/${props.tipoFolio}/${props.folio}/fotos/durante`), {
-          nombre: fotos.value.durante.file.name,
-        });
-      });
-      limpiarValores();
+      // await uploadBytes(refStorage(storage, `imagenes/preventivos/antes/${props.tipoFolio}/${props.folio}`), fotos.value.antes.file)
+      // .then(async (snapshot) => {
+      //   await update(child(refDB(db), `folios/preventivos/${props.tipoFolio}/${props.folio}/fotos/antes`), {
+      //     nombre: fotos.value.antes.file.name,
+      //   });
+      // });
+      // //Almacenamiento en base de datos del nombre de la imágen "Durante"
+      // //Almacenamiento en storage de la imágen "Durante"
+      // await uploadBytes(refStorage(storage, `imagenes/preventivos/durante/${props.tipoFolio}/${props.folio}`), fotos.value.durante.file)
+      // .then(async (snapshot) => {
+      //   await update(child(refDB(db), `folios/preventivos/${props.tipoFolio}/${props.folio}/fotos/durante`), {
+      //     nombre: fotos.value.durante.file.name,
+      //   });
+      // });
+      // limpiarValores();
   } else {
     if (!fecha.value || !hora.value || !minuto.value) {
       error.value = true;
@@ -299,15 +310,31 @@ const cambiarEstado = async () => {
 };
 
 const actualizarEstado = async (actualizacion_estatus, actualizacion_estado) => {
-    await update(
-        child(
-        refDB(db), `folios/` + (props.incidencia == 1 ? `preventivos` : `correctivos`) + `/${props.tipoFolio}/${props.folio}`
-        ), 
-        {
-          estatus: actualizacion_estatus,
-          estado: actualizacion_estado
-        }
-    );
+    // await update(
+    //     child(
+    //     refDB(db), `folios/` + (props.incidencia == 1 ? `preventivos` : `correctivos`) + `/${props.tipoFolio}/${props.folio}`
+    //     ), 
+    //     {
+    //       estatus: actualizacion_estatus,
+    //       estado: actualizacion_estado
+    //     }
+    // );
+    // var fecha1 = moment(props.data.horaInicio.fechaSistema);
+    // var fecha2 = moment(fecha.value);
+    
+    console.log(props.data.horaInicio.fechaSistema, fechaData.value);
+    // await update(
+    //     child(
+    //     refDB(db), `folios/correctivos/${route.params.id}`
+    //     ), 
+    //     {
+    //       paso: 3,
+    //       estatus: "En proceso",
+    //       estatusId: 4,
+    //     }
+    // ).then(() => {
+    //   router.go(0);
+    // });
     return false;
 };
 

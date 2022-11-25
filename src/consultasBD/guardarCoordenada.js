@@ -6,10 +6,10 @@ export const guardarCoordenadas = async (folio, incidencia, tipoFolio, coordenad
     update(
       child(
         refDB(db),
-        `folios/` + (incidencia == 1 ?`preventivos` : `correctivos`) + `/${tipoFolio}/${folio}`
+        `folios/` + (incidencia == 1 ?`preventivos` : `correctivos`) + `/${folio}`
       ),
       {
-          coordenada: coordenadas,
+          coordenadas: coordenadas.trim(),
       }
     )
     .catch(function (err) {});

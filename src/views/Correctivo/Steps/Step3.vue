@@ -5,6 +5,8 @@
       :incidencia="props.incidencia"
       :folio="props.folio"
       :tipoFolio="props.tipoFolio"
+      :fechaInicioBD="props.data.horaActivacion.fechaScript"
+      :horaInicioBD="props.data.horaActivacion.hora"
       @validarFecha="validarFecha"
       @validarHora="validarHora"
       @validarMinuto="validarMinuto"
@@ -20,45 +22,84 @@
       <ExclamationCircleIcon class="ml-2 h-4 w-4 text-red-400" />
     </div>
     <div class="mb-3> mt-5 flex w-[100%]">
-      <div :class="props.incidencia == 1 ? 'flex flex-col w-[50%]' : 'hidden'" class="justify-center items-center">
+      <div
+        :class="props.incidencia == 1 ? 'flex w-[50%] flex-col' : 'hidden'"
+        class="items-center justify-center"
+      >
         <span class="mb-2 font-semibold">Foto después</span>
-        <div :class="errores.fotoDespues ? 'border-2 border-red-400' : ''" class="flex w-[50%] h-36 bg-gray-100 rounded-xl justify-center items-center">
-          <label v-if="!fotos.despues.file" for="foto-despues" class="flex justify-around w-full cursor-pointer">
-            <div @change="selectFileDespues" class="flex justify-around w-[65%] bg-gray-400 rounded-md py-1 px-4 text-white">
-              <input ref="file1" type="file" accept=".png,.jpg,.heic" class="file:border file:border-solid" id="foto-despues" hidden/>
-              <UploadIcon class="w-5 h-5 text-lg"></UploadIcon>
+        <div
+          :class="errores.fotoDespues ? 'border-2 border-red-400' : ''"
+          class="flex h-36 w-[50%] items-center justify-center rounded-xl bg-gray-100"
+        >
+          <label
+            v-if="!fotos.despues.file"
+            for="foto-despues"
+            class="flex w-full cursor-pointer justify-around"
+          >
+            <div
+              @change="selectFileDespues"
+              class="flex w-[65%] justify-around rounded-md bg-gray-400 py-1 px-4 text-white"
+            >
+              <input
+                ref="file1"
+                type="file"
+                accept=".png,.jpg,.heic"
+                class="file:border file:border-solid"
+                id="foto-despues"
+                hidden
+              />
+              <UploadIcon class="h-5 w-5 text-lg"></UploadIcon>
               <span>Subir</span>
             </div>
           </label>
-          <div v-else class="flex justify-around w-[80%] h-28">
-            <img :src="fotos.despues.file64" class="rounded-md">
+          <div v-else class="flex h-28 w-[80%] justify-around">
+            <img :src="fotos.despues.file64" class="rounded-md" />
           </div>
         </div>
-        <div v-if="fotos.despues.file"  class="flex w-[70%] items-center bg-gray-200 mt-2 py-2 rounded-md">
-          <div class="flex justify-between w-[100%] ml-1 text-sm truncate px-2" :title="fotos.despues.file.name">
+        <div
+          v-if="fotos.despues.file"
+          class="mt-2 flex w-[70%] items-center rounded-md bg-gray-200 py-2"
+        >
+          <div
+            class="ml-1 flex w-[100%] justify-between truncate px-2 text-sm"
+            :title="fotos.despues.file.name"
+          >
             {{ fotos.despues.file.name }}
-            <TrashIcon class="w-5 h-5 cursor-pointer mr-1" @click="eliminarImgDespues"></TrashIcon> 
+            <TrashIcon
+              class="mr-1 h-5 w-5 cursor-pointer"
+              @click="eliminarImgDespues"
+            ></TrashIcon>
           </div>
         </div>
       </div>
-      <div :class="props.incidencia == 1 ? 'flex flex-col w-[50%]' : 'flex w-[100%]'" class="flex w-[100%]">
-        <div :class="props.incidencia == 1 ? 'w-full' : 'w-[50%]'" class="flex flex-col">
-          <div class="flex pb-2 text-xs text-gris-claro">Justificación/pausa</div>
+      <div
+        :class="
+          props.incidencia == 1 ? 'flex w-[50%] flex-col' : 'flex w-[100%]'
+        "
+        class="flex w-[100%]"
+      >
+        <div
+          :class="props.incidencia == 1 ? 'w-full' : 'w-[50%]'"
+          class="flex flex-col"
+        >
+          <div class="flex pb-2 text-xs text-gris-claro">
+            Justificación/pausa
+          </div>
           <div class="flex w-[90%]">
             <Listbox
               v-model="infoCapturada.justificacion"
               name="justificacion"
               :disabled="
-                ( $store.state.a.mostrarJustificacion[0] ||
+                $store.state.a.mostrarJustificacion[0] ||
                 $store.state.a.mostrarJustificacion[1] ||
-                $store.state.a.mostrarJustificacion[2] )
+                $store.state.a.mostrarJustificacion[2]
                   ? true
                   : false
               "
             >
               <div class="relative mt-1 w-full">
                 <ListboxButton
-                  class="relative w-full cursor-default rounded-lg border-2 border-[#E5E5E5] bg-white py-2 pl-3 pr-10 text-left text-black hover:cursor-pointer focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
+                  class="relative w-full cursor-not-allowed rounded-lg border-2 border-[#E5E5E5] bg-white py-2 pl-3 pr-10 text-left text-black hover:cursor-pointer focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
                 >
                   <span
                     class="block truncate"
@@ -83,7 +124,7 @@
                   leave-to-class="opacity-0"
                 >
                   <ListboxOptions
-                    class="absolute z-20 mt-1 ml-1 max-h-40 w-[100%] overflow-auto rounded-md bg-white py-1 text-base shadow-customized ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+                    class="absolute mt-1 ml-1 max-h-40 w-[100%] overflow-auto rounded-md bg-white py-1 text-base shadow-customized ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
                   >
                     <ListboxOption
                       v-slot="{ active, selected }"
@@ -120,7 +161,10 @@
             </Listbox>
           </div>
         </div>
-        <div :class="props.incidencia == 1 ? 'w-full' : 'w-[50%]'" class="flex mt-4">
+        <div
+          :class="props.incidencia == 1 ? 'w-full' : 'w-[50%]'"
+          class="mt-4 flex"
+        >
           <!-- v-if="infoCapturada.justificacion != 'Selecciona una justificación'"  -->
           <div class="flex w-[40%] flex-col">
             <div class="flex pb-1 text-xs text-gris-claro">Tiempo muerto</div>
@@ -887,8 +931,8 @@ import {
   SelectorIcon,
   PencilAltIcon,
   PlusSmIcon,
-  ExclamationIcon, 
-  ExclamationCircleIcon
+  ExclamationIcon,
+  ExclamationCircleIcon,
 } from "@heroicons/vue/solid";
 import { XCircleIcon, UploadIcon, TrashIcon } from "@heroicons/vue/outline";
 import {
@@ -908,21 +952,28 @@ import {
   guardarTiempoMuerto,
 } from "@/consultasBD/guardarTiempos.js";
 import { useStore } from "vuex";
-import { getDatabase, ref as refDB, get, set, child, update } from "@firebase/database";
+import {
+  getDatabase,
+  ref as refDB,
+  get,
+  set,
+  child,
+  update,
+} from "@firebase/database";
 import { getStorage, ref as refStorage, uploadBytes } from "firebase/storage";
 import { validacionCoordenadasCab24 } from "@/validaciones/coordenadas.js";
 import { arrayActiveHora, arrayActiveMinuto } from "@/JS/arreglosHorario.js";
 import Horario from "@/views/Preventivo/Horario.vue";
 import { store } from "@/store";
 import { guardarCierre } from "@/consultasBD/guardarCierre.js";
-import { useRouter, useRoute } from 'vue-router';
+import { useRouter, useRoute } from "vue-router";
 
 const storeVuex = useStore();
 const router = useRouter();
 const db = getDatabase();
 const storage = getStorage();
 
-const props = defineProps(["incidencia", "folio", "estado", "tipoFolio"]);
+const props = defineProps(["incidencia", "folio", "estado", "tipoFolio", "data"]);
 const isOpen = ref(false);
 const modalConfirmacion = ref(false);
 const errorCoord = ref(false);
@@ -977,8 +1028,8 @@ const infoCapturada = ref({
 const fotos = ref({
   despues: {
     file: null,
-    file64: null
-  }
+    file64: null,
+  },
 });
 
 const errores = ref({
@@ -1007,7 +1058,7 @@ concentradoDatos.value.justificaciones.sort();
 watch(
   () => fotos.value.despues.file,
   () => {
-    errores.value.fotoDespues = fotos.value.despues.file ? false : true; 
+    errores.value.fotoDespues = fotos.value.despues.file ? false : true;
     // console.log(fotos.value.antes.file ? 'existe foto' : 'no hay foto subida');
   }
 );
@@ -1088,10 +1139,15 @@ const validarFecha = async (data) => {
       validacionHorario.value[2]
     ) {
       error.value = false;
-      let sla = await calculoSla(props.folio, props.incidencia, props.tipoFolio, store.state.a.tiempoMuerto);
+      let sla = await calculoSla(
+        props.folio,
+        props.incidencia,
+        props.tipoFolio,
+        store.state.a.tiempoMuerto
+      );
       console.log(sla);
-      storeVuex.commit("asignarSla", sla); 
-      error.value =  await actualizarEstatus(3);
+      storeVuex.commit("asignarSla", sla);
+      error.value = await actualizarEstatus(3);
     }
   }
 };
@@ -1106,11 +1162,16 @@ const validarHora = async (data) => {
       validacionHorario.value[2]
     ) {
       error.value = false;
-      let sla = await calculoSla(props.folio, props.incidencia, props.tipoFolio, store.state.a.tiempoMuerto);
+      let sla = await calculoSla(
+        props.folio,
+        props.incidencia,
+        props.tipoFolio,
+        store.state.a.tiempoMuerto
+      );
       // console.log(sla);
       storeVuex.commit("asignarSla", sla);
-      error.value = await actualizarEstatus(3);  
-    }else{
+      error.value = await actualizarEstatus(3);
+    } else {
       // error.value = true;
     }
   }
@@ -1126,34 +1187,42 @@ const validarMinuto = async (data) => {
       validacionHorario.value[2]
     ) {
       error.value = false;
-      let sla = await calculoSla(props.folio, props.incidencia, props.tipoFolio, store.state.a.tiempoMuerto);
+      let sla = await calculoSla(
+        props.folio,
+        props.incidencia,
+        props.tipoFolio,
+        store.state.a.tiempoMuerto
+      );
       console.log(sla);
       storeVuex.commit("asignarSla", sla);
-      error.value = await actualizarEstatus(3);  
-    }else{
+      error.value = await actualizarEstatus(3);
+    } else {
       // error.value = true;
     }
   }
 };
 
 const actualizarEstatus = async (actualizacion_estatus) => {
-    await update(
-        child(
-        refDB(db), `folios/` + (props.incidencia == 1 ? `preventivos` : `correctivos`) + `/${props.tipoFolio}/${props.folio}`
-        ), 
-        {
-          estatus: actualizacion_estatus,
-        }
-    );
-    return false;
+  await update(
+    child(
+      refDB(db),
+      `folios/` +
+        (props.incidencia == 1 ? `preventivos` : `correctivos`) +
+        `/${props.tipoFolio}/${props.folio}`
+    ),
+    {
+      estatus: actualizacion_estatus,
+    }
+  );
+  return false;
 };
 const selectFileDespues = async (e) => {
   fotos.value.despues.file = e.target.files[0];
   let reader = new FileReader();
   reader.readAsDataURL(fotos.value.despues.file);
-  reader.onload = (event) =>{
+  reader.onload = (event) => {
     fotos.value.despues.file64 = reader.result;
-  }
+  };
   // fotos.value.despues.file64 = URL.createObjectURL(fotos.value.despues.file64)
 };
 const eliminarImgDespues = () => {
@@ -1362,30 +1431,43 @@ const validaryEnviarInfo = async () => {
     errores.value.ttp = true;
     errores.value.miscelaneo = true;
   }
-  if(!fotos.value.despues.file){
+  if (!fotos.value.despues.file) {
     errores.value.fotoDespues = true;
-  }else{
-    await uploadBytes(refStorage(storage, `imagenes/preventivos/despues/${props.tipoFolio}/${props.folio}`), fotos.value.despues.file)
-      .then(async (snapshot) => {
-        await update(child(refDB(db), `folios/preventivos/${props.tipoFolio}/${props.folio}/fotos/despues`), {
+  } else {
+    await uploadBytes(
+      refStorage(
+        storage,
+        `imagenes/preventivos/despues/${props.tipoFolio}/${props.folio}`
+      ),
+      fotos.value.despues.file
+    ).then(async (snapshot) => {
+      await update(
+        child(
+          refDB(db),
+          `folios/preventivos/${props.tipoFolio}/${props.folio}/fotos/despues`
+        ),
+        {
           nombre: fotos.value.despues.file.name,
-        });
-      });
+        }
+      );
+    });
   }
 
   if (
-      validacionHorario.value[0] &&
-      validacionHorario.value[1] &&
-      validacionHorario.value[2]
-    ) {
-      error.value = false;
-    }else{
-      error.value = true;
-    }
+    validacionHorario.value[0] &&
+    validacionHorario.value[1] &&
+    validacionHorario.value[2]
+  ) {
+    error.value = false;
+  } else {
+    error.value = true;
+  }
 
   let calculoBooleano =
-    (((errores.value.miscelaneo && errores.value.ttp) && error.value) || 
-    errores.value.potencia) || mostrarErrorCoordenadas.value || errores.value.fotoDespues;
+    (errores.value.miscelaneo && errores.value.ttp && error.value) ||
+    errores.value.potencia ||
+    mostrarErrorCoordenadas.value ||
+    errores.value.fotoDespues;
 
   if (calculoBooleano) {
     let cerrado = await closeModalConfirmacion();
@@ -1395,8 +1477,14 @@ const validaryEnviarInfo = async () => {
     }, 300);
   } else {
     let siguiente = false;
-    siguiente = await guardarCierre(props.estado, props.incidencia, props.folio, props.tipoFolio, infoCapturada.value);
-    storeVuex.commit('cerrarModalManejoFolio');
+    siguiente = await guardarCierre(
+      props.estado,
+      props.incidencia,
+      props.folio,
+      props.tipoFolio,
+      infoCapturada.value
+    );
+    storeVuex.commit("cerrarModalManejoFolio");
     router.push("/capturar-folio");
     limpiarValores();
   }
@@ -1413,12 +1501,12 @@ const limpiarValores = () => {
   hora.value = null;
   minuto.value = null;
   error.value = false;
-  rebotar.value = '';
+  rebotar.value = "";
   validacionHorario.value = [false, false, false];
 
   // --> Limpiar la muestra de justificacion con el commit
   // --> Limpiar la SLA con el commit
-  store.commit('limpiarJustificacion');
-  store.commit('limpiarSLA');
+  store.commit("limpiarJustificacion");
+  store.commit("limpiarSLA");
 };
 </script>

@@ -165,7 +165,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import {
   guardarNuevaNota,
@@ -185,7 +185,7 @@ import {
   PopoverPanel,
 } from "@headlessui/vue";
 
-const props = defineProps(["folio", "incidencia", "tipoFolio"]);
+const props = defineProps(["folio", "incidencia", "tipoFolio", "notasData"]);
 const notas = ref([]);
 const modalNotas = ref(false);
 const creacion = ref(true);
@@ -280,4 +280,15 @@ const abrirModalNotas = (indice) => {
 function closeModal() {
   modalNotas.value = false;
 }
+
+onMounted(() => {
+  for (let nota in props.notasData) {
+    notas.value.push({
+      llave: nota,
+      texto: props.notasData[nota].texto,
+      color_lateral: props.notasData[nota].colorLateral,
+      color: props.notasData[nota].color,
+    });
+  }
+});
 </script>
