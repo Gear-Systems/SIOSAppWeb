@@ -1,13 +1,13 @@
 <template>
-  <div class="flex w-full flex-col">
+  <div class="flex w-full  overflow-auto flex-col">
     <Horario
       :state="props.estado"
       :incidencia="props.incidencia"
       :folio="props.folio"
       :tipoFolio="props.tipoFolio"
-      @validarFecha="validarFecha"
-      @validarHora="validarHora"
-      @validarMinuto="validarMinuto"
+      :fechaInicioBD="props.data.horaActivacion"
+      :horaInicioBD="props.data.horaActivacion"
+      @guardarFecha="guardarFechaFunc"
     ></Horario>
     <div
       v-if="error"
@@ -20,45 +20,84 @@
       <ExclamationCircleIcon class="ml-2 h-4 w-4 text-red-400" />
     </div>
     <div class="mb-3> mt-5 flex w-[100%]">
-      <div :class="props.incidencia == 1 ? 'flex flex-col w-[50%]' : 'hidden'" class="justify-center items-center">
+      <div
+        :class="props.incidencia == 1 ? 'flex w-[50%] flex-col' : 'hidden'"
+        class="items-center justify-center"
+      >
         <span class="mb-2 font-semibold">Foto después</span>
-        <div :class="errores.fotoDespues ? 'border-2 border-red-400' : ''" class="flex w-[50%] h-36 bg-gray-100 rounded-xl justify-center items-center">
-          <label v-if="!fotos.despues.file" for="foto-despues" class="flex justify-around w-full cursor-pointer">
-            <div @change="selectFileDespues" class="flex justify-around w-[65%] bg-gray-400 rounded-md py-1 px-4 text-white">
-              <input ref="file1" type="file" accept=".png,.jpg,.heic" class="file:border file:border-solid" id="foto-despues" hidden/>
-              <UploadIcon class="w-5 h-5 text-lg"></UploadIcon>
+        <div
+          :class="errores.fotoDespues ? 'border-2 border-red-400' : ''"
+          class="flex h-36 w-[50%] items-center justify-center rounded-xl bg-gray-100"
+        >
+          <label
+            v-if="!fotos.despues.file"
+            for="foto-despues"
+            class="flex w-full cursor-pointer justify-around"
+          >
+            <div
+              @change="selectFileDespues"
+              class="flex w-[65%] justify-around rounded-md bg-gray-400 py-1 px-4 text-white"
+            >
+              <input
+                ref="file1"
+                type="file"
+                accept=".png,.jpg,.heic"
+                class="file:border file:border-solid"
+                id="foto-despues"
+                hidden
+              />
+              <UploadIcon class="h-5 w-5 text-lg"></UploadIcon>
               <span>Subir</span>
             </div>
           </label>
-          <div v-else class="flex justify-around w-[80%] h-28">
-            <img :src="fotos.despues.file64" class="rounded-md">
+          <div v-else class="flex h-28 w-[80%] justify-around">
+            <img :src="fotos.despues.file64" class="rounded-md" />
           </div>
         </div>
-        <div v-if="fotos.despues.file"  class="flex w-[70%] items-center bg-gray-200 mt-2 py-2 rounded-md">
-          <div class="flex justify-between w-[100%] ml-1 text-sm truncate px-2" :title="fotos.despues.file.name">
+        <div
+          v-if="fotos.despues.file"
+          class="mt-2 flex w-[70%] items-center rounded-md bg-gray-200 py-2"
+        >
+          <div
+            class="ml-1 flex w-[100%] justify-between truncate px-2 text-sm"
+            :title="fotos.despues.file.name"
+          >
             {{ fotos.despues.file.name }}
-            <TrashIcon class="w-5 h-5 cursor-pointer mr-1" @click="eliminarImgDespues"></TrashIcon> 
+            <TrashIcon
+              class="mr-1 h-5 w-5 cursor-pointer"
+              @click="eliminarImgDespues"
+            ></TrashIcon>
           </div>
         </div>
       </div>
-      <div :class="props.incidencia == 1 ? 'flex flex-col w-[50%]' : 'flex w-[100%]'" class="flex w-[100%]">
-        <div :class="props.incidencia == 1 ? 'w-full' : 'w-[50%]'" class="flex flex-col">
-          <div class="flex pb-2 text-xs text-gris-claro">Justificación/pausa</div>
+      <div
+        :class="
+          props.incidencia == 1 ? 'flex w-[50%] flex-col' : 'flex w-[100%]'
+        "
+        class="flex w-[100%]"
+      >
+        <div
+          :class="props.incidencia == 1 ? 'w-full' : 'w-[50%]'"
+          class="flex flex-col"
+        >
+          <div class="flex pb-2 text-xs text-gris-claro">
+            Justificación/pausa
+          </div>
           <div class="flex w-[90%]">
             <Listbox
               v-model="infoCapturada.justificacion"
               name="justificacion"
               :disabled="
-                ( $store.state.a.mostrarJustificacion[0] ||
+                $store.state.a.mostrarJustificacion[0] ||
                 $store.state.a.mostrarJustificacion[1] ||
-                $store.state.a.mostrarJustificacion[2] )
+                $store.state.a.mostrarJustificacion[2]
                   ? true
                   : false
               "
             >
               <div class="relative mt-1 w-full">
                 <ListboxButton
-                  class="relative w-full cursor-default rounded-lg border-2 border-[#E5E5E5] bg-white py-2 pl-3 pr-10 text-left text-black hover:cursor-pointer focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
+                  class="relative w-full cursor-not-allowed rounded-lg border-2 border-[#E5E5E5] bg-white py-2 pl-3 pr-10 text-left text-black hover:cursor-pointer focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
                 >
                   <span
                     class="block truncate"
@@ -83,7 +122,7 @@
                   leave-to-class="opacity-0"
                 >
                   <ListboxOptions
-                    class="absolute z-20 mt-1 ml-1 max-h-40 w-[100%] overflow-auto rounded-md bg-white py-1 text-base shadow-customized ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+                    class="absolute mt-1 ml-1 max-h-40 w-[100%] overflow-auto rounded-md bg-white py-1 text-base shadow-customized ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
                   >
                     <ListboxOption
                       v-slot="{ active, selected }"
@@ -120,7 +159,10 @@
             </Listbox>
           </div>
         </div>
-        <div :class="props.incidencia == 1 ? 'w-full' : 'w-[50%]'" class="flex mt-4">
+        <div
+          :class="props.incidencia == 1 ? 'w-full' : 'w-[50%]'"
+          class="mt-4 flex"
+        >
           <!-- v-if="infoCapturada.justificacion != 'Selecciona una justificación'"  -->
           <div class="flex w-[40%] flex-col">
             <div class="flex pb-1 text-xs text-gris-claro">Tiempo muerto</div>
@@ -151,7 +193,12 @@
                   : infoCapturada.eta.color
               "
             >
-              {{ infoCapturada.eta.tiempo }}
+              {{
+                moment(props.data.horaLlegada).diff(
+                  moment(props.data.horaInicio),
+                  "minutes"
+                )
+              }}
             </div>
           </div>
           <div class="flex w-[30%] flex-col">
@@ -164,7 +211,7 @@
                   : infoCapturada.sla.color
               "
             >
-              {{ infoCapturada.sla.tiempo }}
+              {{ sla }}
             </div>
           </div>
         </div>
@@ -174,7 +221,7 @@
       <div class="flex w-[95%] border-b-2 border-gris-claro/30"></div>
     </div>
     <div class="flex w-[100%] flex-col font-semibold">
-      Herramientas Técnico
+      Potenciales
       <div class="mt-4 flex w-[100%] font-normal text-gris-claro">
         <div class="flex w-2/4 flex-col">
           <div class="flex w-full">
@@ -182,8 +229,6 @@
               Potencia inicial
               <input
                 v-model="infoCapturada.potenciaInicial"
-                @keypress="isNumberOrNegative($event, 0)"
-                @change="quitarNegativos(0)"
                 class="mt-2 h-9 w-[85%] rounded-lg border-2 border-gris-claro text-black"
                 type="number"
                 name="potenciaInicial"
@@ -196,8 +241,6 @@
               Potencia final
               <input
                 v-model="infoCapturada.potenciaFinal"
-                @keypress="isNumberOrNegative($event, 1)"
-                @change="quitarNegativos(1)"
                 class="mt-2 h-9 w-[85%] rounded-lg border-2 border-gris-claro text-black"
                 type="number"
                 name="potenciaFinal"
@@ -209,24 +252,45 @@
           </div>
           <div
             v-if="
-              (infoCapturada.potenciaInicial != 0 ||
-                infoCapturada.potenciaFinal != 0) &&
-              (infoCapturada.primeraMedicion.horas == null ||
-                infoCapturada.primeraMedicion.minutos == null)
+              !infoCapturada.potenciaInicial || 
+              !infoCapturada.potenciaFinal 
             "
             class="flex pt-2 pl-[5%] text-xs font-normal text-red-400"
           >
-            Ingresar hora de primera medición o colocar potencias en valor
-            inicial de 0
+            Registrar valores de potencias
           </div>
         </div>
         <div class="flex w-2/4 flex-col">
           <div class="mb-2 text-xs">Hora primera medición</div>
           <div class="flex text-black">
-            <div class="flex items-center pr-2">
+            <Popover v-slot="{ inputValue, open }" class="relative">
+              <PopoverButton
+                class="group inline-flex items-center rounded-md bg-transparent bg-[#90B3F2] p-2 text-base font-medium text-white"
+              >
+                <ClockIcon class="h-6 w-6 self-center" />
+              </PopoverButton>
+              <PopoverPanel
+                class="absolute -left-[150%] w-full max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl"
+              >
+                <div
+                  class="w-[250px] rounded-lg bg-white shadow-lg shadow-black/5 ring-1 ring-black ring-opacity-5"
+                >
+                  <div class="flex">
+                    <DatePicker
+                      style="border: #000000"
+                      mode="time"
+                      :is24hr="true"
+                      class="flex"
+                      v-model="infoCapturada.primeraMedicion"
+                    />
+                  </div>
+                </div>
+              </PopoverPanel>
+            </Popover>
+            <!-- <div class="flex items-center">
               <input
                 v-model="infoCapturada.primeraMedicion.horas"
-                class="flex w-[50%] rounded-lg border-transparent border-gris-claro bg-transparent text-center text-3xl font-medium focus:ring-0"
+                class="flex w-[50%] rounded-lg border-transparent border-gris-claro bg-transparent text-center text-base font-medium focus:ring-0"
                 @blur="actualizarHoraMedicion"
                 @keypress="isNumber($event)"
                 type="number"
@@ -238,7 +302,7 @@
             <div class="flex items-center px-3">
               <input
                 v-model="infoCapturada.primeraMedicion.minutos"
-                class="flex w-[50%] rounded-lg border-transparent border-gris-claro bg-transparent text-center text-3xl font-medium focus:ring-0"
+                class="flex w-[50%] rounded-lg border-transparent border-gris-claro bg-transparent text-center text-base font-medium focus:ring-0"
                 @blur="actualizarMinutoMedicion"
                 @keypress="isNumber($event)"
                 type="number"
@@ -246,7 +310,7 @@
                 max="59"
               />
               <span class="pr-2 pl-2">M</span>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -874,7 +938,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import {
   Listbox,
   ListboxLabel,
@@ -887,8 +951,8 @@ import {
   SelectorIcon,
   PencilAltIcon,
   PlusSmIcon,
-  ExclamationIcon, 
-  ExclamationCircleIcon
+  ExclamationIcon,
+  ExclamationCircleIcon,
 } from "@heroicons/vue/solid";
 import { XCircleIcon, UploadIcon, TrashIcon } from "@heroicons/vue/outline";
 import {
@@ -908,21 +972,40 @@ import {
   guardarTiempoMuerto,
 } from "@/consultasBD/guardarTiempos.js";
 import { useStore } from "vuex";
-import { getDatabase, ref as refDB, get, set, child, update } from "@firebase/database";
+import {
+  getDatabase,
+  ref as refDB,
+  get,
+  set,
+  child,
+  update,
+} from "@firebase/database";
 import { getStorage, ref as refStorage, uploadBytes } from "firebase/storage";
 import { validacionCoordenadasCab24 } from "@/validaciones/coordenadas.js";
 import { arrayActiveHora, arrayActiveMinuto } from "@/JS/arreglosHorario.js";
 import Horario from "@/views/Preventivo/Horario.vue";
 import { store } from "@/store";
 import { guardarCierre } from "@/consultasBD/guardarCierre.js";
-import { useRouter, useRoute } from 'vue-router';
+import { useRouter, useRoute } from "vue-router";
+import moment from "moment";
+import { SetupCalendar, Calendar, DatePicker } from "v-calendar";
+import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
+import { CalendarIcon, ClockIcon } from "@heroicons/vue/outline";
 
 const storeVuex = useStore();
 const router = useRouter();
+const route = useRoute();
 const db = getDatabase();
 const storage = getStorage();
+const horario = ref();
 
-const props = defineProps(["incidencia", "folio", "estado", "tipoFolio"]);
+const props = defineProps([
+  "incidencia",
+  "folio",
+  "estado",
+  "tipoFolio",
+  "data",
+]);
 const isOpen = ref(false);
 const modalConfirmacion = ref(false);
 const errorCoord = ref(false);
@@ -932,7 +1015,12 @@ const validacionHorario = ref([false, false, false]);
 const infoCapturada = ref({
   justificacion: "Selecciona una justificación",
   tiempoMuerto: store.state.a.tiempoMuerto,
-  eta: await calculoEta(props.folio, props.incidencia, props.tipoFolio), // ETA
+  eta: await calculoEta(
+    route.params.id,
+    props.incidencia,
+    props.data.horaInicio,
+    props.data.horaLlegada
+  ), // ETA
   // Calculo realizado mediante la resta de la hora de
   // llegada menos la hora de inicio
   sla: store.state.a.sla, //SLA
@@ -941,10 +1029,7 @@ const infoCapturada = ref({
   // menos la hora de activacion
   potenciaInicial: 0,
   potenciaFinal: 0,
-  primeraMedicion: {
-    horas: null,
-    minutos: null,
-  },
+  primeraMedicion: new Date(),
   materiales: {
     miscelaneos: {
       default: "Selecciona un material",
@@ -977,8 +1062,8 @@ const infoCapturada = ref({
 const fotos = ref({
   despues: {
     file: null,
-    file64: null
-  }
+    file64: null,
+  },
 });
 
 const errores = ref({
@@ -1007,7 +1092,7 @@ concentradoDatos.value.justificaciones.sort();
 watch(
   () => fotos.value.despues.file,
   () => {
-    errores.value.fotoDespues = fotos.value.despues.file ? false : true; 
+    errores.value.fotoDespues = fotos.value.despues.file ? false : true;
     // console.log(fotos.value.antes.file ? 'existe foto' : 'no hay foto subida');
   }
 );
@@ -1077,83 +1162,27 @@ function cambiarError() {
   }
 }
 
-const validarFecha = async (data) => {
-  if (data) {
-    fecha.value = true;
-    validacionHorario.value[0] = true;
-    storeVuex.commit("asignarMuestraJustificacion", 1);
-    if (
-      validacionHorario.value[0] &&
-      validacionHorario.value[1] &&
-      validacionHorario.value[2]
-    ) {
-      error.value = false;
-      let sla = await calculoSla(props.folio, props.incidencia, props.tipoFolio, store.state.a.tiempoMuerto);
-      console.log(sla);
-      storeVuex.commit("asignarSla", sla); 
-      error.value =  await actualizarEstatus(3);
-    }
-  }
-};
-const validarHora = async (data) => {
-  if (data) {
-    hora.value = true;
-    validacionHorario.value[1] = true;
-    storeVuex.commit("asignarMuestraJustificacion", 2);
-    if (
-      validacionHorario.value[0] &&
-      validacionHorario.value[1] &&
-      validacionHorario.value[2]
-    ) {
-      error.value = false;
-      let sla = await calculoSla(props.folio, props.incidencia, props.tipoFolio, store.state.a.tiempoMuerto);
-      // console.log(sla);
-      storeVuex.commit("asignarSla", sla);
-      error.value = await actualizarEstatus(3);  
-    }else{
-      // error.value = true;
-    }
-  }
-};
-const validarMinuto = async (data) => {
-  if (data) {
-    minuto.value = true;
-    validacionHorario.value[2] = true;
-    storeVuex.commit("asignarMuestraJustificacion", 3);
-    if (
-      validacionHorario.value[0] &&
-      validacionHorario.value[1] &&
-      validacionHorario.value[2]
-    ) {
-      error.value = false;
-      let sla = await calculoSla(props.folio, props.incidencia, props.tipoFolio, store.state.a.tiempoMuerto);
-      console.log(sla);
-      storeVuex.commit("asignarSla", sla);
-      error.value = await actualizarEstatus(3);  
-    }else{
-      // error.value = true;
-    }
-  }
-};
-
 const actualizarEstatus = async (actualizacion_estatus) => {
-    await update(
-        child(
-        refDB(db), `folios/` + (props.incidencia == 1 ? `preventivos` : `correctivos`) + `/${props.tipoFolio}/${props.folio}`
-        ), 
-        {
-          estatus: actualizacion_estatus,
-        }
-    );
-    return false;
+  await update(
+    child(
+      refDB(db),
+      `folios/` +
+        (props.incidencia == 1 ? `preventivos` : `correctivos`) +
+        `/${props.tipoFolio}/${props.folio}`
+    ),
+    {
+      estatus: actualizacion_estatus,
+    }
+  );
+  return false;
 };
 const selectFileDespues = async (e) => {
   fotos.value.despues.file = e.target.files[0];
   let reader = new FileReader();
   reader.readAsDataURL(fotos.value.despues.file);
-  reader.onload = (event) =>{
+  reader.onload = (event) => {
     fotos.value.despues.file64 = reader.result;
-  }
+  };
   // fotos.value.despues.file64 = URL.createObjectURL(fotos.value.despues.file64)
 };
 const eliminarImgDespues = () => {
@@ -1362,30 +1391,43 @@ const validaryEnviarInfo = async () => {
     errores.value.ttp = true;
     errores.value.miscelaneo = true;
   }
-  if(!fotos.value.despues.file){
+  if (!fotos.value.despues.file) {
     errores.value.fotoDespues = true;
-  }else{
-    await uploadBytes(refStorage(storage, `imagenes/preventivos/despues/${props.tipoFolio}/${props.folio}`), fotos.value.despues.file)
-      .then(async (snapshot) => {
-        await update(child(refDB(db), `folios/preventivos/${props.tipoFolio}/${props.folio}/fotos/despues`), {
+  } else {
+    await uploadBytes(
+      refStorage(
+        storage,
+        `imagenes/preventivos/despues/${props.tipoFolio}/${props.folio}`
+      ),
+      fotos.value.despues.file
+    ).then(async (snapshot) => {
+      await update(
+        child(
+          refDB(db),
+          `folios/preventivos/${props.tipoFolio}/${props.folio}/fotos/despues`
+        ),
+        {
           nombre: fotos.value.despues.file.name,
-        });
-      });
+        }
+      );
+    });
   }
 
   if (
-      validacionHorario.value[0] &&
-      validacionHorario.value[1] &&
-      validacionHorario.value[2]
-    ) {
-      error.value = false;
-    }else{
-      error.value = true;
-    }
+    validacionHorario.value[0] &&
+    validacionHorario.value[1] &&
+    validacionHorario.value[2]
+  ) {
+    error.value = false;
+  } else {
+    error.value = true;
+  }
 
   let calculoBooleano =
-    (((errores.value.miscelaneo && errores.value.ttp) && error.value) || 
-    errores.value.potencia) || mostrarErrorCoordenadas.value || errores.value.fotoDespues;
+    (errores.value.miscelaneo && errores.value.ttp && error.value) ||
+    errores.value.potencia ||
+    mostrarErrorCoordenadas.value ||
+    errores.value.fotoDespues;
 
   if (calculoBooleano) {
     let cerrado = await closeModalConfirmacion();
@@ -1395,12 +1437,41 @@ const validaryEnviarInfo = async () => {
     }, 300);
   } else {
     let siguiente = false;
-    siguiente = await guardarCierre(props.estado, props.incidencia, props.folio, props.tipoFolio, infoCapturada.value);
-    storeVuex.commit('cerrarModalManejoFolio');
+    siguiente = await guardarCierre(
+      props.estado,
+      props.incidencia,
+      props.folio,
+      props.tipoFolio,
+      infoCapturada.value
+    );
+    storeVuex.commit("cerrarModalManejoFolio");
     router.push("/capturar-folio");
     limpiarValores();
   }
 };
+
+const guardarFechaFunc = (event) => {
+  horario.value = event;
+};
+
+const sla = computed(() => {
+  let horaCompleta = moment
+    .duration(moment(horario.value).diff(moment(props.data.horaInicio)))
+    .asHours()
+    .toFixed(2);
+  if (horaCompleta > 1) {
+    let hora = horaCompleta.split(".")[0];
+    let minutos = ((0 + "." + horaCompleta.split(".")[1]) * 60).toFixed(0);
+    console.log(minutos);
+    return `${hora}:${
+      minutos >= 0 && minutos <= 9 ? `0${minutos.toString()}` : minutos
+    }`;
+  }
+  if (horaCompleta < 1) {
+    return parseInt(horaCompleta * 60);
+  }
+  return `${horaCompleta.replace(".", ":")}`;
+});
 
 const limpiarValores = () => {
   arrayActiveHora.forEach((value, index) => {
@@ -1413,12 +1484,12 @@ const limpiarValores = () => {
   hora.value = null;
   minuto.value = null;
   error.value = false;
-  rebotar.value = '';
+  rebotar.value = "";
   validacionHorario.value = [false, false, false];
 
   // --> Limpiar la muestra de justificacion con el commit
   // --> Limpiar la SLA con el commit
-  store.commit('limpiarJustificacion');
-  store.commit('limpiarSLA');
+  store.commit("limpiarJustificacion");
+  store.commit("limpiarSLA");
 };
 </script>

@@ -28,7 +28,7 @@
                         leave-to-class="transform scale-95 opacity-0"
                       >
                         <MenuItems
-                          class="absolute left-0 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                          class="absolute z-50 left-0 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                         >
                           <div class="px-1 py-1">
                             <MenuItem v-slot="{ active }">
@@ -81,11 +81,13 @@
                     {{ infoData2.folio }}
                   </div>
                 </div>
-                <!-- <Notas
-                    :folio="infoData.folio"
-                    :incidencia="2"
-                    :tipoFolio="infoData2.tipoFolio"
-                  ></Notas> -->
+                <Notas
+                  v-if="infoData2.paso >= 2 && infoData2.paso <= 3  && !loadingData"
+                  :folio="$route.params.id"
+                  :incidencia="2"
+                  :tipoFolio="infoData2.tipoFolio"
+                  :notasData="infoData2.notas"
+                ></Notas>
               </div>
             </div>
             <div class="flex max-h-[95%] w-[80%]">
@@ -98,18 +100,20 @@
                 :data="infoData2"
               ></Step1>
               <Step2
-                v-if="infoData2.paso == 2"
+                v-if="infoData2.paso == 2 && !loadingData"
                 :incidencia="2"
                 :folio="infoData.folio"
                 :estado="infoData2.paso"
                 :tipoFolio="infoData.tipo"
+                :data="infoData2"
               ></Step2>
               <Step3
-                v-if="infoData2.paso == 3"
+                v-if="infoData2.paso == 3 && !loadingData"
                 :incidencia="2"
                 :folio="infoData.folio"
                 :estado="infoData2.paso"
                 :tipoFolio="infoData.tipo"
+                :data="infoData2"
               ></Step3>
             </div>
           </div>
@@ -195,8 +199,12 @@ const infoData2 = reactive({
   supervisor: "",
   tecnico: "",
   asignado: false,
-  horaInicio: {},
+  horaInicio: 0,
+  horaLlegada: 0,
+  horaActivacion: 0,
+  notas: {},
   paso: 1,
+  coordenadas: "",
 });
 const router = useRouter();
 const route = useRoute();
@@ -311,18 +319,9 @@ const actualizarFolio = async (data) => {
 const asignarFolio = async () => {
   await asignarFolioCorrectivo({
     key: route.params.id,
-    tecnicoUid: infoData2.tecnico
+    tecnicoUid: infoData2.tecnico,
   })
     .then(async (result) => {
-      // solicitud.value = false;
-      //   limpiarArreglosHorario();
-      //   if (infoData.value.estado == 2) {
-      //     await eliminarCapturaStep2(
-      //       infoData.value.folio,
-      //       infoData.value.tipo,
-      //       2
-      //     );
-      //   }
       store.commit("cerrarModalManejoFolio");
       router.push("/capturar-folio");
     })
@@ -333,20 +332,12 @@ const asignarFolio = async () => {
 
 // Función para capturar el folio por despacho
 const capturarFolio = async () => {
-  let estado_nuevo = infoData.value.estado + 1;
-  let estatus_nuevo = infoData.value.estatus + 1;
-  await update(
-    child(
-      refDB(db),
-      `folios/correctivos/${infoData.value.tipo}/${infoData.value.folio}`
-    ),
-    {
-      estado: estado_nuevo,
-      estatus: infoData.value.estatus == null ? 1 : estatus_nuevo,
-    }
-  ).catch(function (err) {});
-
-  limpiarArreglosHorario();
+  await update(refDB(db, `folios/correctivos/${route.params.id}`), {
+    paso: 2,
+  }).then(() => {
+    store.commit("cerrarModalManejoFolio");
+    router.go(0);
+  });
 };
 
 const limpiarArreglosHorario = () => {
