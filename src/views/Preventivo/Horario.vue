@@ -1,5 +1,5 @@
 <template>
-  <div class="z-50 mt-6 flex h-auto w-[100%] pl-2">
+  <div class="z-10 mt-6 flex h-auto w-[100%] pl-2">
     <div class="flex w-[100%] self-start">
       <!-- Contenedor de fecha -->
       <div class="flex w-1/2 flex-col">
@@ -124,6 +124,7 @@
                     <DatePicker
                       style="border: #000000"
                       mode="time"
+                      :is24hr="true"
                       class="flex"
                       v-model="horario"
                       @change="imprimir()"
@@ -166,7 +167,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, reactive } from "vue";
+import { ref, onMounted, reactive, computed } from "vue";
 import { getAuth, signOut } from "firebase/auth";
 import { useRouter, useRoute } from "vue-router";
 import {
@@ -205,8 +206,9 @@ const props = defineProps({
   fechaInicioBD: Number,
 });
 
+
 const horario = ref(new Date());
-const emit = defineEmits(["validarFecha", "validarHora", "validarMinuto"]);
+const emit = defineEmits(["guardarFecha"]);
 const horarioCaptura = ref({
   dia: "dd",
   mes: "mm",
@@ -224,13 +226,14 @@ onMounted(() => {
   horaMinuto.value.minuto = arrayActiveMinuto;
   if (props.fechaInicioBD) {
     horario.value = new Date(props.fechaInicioBD);
+    emit("guardarFecha", horario.value);
   } else {
     imprimir();
   }
 });
 
 const imprimir = () => {
-  console.log("cambiar horario");
+  emit("guardarFecha", horario.value)
   switch (props.state) {
     case 1:
       guardarFechaInicio(props.folio, props.incidencia, horario.value);

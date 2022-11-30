@@ -1,5 +1,5 @@
 <template>
-  <div class="flex w-full flex-col">
+  <div class="flex w-full  overflow-auto flex-col">
     <Horario
       :state="props.estado"
       :incidencia="props.incidencia"
@@ -7,9 +7,7 @@
       :tipoFolio="props.tipoFolio"
       :fechaInicioBD="props.data.horaActivacion"
       :horaInicioBD="props.data.horaActivacion"
-      @validarFecha="validarFecha"
-      @validarHora="validarHora"
-      @validarMinuto="validarMinuto"
+      @guardarFecha="guardarFechaFunc"
     ></Horario>
     <div
       v-if="error"
@@ -197,7 +195,8 @@
             >
               {{
                 moment(props.data.horaLlegada).diff(
-                  moment(props.data.horaInicio), 'minutes'
+                  moment(props.data.horaInicio),
+                  "minutes"
                 )
               }}
             </div>
@@ -212,7 +211,7 @@
                   : infoCapturada.sla.color
               "
             >
-              {{ infoCapturada.sla.tiempo }}
+              {{ sla }}
             </div>
           </div>
         </div>
@@ -222,7 +221,7 @@
       <div class="flex w-[95%] border-b-2 border-gris-claro/30"></div>
     </div>
     <div class="flex w-[100%] flex-col font-semibold">
-      Herramientas Técnico
+      Potenciales
       <div class="mt-4 flex w-[100%] font-normal text-gris-claro">
         <div class="flex w-2/4 flex-col">
           <div class="flex w-full">
@@ -230,8 +229,6 @@
               Potencia inicial
               <input
                 v-model="infoCapturada.potenciaInicial"
-                @keypress="isNumberOrNegative($event, 0)"
-                @change="quitarNegativos(0)"
                 class="mt-2 h-9 w-[85%] rounded-lg border-2 border-gris-claro text-black"
                 type="number"
                 name="potenciaInicial"
@@ -244,8 +241,6 @@
               Potencia final
               <input
                 v-model="infoCapturada.potenciaFinal"
-                @keypress="isNumberOrNegative($event, 1)"
-                @change="quitarNegativos(1)"
                 class="mt-2 h-9 w-[85%] rounded-lg border-2 border-gris-claro text-black"
                 type="number"
                 name="potenciaFinal"
@@ -257,24 +252,45 @@
           </div>
           <div
             v-if="
-              (infoCapturada.potenciaInicial != 0 ||
-                infoCapturada.potenciaFinal != 0) &&
-              (infoCapturada.primeraMedicion.horas == null ||
-                infoCapturada.primeraMedicion.minutos == null)
+              !infoCapturada.potenciaInicial || 
+              !infoCapturada.potenciaFinal 
             "
             class="flex pt-2 pl-[5%] text-xs font-normal text-red-400"
           >
-            Ingresar hora de primera medición o colocar potencias en valor
-            inicial de 0
+            Registrar valores de potencias
           </div>
         </div>
         <div class="flex w-2/4 flex-col">
           <div class="mb-2 text-xs">Hora primera medición</div>
           <div class="flex text-black">
-            <div class="flex items-center pr-2">
+            <Popover v-slot="{ inputValue, open }" class="relative">
+              <PopoverButton
+                class="group inline-flex items-center rounded-md bg-transparent bg-[#90B3F2] p-2 text-base font-medium text-white"
+              >
+                <ClockIcon class="h-6 w-6 self-center" />
+              </PopoverButton>
+              <PopoverPanel
+                class="absolute -left-[150%] w-full max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl"
+              >
+                <div
+                  class="w-[250px] rounded-lg bg-white shadow-lg shadow-black/5 ring-1 ring-black ring-opacity-5"
+                >
+                  <div class="flex">
+                    <DatePicker
+                      style="border: #000000"
+                      mode="time"
+                      :is24hr="true"
+                      class="flex"
+                      v-model="infoCapturada.primeraMedicion"
+                    />
+                  </div>
+                </div>
+              </PopoverPanel>
+            </Popover>
+            <!-- <div class="flex items-center">
               <input
                 v-model="infoCapturada.primeraMedicion.horas"
-                class="flex w-[50%] rounded-lg border-transparent border-gris-claro bg-transparent text-center text-3xl font-medium focus:ring-0"
+                class="flex w-[50%] rounded-lg border-transparent border-gris-claro bg-transparent text-center text-base font-medium focus:ring-0"
                 @blur="actualizarHoraMedicion"
                 @keypress="isNumber($event)"
                 type="number"
@@ -286,7 +302,7 @@
             <div class="flex items-center px-3">
               <input
                 v-model="infoCapturada.primeraMedicion.minutos"
-                class="flex w-[50%] rounded-lg border-transparent border-gris-claro bg-transparent text-center text-3xl font-medium focus:ring-0"
+                class="flex w-[50%] rounded-lg border-transparent border-gris-claro bg-transparent text-center text-base font-medium focus:ring-0"
                 @blur="actualizarMinutoMedicion"
                 @keypress="isNumber($event)"
                 type="number"
@@ -294,7 +310,7 @@
                 max="59"
               />
               <span class="pr-2 pl-2">M</span>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -922,7 +938,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import {
   Listbox,
   ListboxLabel,
@@ -972,12 +988,16 @@ import { store } from "@/store";
 import { guardarCierre } from "@/consultasBD/guardarCierre.js";
 import { useRouter, useRoute } from "vue-router";
 import moment from "moment";
+import { SetupCalendar, Calendar, DatePicker } from "v-calendar";
+import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
+import { CalendarIcon, ClockIcon } from "@heroicons/vue/outline";
 
 const storeVuex = useStore();
 const router = useRouter();
 const route = useRoute();
 const db = getDatabase();
 const storage = getStorage();
+const horario = ref();
 
 const props = defineProps([
   "incidencia",
@@ -1009,10 +1029,7 @@ const infoCapturada = ref({
   // menos la hora de activacion
   potenciaInicial: 0,
   potenciaFinal: 0,
-  primeraMedicion: {
-    horas: null,
-    minutos: null,
-  },
+  primeraMedicion: new Date(),
   materiales: {
     miscelaneos: {
       default: "Selecciona un material",
@@ -1144,80 +1161,6 @@ function cambiarError() {
     errorCoord.value = false;
   }
 }
-
-const validarFecha = async (data) => {
-  if (data) {
-    fecha.value = true;
-    validacionHorario.value[0] = true;
-    storeVuex.commit("asignarMuestraJustificacion", 1);
-    if (
-      validacionHorario.value[0] &&
-      validacionHorario.value[1] &&
-      validacionHorario.value[2]
-    ) {
-      error.value = false;
-      let sla = await calculoSla(
-        props.folio,
-        props.incidencia,
-        props.tipoFolio,
-        store.state.a.tiempoMuerto
-      );
-      console.log(sla);
-      storeVuex.commit("asignarSla", sla);
-      error.value = await actualizarEstatus(3);
-    }
-  }
-};
-const validarHora = async (data) => {
-  if (data) {
-    hora.value = true;
-    validacionHorario.value[1] = true;
-    storeVuex.commit("asignarMuestraJustificacion", 2);
-    if (
-      validacionHorario.value[0] &&
-      validacionHorario.value[1] &&
-      validacionHorario.value[2]
-    ) {
-      error.value = false;
-      let sla = await calculoSla(
-        props.folio,
-        props.incidencia,
-        props.tipoFolio,
-        store.state.a.tiempoMuerto
-      );
-      // console.log(sla);
-      storeVuex.commit("asignarSla", sla);
-      error.value = await actualizarEstatus(3);
-    } else {
-      // error.value = true;
-    }
-  }
-};
-const validarMinuto = async (data) => {
-  if (data) {
-    minuto.value = true;
-    validacionHorario.value[2] = true;
-    storeVuex.commit("asignarMuestraJustificacion", 3);
-    if (
-      validacionHorario.value[0] &&
-      validacionHorario.value[1] &&
-      validacionHorario.value[2]
-    ) {
-      error.value = false;
-      let sla = await calculoSla(
-        props.folio,
-        props.incidencia,
-        props.tipoFolio,
-        store.state.a.tiempoMuerto
-      );
-      console.log(sla);
-      storeVuex.commit("asignarSla", sla);
-      error.value = await actualizarEstatus(3);
-    } else {
-      // error.value = true;
-    }
-  }
-};
 
 const actualizarEstatus = async (actualizacion_estatus) => {
   await update(
@@ -1506,6 +1449,29 @@ const validaryEnviarInfo = async () => {
     limpiarValores();
   }
 };
+
+const guardarFechaFunc = (event) => {
+  horario.value = event;
+};
+
+const sla = computed(() => {
+  let horaCompleta = moment
+    .duration(moment(horario.value).diff(moment(props.data.horaInicio)))
+    .asHours()
+    .toFixed(2);
+  if (horaCompleta > 1) {
+    let hora = horaCompleta.split(".")[0];
+    let minutos = ((0 + "." + horaCompleta.split(".")[1]) * 60).toFixed(0);
+    console.log(minutos);
+    return `${hora}:${
+      minutos >= 0 && minutos <= 9 ? `0${minutos.toString()}` : minutos
+    }`;
+  }
+  if (horaCompleta < 1) {
+    return parseInt(horaCompleta * 60);
+  }
+  return `${horaCompleta.replace(".", ":")}`;
+});
 
 const limpiarValores = () => {
   arrayActiveHora.forEach((value, index) => {
