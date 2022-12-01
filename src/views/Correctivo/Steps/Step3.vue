@@ -1,5 +1,5 @@
 <template>
-  <div class="flex w-full  overflow-auto flex-col">
+  <div class="flex w-full flex-col overflow-auto">
     <Horario
       :state="props.estado"
       :incidencia="props.incidencia"
@@ -76,6 +76,7 @@
         "
         class="flex w-[100%]"
       >
+        <!-- select justificación -->
         <div
           :class="props.incidencia == 1 ? 'w-full' : 'w-[50%]'"
           class="flex flex-col"
@@ -84,32 +85,14 @@
             Justificación/pausa
           </div>
           <div class="flex w-[90%]">
-            <Listbox
-              v-model="infoCapturada.justificacion"
-              name="justificacion"
-              :disabled="
-                $store.state.a.mostrarJustificacion[0] ||
-                $store.state.a.mostrarJustificacion[1] ||
-                $store.state.a.mostrarJustificacion[2]
-                  ? true
-                  : false
-              "
-            >
+            <Listbox v-model="infoCapturada.justificacion" name="justificacion">
               <div class="relative mt-1 w-full">
                 <ListboxButton
                   class="relative w-full cursor-not-allowed rounded-lg border-2 border-[#E5E5E5] bg-white py-2 pl-3 pr-10 text-left text-black hover:cursor-pointer focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
                 >
-                  <span
-                    class="block truncate"
-                    :class="
-                      $store.state.a.mostrarJustificacion[0] ||
-                      $store.state.a.mostrarJustificacion[1] ||
-                      $store.state.a.mostrarJustificacion[2]
-                        ? 'cursor-not-allowed text-gray-500'
-                        : ''
-                    "
-                    >{{ infoCapturada.justificacion }}</span
-                  >
+                  <span class="block truncate">{{
+                    infoCapturada.justificacion
+                  }}</span>
                   <span
                     class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
                   >
@@ -126,7 +109,7 @@
                   >
                     <ListboxOption
                       v-slot="{ active, selected }"
-                      v-for="element in concentradoDatos.justificaciones"
+                      v-for="element in justificacionesData"
                       :key="element"
                       :value="element"
                       as="template"
@@ -170,7 +153,6 @@
               <input
                 v-model="infoCapturada.tiempoMuerto"
                 class="flex w-[60%] rounded-lg border-none border-transparent bg-transparent text-center text-3xl font-medium focus:ring-0"
-                @blur="actualizarTiempoMuerto"
                 @keypress="isNumber($event)"
                 type="number"
                 min="0"
@@ -252,8 +234,7 @@
           </div>
           <div
             v-if="
-              !infoCapturada.potenciaInicial || 
-              !infoCapturada.potenciaFinal 
+              !infoCapturada.potenciaInicial || !infoCapturada.potenciaFinal
             "
             class="flex pt-2 pl-[5%] text-xs font-normal text-red-400"
           >
@@ -318,6 +299,7 @@
     <div class="my-3 flex w-[100%] items-center">
       <div class="flex w-[95%] border-b-2 border-gris-claro/30"></div>
     </div>
+    <!-- Select para los materiales de miscelaneos -->
     <div class="mb-2 flex w-[100] flex-col font-semibold">
       Miscelaneos
       <div class="mt-4 flex w-[100%] font-normal text-gris-claro">
@@ -325,7 +307,7 @@
           Materiales
           <div class="flex w-[95%] items-start justify-start">
             <Listbox
-              v-model="infoCapturada.materiales.miscelaneos.seleccion.elementos"
+              v-model="infoCapturada.materiales.miscelaneos"
               name="miscelaneos"
               multiple
             >
@@ -333,9 +315,7 @@
                 <ListboxButton
                   class="relative w-full cursor-default rounded-lg border-2 border-[#E5E5E5] bg-white py-2 pl-3 pr-10 text-left text-black hover:cursor-pointer focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
                 >
-                  <span class="block truncate">{{
-                    infoCapturada.materiales.miscelaneos.default
-                  }}</span>
+                  <span class="block truncate">Selecciona un material</span>
                   <span
                     class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
                   >
@@ -352,11 +332,10 @@
                   >
                     <ListboxOption
                       v-slot="{ active, selected }"
-                      v-for="element in concentradoDatos.materiales.miscelaneos"
-                      :key="element"
+                      v-for="element in materialesData.miscelaneos"
+                      :key="element.keyMaterial"
                       :value="element"
                       as="template"
-                      @click="cambiarValorMiscelaneos(element)"
                     >
                       <li
                         class="hover:cursor-pointer"
@@ -370,7 +349,7 @@
                             selected ? 'font-medium' : 'font-normal',
                             'block truncate',
                           ]"
-                          >{{ element }}</span
+                          >{{ element.keyMaterial }}</span
                         >
                         <span
                           v-if="selected"
@@ -416,22 +395,17 @@
             </thead>
             <tbody>
               <tr
-                v-for="(item, index) in infoCapturada.materiales.miscelaneos
-                  .seleccion.elementos"
+                v-for="(item, index) in infoCapturada.materiales.miscelaneos"
                 class="border-b border-gris-claro/50"
               >
                 <td class="w-[95%] truncate py-4 pr-2.5 text-sm" :title="item">
-                  {{ item }}
+                  {{ item.keyMaterial }}
                 </td>
                 <td class="items-center">
                   <input
                     @keypress="isNumber($event)"
-                    @blur="actualizarCantidadMiscelaneo(index)"
-                    v-model="
-                      infoCapturada.materiales.miscelaneos.seleccion.cantidades[
-                        index
-                      ]
-                    "
+                    @change="item.qty === '' ? (item.qty = 1) : item.qty"
+                    v-model="item.qty"
                     class="my-1 h-8 w-[100%] justify-center rounded-lg border-2 border-gris-claro text-center font-semibold text-black"
                     type="number"
                     :id="index"
@@ -448,24 +422,19 @@
     <div class="my-3 flex w-[100%] items-center">
       <div class="flex w-[95%] border-b-2 border-gris-claro/30"></div>
     </div>
+    <!-- Select para los materiales de totalplay -->
     <div class="mb-2 flex w-[100] flex-col font-semibold">
       Material TTP
       <div class="mt-4 flex w-[100%] font-normal text-gris-claro">
         <div class="w-1/2 text-xs">
           Materiales
           <div class="flex w-[95%] items-start justify-start">
-            <Listbox
-              v-model="infoCapturada.materiales.ttp.seleccion.elementos"
-              name="ttp"
-              multiple
-            >
+            <Listbox v-model="infoCapturada.materiales.ttp" name="ttp" multiple>
               <div class="relative mt-1 w-full">
                 <ListboxButton
                   class="relative w-full cursor-default rounded-lg border-2 border-[#E5E5E5] bg-white py-2 pl-3 pr-10 text-left text-black hover:cursor-pointer focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
                 >
-                  <span class="block truncate">{{
-                    infoCapturada.materiales.ttp.default
-                  }}</span>
+                  <span class="block truncate">Selecciona una material</span>
                   <span
                     class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
                   >
@@ -482,10 +451,9 @@
                   >
                     <ListboxOption
                       v-slot="{ active, selected }"
-                      v-for="element in concentradoDatos.materiales.ttp"
-                      :key="element"
+                      v-for="element in materialesData.totalplay"
+                      :key="element.keyMaterial"
                       :value="element"
-                      @click="cambiarValorTtp(element)"
                       as="template"
                     >
                       <li
@@ -500,7 +468,7 @@
                             selected ? 'font-medium' : 'font-normal',
                             'block truncate',
                           ]"
-                          >{{ element }}</span
+                          >{{ element.keyMaterial }}</span
                         >
                         <span
                           v-if="selected"
@@ -546,20 +514,17 @@
             </thead>
             <tbody>
               <tr
-                v-for="(item, index) in infoCapturada.materiales.ttp.seleccion
-                  .elementos"
+                v-for="(item, index) in infoCapturada.materiales.ttp"
                 class="border-b border-gris-claro/50"
               >
                 <td class="w-[95%] truncate py-4 pr-2.5 text-sm" :title="item">
-                  {{ item }}
+                  {{ item.keyMaterial }}
                 </td>
                 <td class="items-center">
                   <input
                     @keypress="isNumber($event)"
-                    @blur="actualizarCantidadTtp(index)"
-                    v-model="
-                      infoCapturada.materiales.ttp.seleccion.cantidades[index]
-                    "
+                    @change="item.qty === '' ? (item.qty = 1) : item.qty"
+                    v-model="item.qty"
                     class="my-1 h-8 w-[100%] justify-center rounded-lg border-2 border-gris-claro text-center font-semibold text-black"
                     type="number"
                     :id="index"
@@ -582,11 +547,12 @@
         v-if="props.incidencia != 1"
         class="mt-4 flex w-[100%] font-normal text-gris-claro"
       >
+        <!-- Select conceptos -->
         <div class="w-1/2 text-xs">
           Conceptos
           <div class="flex w-[95%] flex-col items-start justify-start">
             <Listbox
-              v-model="infoCapturada.conceptos.descripcion.seleccion.elementos"
+              v-model="infoCapturada.conceptos.descripcion"
               name="concepto"
               multiple
             >
@@ -594,9 +560,7 @@
                 <ListboxButton
                   class="relative w-full cursor-default rounded-lg border-2 border-[#E5E5E5] bg-white py-2 pl-3 pr-10 text-left text-black hover:cursor-pointer focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
                 >
-                  <span class="block truncate">{{
-                    infoCapturada.conceptos.descripcion.default
-                  }}</span>
+                  <span class="block truncate">Selecciona un concepto</span>
                   <span
                     class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
                   >
@@ -613,10 +577,9 @@
                   >
                     <ListboxOption
                       v-slot="{ active, selected }"
-                      v-for="element in concentradoDatos.conceptos"
-                      :key="element"
+                      v-for="element in conceptosData"
+                      :key="element.keyConceptos"
                       :value="element"
-                      @click="cambiarValorConceptos(element)"
                       as="template"
                     >
                       <li
@@ -631,7 +594,7 @@
                             selected ? 'font-medium' : 'font-normal',
                             'block truncate',
                           ]"
-                          >{{ element }}</span
+                          >{{ element.keyConceptos }}</span
                         >
                         <span
                           v-if="selected"
@@ -774,9 +737,7 @@
                             type="text"
                             :name="'coordenada' + index"
                             :id="'coordenada' + index"
-                            :placeholder="
-                              infoCapturada.conceptos.coordenadasDefault
-                            "
+                            placeholder="00.000000, 00.000000"
                             @blur="corroborarCoordenadas(index, item)"
                           />
                           <XCircleIcon
@@ -815,22 +776,16 @@
             </thead>
             <tbody>
               <tr
-                v-for="(item, index) in infoCapturada.conceptos.descripcion
-                  .seleccion.elementos"
+                v-for="(item, index) in infoCapturada.conceptos.descripcion"
                 class="border-b border-gris-claro/50"
               >
                 <td class="w-[95%] truncate py-4 pr-2.5 text-sm" :title="item">
-                  {{ item }}
+                  {{ item.keyConceptos }}
                 </td>
                 <td class="items-center">
                   <input
                     @keypress="isNumber($event)"
-                    @blur="actualizarCantidadConcepto(index)"
-                    v-model="
-                      infoCapturada.conceptos.descripcion.seleccion.cantidades[
-                        index
-                      ]
-                    "
+                    v-model="item.qty"
                     class="my-1 h-8 w-[100%] justify-center rounded-lg border-2 border-gris-claro text-center font-semibold text-black"
                     type="number"
                     :id="index"
@@ -938,7 +893,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from "vue";
+import { ref, watch, computed, onMounted, reactive } from "vue";
 import {
   Listbox,
   ListboxLabel,
@@ -972,14 +927,8 @@ import {
   guardarTiempoMuerto,
 } from "@/consultasBD/guardarTiempos.js";
 import { useStore } from "vuex";
-import {
-  getDatabase,
-  ref as refDB,
-  get,
-  set,
-  child,
-  update,
-} from "@firebase/database";
+import { db, functions } from "@/firebase/firebase";
+import { ref as refDB, get, set, child, update } from "@firebase/database";
 import { getStorage, ref as refStorage, uploadBytes } from "firebase/storage";
 import { validacionCoordenadasCab24 } from "@/validaciones/coordenadas.js";
 import { arrayActiveHora, arrayActiveMinuto } from "@/JS/arreglosHorario.js";
@@ -991,11 +940,11 @@ import moment from "moment";
 import { SetupCalendar, Calendar, DatePicker } from "v-calendar";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
 import { CalendarIcon, ClockIcon } from "@heroicons/vue/outline";
+import { httpsCallable } from "@firebase/functions";
 
 const storeVuex = useStore();
 const router = useRouter();
 const route = useRoute();
-const db = getDatabase();
 const storage = getStorage();
 const horario = ref();
 
@@ -1031,31 +980,12 @@ const infoCapturada = ref({
   potenciaFinal: 0,
   primeraMedicion: new Date(),
   materiales: {
-    miscelaneos: {
-      default: "Selecciona un material",
-      seleccion: {
-        elementos: [],
-        cantidades: [],
-      },
-    },
-    ttp: {
-      default: "Selecciona un material",
-      seleccion: {
-        elementos: [],
-        cantidades: [],
-      },
-    },
+    miscelaneos: [],
+    ttp: [],
   },
   conceptos: {
-    descripcion: {
-      default: "Selecciona un concepto",
-      seleccion: {
-        elementos: [],
-        cantidades: [],
-      },
-    },
-    cab24: [""],
-    coordenadasDefault: "00.000000, 00.000000",
+    descripcion: [],
+    cab24: [],
     errores: [],
   },
 });
@@ -1073,6 +1003,14 @@ const errores = ref({
   fotoDespues: false,
 });
 
+// MIS VARIABLES
+const materialesData = reactive({
+  totalplay: [],
+  miscelaneos: [],
+});
+
+const justificacionesData = ref([]);
+//
 const error = ref(false);
 const fecha = ref();
 const hora = ref();
@@ -1080,57 +1018,62 @@ const minuto = ref();
 const rebotar = ref("");
 
 const validarTiempoMuerto = ref(false);
-const arrayTempMiscelaneos = ref([]);
-const arrayTempTtp = ref([]);
-const arrayTempConceptos = ref([]);
 const mostrarErrorCoordenadas = ref(false);
 const agitar = ref("");
 
 const concentradoDatos = ref(concentradoMaterialConcepto());
 concentradoDatos.value.justificaciones.sort();
+const conceptosData = ref([]);
+
+onMounted(async () => {
+  const almacenMiscelaneosRef = refDB(db, "almacen/materiales/miscelaneos");
+  const almacenTotalplayRef = refDB(db, "almacen/materiales/totalplay");
+  const conceptosRef = refDB(db, "catalogo/conceptos");
+  const justificacionesRef = refDB(db, "catalogo/justificaciones");
+
+  // Obtener materiales miscelaneos
+  await get(almacenMiscelaneosRef).then((snapshot) => {
+    snapshot.forEach((element) => {
+      materialesData.miscelaneos.push({
+        keyMaterial: element.key,
+        qty: 1,
+        ...element.val(),
+      });
+    });
+  });
+  // Obtener materiales totaplay
+  await get(almacenTotalplayRef).then((snapshot) => {
+    snapshot.forEach((element) => {
+      materialesData.totalplay.push({
+        keyMaterial: element.key,
+        qty: 1,
+        ...element.val(),
+      });
+    });
+  });
+
+  // Obtener conceptos del catálogo
+  await get(conceptosRef).then((snapshot) => {
+    snapshot.forEach((element) => {
+      conceptosData.value.push({
+        keyConceptos: element.key,
+        qty: 1,
+        ...element.val(),
+      });
+    });
+  });
+
+  // Obtener justificaciones del catálogo
+  await get(justificacionesRef).then((snapshot) => {
+    justificacionesData.value = snapshot.val();
+  });
+});
 
 watch(
   () => fotos.value.despues.file,
   () => {
     errores.value.fotoDespues = fotos.value.despues.file ? false : true;
     // console.log(fotos.value.antes.file ? 'existe foto' : 'no hay foto subida');
-  }
-);
-
-watch(
-  () => infoCapturada.value.justificacion,
-  async () => {
-    if (infoCapturada.value.justificacion == "Selecciona una justificación") {
-      infoCapturada.value.tiempoMuerto = 0;
-      store.commit("actualizarTiempoMuerto", infoCapturada.value.tiempoMuerto);
-      guardarTiempoMuerto(
-        props.folio,
-        infoCapturada.value.tiempoMuerto,
-        props.incidencia,
-        props.tipoFolio
-      );
-      guardarJustificacion(
-        props.folio,
-        null,
-        props.incidencia,
-        props.tipoFolio
-      );
-      let sla = await calculoSla(
-        props.folio,
-        props.incidencia,
-        props.tipoFolio,
-        store.state.a.tiempoMuerto
-      );
-      store.commit("asignarSla", sla);
-      validarTiempoMuerto.value = true;
-    } else {
-      guardarJustificacion(
-        props.folio,
-        infoCapturada.value.justificacion,
-        props.incidencia,
-        props.tipoFolio
-      );
-    }
   }
 );
 
@@ -1162,20 +1105,6 @@ function cambiarError() {
   }
 }
 
-const actualizarEstatus = async (actualizacion_estatus) => {
-  await update(
-    child(
-      refDB(db),
-      `folios/` +
-        (props.incidencia == 1 ? `preventivos` : `correctivos`) +
-        `/${props.tipoFolio}/${props.folio}`
-    ),
-    {
-      estatus: actualizacion_estatus,
-    }
-  );
-  return false;
-};
 const selectFileDespues = async (e) => {
   fotos.value.despues.file = e.target.files[0];
   let reader = new FileReader();
@@ -1185,7 +1114,7 @@ const selectFileDespues = async (e) => {
   };
   // fotos.value.despues.file64 = URL.createObjectURL(fotos.value.despues.file64)
 };
-const eliminarImgDespues = () => {
+/* const eliminarImgDespues = () => {
   fotos.value.despues.file = null;
   fotos.value.despues.file64 = null;
 };
@@ -1208,133 +1137,15 @@ const actualizarTiempoMuerto = async () => {
   );
   store.commit("asignarSla", sla);
   validarTiempoMuerto.value = true;
-};
+}; */
 
 const isNumber = ($event) => {
   let keyCode = $event.keyCode ? $event.keyCode : $event.which;
   if (keyCode < 48 || keyCode > 57) {
     $event.preventDefault();
   }
-};
-
-const isNumberOrNegative = ($event, potencia) => {
-  let keyCode = $event.keyCode ? $event.keyCode : $event.which;
-  if ((keyCode < 48 || keyCode > 57) && keyCode != 45) {
-    $event.preventDefault();
-  }
-};
-const quitarNegativos = (potencia) => {
-  if (potencia == 0 && infoCapturada.value.potenciaInicial == "") {
-    infoCapturada.value.potenciaInicial = 0;
-  } else if (potencia == 1 && infoCapturada.value.potenciaFinal == "") {
-    infoCapturada.value.potenciaFinal = 0;
-  }
-};
-
-const actualizarHoraMedicion = () => {
-  if (infoCapturada.value.primeraMedicion.horas == "") {
-    infoCapturada.value.primeraMedicion.horas = 0;
-  } else if (infoCapturada.value.primeraMedicion.horas > 24) {
-    infoCapturada.value.primeraMedicion.horas = 0;
-  }
-};
-
-const actualizarMinutoMedicion = () => {
-  if (infoCapturada.value.primeraMedicion.minutos == "") {
-    infoCapturada.value.primeraMedicion.minutos = 0;
-  } else if (infoCapturada.value.primeraMedicion.minutos > 59) {
-    infoCapturada.value.primeraMedicion.minutos = 0;
-  }
-};
-
-const actualizarCantidadMiscelaneo = (index) => {
-  if (
-    infoCapturada.value.materiales.miscelaneos.seleccion.cantidades[index] == ""
-  ) {
-    infoCapturada.value.materiales.miscelaneos.seleccion.cantidades[index] = 1;
-  }
-};
-
-const actualizarCantidadTtp = (index) => {
-  if (infoCapturada.value.materiales.ttp.seleccion.cantidades[index] == "") {
-    infoCapturada.value.materiales.ttp.seleccion.cantidades[index] = 1;
-  }
-};
-
-const actualizarCantidadConcepto = (index) => {
-  if (
-    infoCapturada.value.conceptos.descripcion.seleccion.cantidades[index] == ""
-  ) {
-    infoCapturada.value.conceptos.descripcion.seleccion.cantidades[index] = 1;
-  }
-};
-const cambiarValorMiscelaneos = (valor) => {
-  if (
-    infoCapturada.value.materiales.miscelaneos.seleccion.elementos.length >
-    infoCapturada.value.materiales.miscelaneos.seleccion.cantidades.length
-  ) {
-    infoCapturada.value.materiales.miscelaneos.seleccion.cantidades.push(1);
-    arrayTempMiscelaneos.value.push(valor);
-    errores.value.miscelaneo = false;
-    if (infoCapturada.value.materiales.ttp.seleccion.elementos.length == 0) {
-      errores.value.ttp = false;
-    }
-  } else {
-    errores.value.miscelaneo = errores.value.ttp ? true : false;
-    arrayTempMiscelaneos.value.forEach((element, index) => {
-      if (valor == element) {
-        infoCapturada.value.materiales.miscelaneos.seleccion.cantidades.splice(
-          index,
-          1
-        );
-        arrayTempMiscelaneos.value.splice(index, 1);
-      }
-    });
-  }
-};
-const cambiarValorTtp = (valor) => {
-  if (
-    infoCapturada.value.materiales.ttp.seleccion.elementos.length >
-    infoCapturada.value.materiales.ttp.seleccion.cantidades.length
-  ) {
-    infoCapturada.value.materiales.ttp.seleccion.cantidades.push(1);
-    arrayTempTtp.value.push(valor);
-    errores.value.ttp = false;
-    if (
-      infoCapturada.value.materiales.miscelaneos.seleccion.elementos.length == 0
-    ) {
-      errores.value.miscelaneo = false;
-    }
-  } else {
-    errores.value.ttp = errores.value.miscelaneo ? true : false;
-    arrayTempTtp.value.forEach((element, index) => {
-      if (valor == element) {
-        infoCapturada.value.materiales.ttp.seleccion.cantidades.splice(
-          index,
-          1
-        );
-        arrayTempTtp.value.splice(index, 1);
-      }
-    });
-  }
-};
-const cambiarValorConceptos = (valor) => {
-  if (
-    infoCapturada.value.conceptos.descripcion.seleccion.elementos.length >
-    infoCapturada.value.conceptos.descripcion.seleccion.cantidades.length
-  ) {
-    infoCapturada.value.conceptos.descripcion.seleccion.cantidades.push(1);
-    arrayTempConceptos.value.push(valor);
-  } else {
-    arrayTempConceptos.value.forEach((element, index) => {
-      if (valor == element) {
-        infoCapturada.value.conceptos.descripcion.seleccion.cantidades.splice(
-          index,
-          1
-        );
-        arrayTempConceptos.value.splice(index, 1);
-      }
-    });
+  if ($event) {
+    console.log($event.target.value);
   }
 };
 
@@ -1368,86 +1179,20 @@ const eliminarCoordenada = (n) => {
 const openModalConfirmacion = () => {
   modalConfirmacion.value = true;
 };
+
 const validaryEnviarInfo = async () => {
-  if (
-    infoCapturada.value.materiales.miscelaneos.seleccion.elementos.length ==
-      0 &&
-    infoCapturada.value.materiales.ttp.seleccion.elementos.length > 0 &&
-    errores.value.ttp
-  ) {
-    errores.value.miscelaneo = true;
-  }
-  if (
-    infoCapturada.value.materiales.ttp.seleccion.elementos.length == 0 &&
-    infoCapturada.value.materiales.miscelaneos.seleccion.elementos.length > 0 &&
-    errores.value.miscelaneo
-  ) {
-    errores.value.ttp = true;
-  }
-  if (
-    infoCapturada.value.materiales.ttp.seleccion.elementos.length == 0 &&
-    infoCapturada.value.materiales.miscelaneos.seleccion.elementos.length == 0
-  ) {
-    errores.value.ttp = true;
-    errores.value.miscelaneo = true;
-  }
-  if (!fotos.value.despues.file) {
-    errores.value.fotoDespues = true;
-  } else {
-    await uploadBytes(
-      refStorage(
-        storage,
-        `imagenes/preventivos/despues/${props.tipoFolio}/${props.folio}`
-      ),
-      fotos.value.despues.file
-    ).then(async (snapshot) => {
-      await update(
-        child(
-          refDB(db),
-          `folios/preventivos/${props.tipoFolio}/${props.folio}/fotos/despues`
-        ),
-        {
-          nombre: fotos.value.despues.file.name,
-        }
-      );
-    });
-  }
-
-  if (
-    validacionHorario.value[0] &&
-    validacionHorario.value[1] &&
-    validacionHorario.value[2]
-  ) {
-    error.value = false;
-  } else {
-    error.value = true;
-  }
-
-  let calculoBooleano =
-    (errores.value.miscelaneo && errores.value.ttp && error.value) ||
-    errores.value.potencia ||
-    mostrarErrorCoordenadas.value ||
-    errores.value.fotoDespues;
-
-  if (calculoBooleano) {
-    let cerrado = await closeModalConfirmacion();
-    agitar.value = "animate-shake";
-    setTimeout(() => {
-      agitar.value = "";
-    }, 300);
-  } else {
-    let siguiente = false;
-    siguiente = await guardarCierre(
-      props.estado,
-      props.incidencia,
-      props.folio,
-      props.tipoFolio,
-      infoCapturada.value
-    );
-    storeVuex.commit("cerrarModalManejoFolio");
-    router.push("/capturar-folio");
-    limpiarValores();
-  }
+  const finalizarFolioFirebase = httpsCallable(
+    functions,
+    "finalizarFoliosCorrectivos"
+  );
+  console.log(infoCapturada.value);
+  await finalizarFolioFirebase({
+    folioKey: route.params.id,
+    ...infoCapturada.value,
+  });
+  storeVuex.commit("cerrarModalManejoFolio");
+  router.push("/capturar-folio");
+  // limpiarValores();
 };
 
 const guardarFechaFunc = (event) => {
@@ -1455,14 +1200,20 @@ const guardarFechaFunc = (event) => {
 };
 
 const sla = computed(() => {
-  let horaCompleta = moment
-    .duration(moment(horario.value).diff(moment(props.data.horaInicio)))
-    .asHours()
-    .toFixed(2);
+  let fecha1 = moment(props.data.horaInicio);
+  let fecha2 = moment(horario.value);
+
+  if (infoCapturada.value.tiempoMuerto) {
+    fecha2.add(-infoCapturada.value.tiempoMuerto, "minutes");
+  }
+
+  let horaCompleta = moment.duration(fecha2.diff(fecha1)).asHours().toFixed(2);
+
   if (horaCompleta > 1) {
     let hora = horaCompleta.split(".")[0];
     let minutos = ((0 + "." + horaCompleta.split(".")[1]) * 60).toFixed(0);
-    console.log(minutos);
+
+    // minutos -= infoCapturada.value.tiempoMuerto;
     return `${hora}:${
       minutos >= 0 && minutos <= 9 ? `0${minutos.toString()}` : minutos
     }`;
