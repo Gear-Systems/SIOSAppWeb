@@ -9,18 +9,30 @@
       </div>
       <div class="mt-14 flex justify-between">
         <div
-          class="flex cursor-pointer items-center space-x-5 group"
+          class="group flex cursor-pointer items-center space-x-5"
           @click="toggleModalCorrectivo"
         >
-          <div class="transition-all duration-500 h-14 w-14 rounded-xl flex justify-center items-center bg-[#E9F0FC] drop-shadow-lg group-hover:-translate-y-2"><FoliosCorrectivos :color="'#101D2D'" /></div>
-          <div class="transition-all duration-500 font-medium group-hover:-translate-y-2">Folio Correctivo</div>
+          <div
+            class="flex h-14 w-14 items-center justify-center rounded-xl bg-[#E9F0FC] drop-shadow-lg transition-all duration-500 group-hover:-translate-y-2"
+          >
+            <FoliosCorrectivos :color="'#101D2D'" />
+          </div>
+          <div
+            class="font-medium transition-all duration-500 group-hover:-translate-y-2"
+          >
+            Folio Correctivo
+          </div>
         </div>
         <div
-          class="flex cursor-pointer items-center space-x-5"
+          class="group flex cursor-pointer items-center space-x-5"
           @click="toggleModalPreventivo"
         >
-          <div class="h-12 w-12 rounded-xl bg-[#D9D9D9]"></div>
-          <div class="font-medium">Folio Preventivo</div>
+        <div
+            class="flex h-14 w-14 items-center justify-center rounded-xl bg-[#E9F0FC] drop-shadow-lg transition-all duration-500 group-hover:-translate-y-2"
+          >
+            <FoliosPreventivos :color="'#101D2D'" />
+          </div>
+          <div class="font-medium transition-all duration-500 group-hover:-translate-y-2">Folio Preventivo</div>
         </div>
       </div>
     </div>

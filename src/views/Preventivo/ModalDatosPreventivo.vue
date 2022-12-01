@@ -263,12 +263,14 @@
     <ModalManejoFolio
       :botonCapturar="true"
       :permitirCierre="false"
+      @asignarFolio="asignarFolio"
+      @capturarFolio="capturarFolio"
       :infoSelected="infoSelected"
     >
       <template v-slot:mensaje>
         <span></span>
       </template>
-    </ModalManejoFolio>
+    </ModalManejoFolio >
   </div>
 </template>
 
@@ -293,10 +295,12 @@ import { useFolios } from "@/store/folios";
 
 const folios = useFolios();
 const crearFolio = httpsCallable(functions, "crearFolioPreventivo");
+const asignarFolioFirebase = httpsCallable(functions, "asignarFolioPreventivo");
 const store = useStore();
 const catalogoRef = refDB(db, "catalogo");
 const loading = ref(false);
 const loadingSubmit = ref(false);
+const folioKey = ref();
 const buttonDisabled = ref(true);
 const emit = defineEmits(["abrirModalManejoFolio"]);
 
@@ -468,6 +472,7 @@ const submitPreventivo = async () => {
   await crearFolio(infoSelected)
     .then((result) => {
       console.log(result);
+      folioKey.value = result.data
       loading.value = false;
     })
     .catch((error) => {
@@ -477,4 +482,17 @@ const submitPreventivo = async () => {
   store.commit("cerrarModalPreventivo");
   store.commit("abrirModalManejoFolio");
 };
+
+const capturarFolio = async () => {
+
+}
+
+const asignarFolio = async () => {
+ await asignarFolioFirebase({
+    key: folioKey.value,
+    tecnicos: infoSelected.tecnicos
+  }).then(() => {
+    store.commit("cerrarModalManejoFolio");
+  })
+}
 </script>
