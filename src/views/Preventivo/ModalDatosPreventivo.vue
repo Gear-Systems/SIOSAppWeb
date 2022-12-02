@@ -283,6 +283,7 @@ import { httpsCallable } from "firebase/functions";
 import { db, functions } from "@/firebase/firebase";
 import ListSelect from "@/components/ListSelect.vue";
 import ModalManejoFolio from "@/views/Correctivo/ModalManejoFolio.vue";
+import { useRouter } from "vue-router";
 import {
   TransitionRoot,
   TransitionChild,
@@ -294,6 +295,7 @@ import {
 import { useFolios } from "@/store/folios";
 
 const folios = useFolios();
+const router = useRouter();
 const crearFolio = httpsCallable(functions, "crearFolioPreventivo");
 const asignarFolioFirebase = httpsCallable(functions, "asignarFolioPreventivo");
 const store = useStore();
@@ -484,7 +486,8 @@ const submitPreventivo = async () => {
 };
 
 const capturarFolio = async () => {
-
+  store.commit("cerrarModalManejoFolio");
+  router.push({ name: "capturarPreventivo", params:{ id: folioKey.value } });
 }
 
 const asignarFolio = async () => {

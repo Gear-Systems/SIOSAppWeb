@@ -29,7 +29,7 @@ export const routes = [
     meta: { title: "Capturar Folio", authorization: true },
   },
   {
-    path: "/capturar-folio/preventivo/:tipoFolio/:id",
+    path: "/capturar-folio/preventivo/:id",
     name: "capturarPreventivo",
     component: Preventivo,
     meta: { title: "Folios preventivos", authorization: true },
