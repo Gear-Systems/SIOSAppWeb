@@ -1199,6 +1199,10 @@ const guardarFechaFunc = (event) => {
   horario.value = event;
 };
 
+const guardarSla = async (sla) => {
+  await update(refDB(db, `folios/correctivos/${route.params.id}`), { sla: sla })
+}
+
 const sla = computed(() => {
   let fecha1 = moment(props.data.horaInicio);
   let fecha2 = moment(horario.value);
@@ -1213,14 +1217,19 @@ const sla = computed(() => {
     let hora = horaCompleta.split(".")[0];
     let minutos = ((0 + "." + horaCompleta.split(".")[1]) * 60).toFixed(0);
 
+    guardarSla(`${hora}:${
+      minutos >= 0 && minutos <= 9 ? `0${minutos.toString()}` : minutos
+    }`)
     // minutos -= infoCapturada.value.tiempoMuerto;
     return `${hora}:${
       minutos >= 0 && minutos <= 9 ? `0${minutos.toString()}` : minutos
     }`;
   }
   if (horaCompleta < 1) {
+    guardarSla(parseInt(horaCompleta * 60))
     return parseInt(horaCompleta * 60);
   }
+  guardarSla(`${horaCompleta.replace(".", ":")}`)
   return `${horaCompleta.replace(".", ":")}`;
 });
 

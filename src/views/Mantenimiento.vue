@@ -1,6 +1,7 @@
 <template>
   <div class="w-full px-6">
     <div
+      v-if="$route.query.mantenimiento"
       @click="$router.push({ name: 'consultarFolios' })"
       class="flex cursor-pointer items-center space-x-2"
     >

@@ -3,6 +3,16 @@
     <Suspense>
       <template #default>
         <div class="mt-6 flex h-auto w-[100%] flex-col items-center px-10">
+          <div class="mb-7 w-full">
+            <div
+              v-if="$route.query.mantenimiento"
+              @click="$router.push({ name: 'consultarFolios' })"
+              class="flex cursor-pointer items-center space-x-2"
+            >
+              <ChevronLeftIcon class="h-5 w-5" />
+              <p>Consulta de folios</p>
+            </div>
+          </div>
           <div class="flex h-[70%] w-full">
             <div class="flex w-[20%] flex-col space-y-3">
               <div class="flex w-[100%] select-none items-center">
@@ -28,7 +38,7 @@
                         leave-to-class="transform scale-95 opacity-0"
                       >
                         <MenuItems
-                          class="absolute z-50 left-0 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                          class="absolute left-0 z-50 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                         >
                           <div class="px-1 py-1">
                             <MenuItem v-slot="{ active }">
@@ -82,7 +92,9 @@
                   </div>
                 </div>
                 <Notas
-                  v-if="infoData2.paso >= 2 && infoData2.paso <= 3  && !loadingData"
+                  v-if="
+                    infoData2.paso >= 2 && infoData2.paso <= 3 && !loadingData
+                  "
                   :folio="$route.params.id"
                   :incidencia="2"
                   :tipoFolio="infoData2.tipoFolio"
@@ -172,7 +184,11 @@ import { getFunctions, httpsCallable } from "firebase/functions";
 import { infoCapturadaModal } from "@/consultasBD/consultaSelectFolio.js";
 import { eliminarCapturaStep2 } from "@/consultasBD/eliminarHorarios.js";
 import { PencilAltIcon } from "@heroicons/vue/solid";
-import { CogIcon, ClipboardCheckIcon } from "@heroicons/vue/outline";
+import {
+  CogIcon,
+  ClipboardCheckIcon,
+  ChevronLeftIcon,
+} from "@heroicons/vue/outline";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import Notas from "@/views/Notas.vue";
 import Step1 from "@/views/Correctivo/Steps/Step1.vue";

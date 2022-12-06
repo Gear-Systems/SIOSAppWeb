@@ -5,5 +5,6 @@
 </template>
 
 <script setup>
-import CorrectivoComponent from "@/components/CorrectivoComponent.vue"
+import CorrectivoComponent from "@/components/CorrectivoComponent.vue";
+
 </script>

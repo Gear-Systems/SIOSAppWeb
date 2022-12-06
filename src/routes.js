@@ -43,6 +43,20 @@ export const routes = [
     props: { control: true },
   },
   {
+    path: "/mantenimiento/preventivo/:id",
+    name: "mantenimientoPreventivo",
+    component: Preventivo,
+    meta: { title: "Folios preventivos", authorization: true },
+    props: { control: false },
+  },
+  {
+    path: "/mantenimiento/correctivo/:id",
+    name: "mantenimientoCorrectivo",
+    component: Correctivo,
+    meta: { title: "Folios Correctivos", authorization: true },
+    props: { control: true },
+  },
+  {
     path: "/configuraciones",
     name: "Configuraciones",
     component: Configuraciones,
@@ -52,11 +66,6 @@ export const routes = [
     path: "/about",
     meta: { title: "About", authorization: true },
     component: About,
-  },
-  {
-    path: "/mantenimiento/:tipoFolio/:folio",
-    meta: { title: "Mantenimiento", authorization: true },
-    component: Mantenimiento,
   },
   {
     path: "/consultar-folios",

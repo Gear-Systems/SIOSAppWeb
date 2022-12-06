@@ -1128,14 +1128,16 @@ const validaryEnviarInfo = async () => {
     .then(async (snapshot) => {
       console.log("Archivo subido correctamente", snapshot);
       await getDownloadURL(snapshot.ref).then(async (url) => {
-        await update(refDB(db, `folios/preventivos/${route.params.id}/imagenes`), { despues: url } )
+        await update(
+          refDB(db, `folios/preventivos/${route.params.id}/imagenes`),
+          { despues: url }
+        );
       });
     })
     .catch((error) => {
       console.log(error);
     });
 
-    
   // Funcion firebase cloud para subir los datos
   await finalizarFolioFirebase({
     folioKey: route.params.id,
@@ -1149,6 +1151,12 @@ const validaryEnviarInfo = async () => {
 
 const guardarFechaFunc = (event) => {
   horario.value = event;
+};
+
+const guardarSla = async (sla) => {
+  await update(refDB(db, `folios/preventivos/${route.params.id}`), {
+    sla: sla,
+  });
 };
 
 const sla = computed(() => {
@@ -1165,14 +1173,21 @@ const sla = computed(() => {
     let hora = horaCompleta.split(".")[0];
     let minutos = ((0 + "." + horaCompleta.split(".")[1]) * 60).toFixed(0);
 
+    guardarSla(
+      `${hora}:${
+        minutos >= 0 && minutos <= 9 ? `0${minutos.toString()}` : minutos
+      }`
+    );
     // minutos -= infoCapturada.value.tiempoMuerto;
     return `${hora}:${
       minutos >= 0 && minutos <= 9 ? `0${minutos.toString()}` : minutos
     }`;
   }
   if (horaCompleta < 1) {
+    guardarSla(parseInt(horaCompleta * 60));
     return parseInt(horaCompleta * 60);
   }
+  guardarSla(`${horaCompleta.replace(".", ":")}`);
   return `${horaCompleta.replace(".", ":")}`;
 });
 

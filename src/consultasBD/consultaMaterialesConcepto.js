@@ -1,11 +1,18 @@
-import { getDatabase, ref as refDB, get, set, child } from "@firebase/database";
+import {
+  getDatabase,
+  ref as refDB,
+  get,
+  set,
+  child,
+  update,
+} from "@firebase/database";
 import { guardarEta, guardarSla } from "./guardarTiempos";
 import moment from "moment";
 
 export const concentradoMaterialConcepto = () => {
   const db = getDatabase();
   let concentradoMatConcept = {
-    justificaciones: ['Selecciona una justificación'],
+    justificaciones: ["Selecciona una justificación"],
     materiales: {
       miscelaneos: [],
       ttp: [],
@@ -67,44 +74,57 @@ export const concentradoMaterialConcepto = () => {
   return concentradoMatConcept;
 };
 
-export const calculoEta = async (folio, incidencia, horaInicio, horaLlegada) => {
+export const calculoEta = async (
+  folio,
+  incidencia,
+  horaInicio,
+  horaLlegada
+) => {
   const db = getDatabase();
+  let incidenciaPath = incidencia == 1 ? `preventivos` : `correctivos`;
   let calculo = {
     tiempo: "--:--",
-    color: ''
+    color: "",
   };
   let fecha1 = moment(horaInicio);
   let fecha2 = moment(horaLlegada);
 
   let eta = new Date(fecha2.diff(fecha1));
 
- 
-    // let llegada = {};
-    // let inicio = {};
+  update(refDB(db, `folios/${incidenciaPath}/${folio}`), {
+    eta: fecha2.diff(fecha1, "minutes"),
+  });
+  // let llegada = {};
+  // let inicio = {};
 
-    // llegada = await obtenerHoraLlegada(db, folio, incidencia, tipoFolio);
-    // inicio = await obtenerHoraInicio(db, folio, incidencia, tipoFolio);
+  // llegada = await obtenerHoraLlegada(db, folio, incidencia, tipoFolio);
+  // inicio = await obtenerHoraInicio(db, folio, incidencia, tipoFolio);
 
-    // let diferencia = llegada.newDate.getTime() - inicio.newDate.getTime();
-    // let minutos = 0;
+  // let diferencia = llegada.newDate.getTime() - inicio.newDate.getTime();
+  // let minutos = 0;
 
-    // while (diferencia >= 60000) {
-    //     minutos = minutos + 1;
-    //     diferencia = diferencia - 60000;
-    // }
-    // calculo.tiempo = '00:' + (minutos < 10 ? "0" + minutos.toString() : minutos.toString());
-    // calculo.color = minutos > 30 ? 'border-red-400' : '';
+  // while (diferencia >= 60000) {
+  //     minutos = minutos + 1;
+  //     diferencia = diferencia - 60000;
+  // }
+  // calculo.tiempo = '00:' + (minutos < 10 ? "0" + minutos.toString() : minutos.toString());
+  // calculo.color = minutos > 30 ? 'border-red-400' : '';
 
-  guardarEta(folio, eta, incidencia);
+  // guardarEta(folio, eta, incidencia);
   return eta;
 };
 
-export const calculoSla = async (folio, incidencia, tipoFolio, tiempoMuerto) => {
+export const calculoSla = async (
+  folio,
+  incidencia,
+  tipoFolio,
+  tiempoMuerto
+) => {
   const db = getDatabase();
 
   let calculo = {
     tiempo: "--:--",
-    color: ''
+    color: "",
   };
 
   let activacion = {};
@@ -113,7 +133,10 @@ export const calculoSla = async (folio, incidencia, tipoFolio, tiempoMuerto) => 
   activacion = await obtenerHoraActivacion(db, folio, incidencia, tipoFolio);
   inicio = await obtenerHoraInicio(db, folio, incidencia, tipoFolio);
   tolerancia = await obtenerTolerancia(db, tipoFolio, incidencia);
-  let diferencia = ((activacion.newDate.getTime() - (tiempoMuerto * 60000))) - inicio.newDate.getTime();
+  let diferencia =
+    activacion.newDate.getTime() -
+    tiempoMuerto * 60000 -
+    inicio.newDate.getTime();
   let horas = 0;
   let minutos = 0;
   while (diferencia >= 60000) {
@@ -129,16 +152,23 @@ export const calculoSla = async (folio, incidencia, tipoFolio, tiempoMuerto) => 
     (horas < 10 ? "0" + horas.toString() : horas.toString()) +
     ":" +
     (minutos < 10 ? "0" + minutos.toString() : minutos.toString());
-/** MODIFICAR LA FORMA DE OBTENCION DEL COLOR DEL BORDE EN calculo.color  **/
-    calculo.color = ( horas > 0 || minutos > tolerancia ) ? 'border-red-400' : '';
-    guardarSla(folio, calculo.tiempo, incidencia, tipoFolio);
-    console.log(calculo.tiempo);
+  /** MODIFICAR LA FORMA DE OBTENCION DEL COLOR DEL BORDE EN calculo.color  **/
+  calculo.color = horas > 0 || minutos > tolerancia ? "border-red-400" : "";
+  guardarSla(folio, calculo.tiempo, incidencia, tipoFolio);
+  console.log(calculo.tiempo);
   return calculo;
 };
 
 const obtenerHoraLlegada = async (db, folio, incidencia, tipoFolio) => {
   let fLlegada = {};
-  await get(child(refDB(db), `folios/` + (incidencia == 1 ? `preventivos` : `correctivos`) + `/${tipoFolio}/${folio}/horaLlegada`))
+  await get(
+    child(
+      refDB(db),
+      `folios/` +
+        (incidencia == 1 ? `preventivos` : `correctivos`) +
+        `/${tipoFolio}/${folio}/horaLlegada`
+    )
+  )
     .then((snapshot) => {
       snapshot.forEach((llegada) => {
         if (llegada.key == "fechaSistema") {
@@ -155,7 +185,14 @@ const obtenerHoraLlegada = async (db, folio, incidencia, tipoFolio) => {
 
 const obtenerHoraInicio = async (db, folio, incidencia, tipoFolio) => {
   let fInicio = {};
-  await get(child(refDB(db), `folios/` + (incidencia == 1 ? `preventivos` : `correctivos`) + `/${tipoFolio}/${folio}/horaInicio`))
+  await get(
+    child(
+      refDB(db),
+      `folios/` +
+        (incidencia == 1 ? `preventivos` : `correctivos`) +
+        `/${tipoFolio}/${folio}/horaInicio`
+    )
+  )
     .then((snapshot) => {
       snapshot.forEach((inicio) => {
         if (inicio.key == "fechaSistema") {
@@ -173,7 +210,14 @@ const obtenerHoraInicio = async (db, folio, incidencia, tipoFolio) => {
 
 const obtenerHoraActivacion = async (db, folio, incidencia, tipoFolio) => {
   let fActivacion = {};
-  await get(child(refDB(db), `folios/` + (incidencia == 1 ? `preventivos` : `correctivos`) + `/${tipoFolio}/${folio}/horaActivacion`))
+  await get(
+    child(
+      refDB(db),
+      `folios/` +
+        (incidencia == 1 ? `preventivos` : `correctivos`) +
+        `/${tipoFolio}/${folio}/horaActivacion`
+    )
+  )
     .then((snapshot) => {
       snapshot.forEach((activacion) => {
         if (activacion.key == "fechaSistema") {
@@ -184,14 +228,23 @@ const obtenerHoraActivacion = async (db, folio, incidencia, tipoFolio) => {
       });
     })
     .catch(function (err) {});
-  fActivacion.newDate = new Date(fActivacion.fecha + " " + fActivacion.hora + ":00");
+  fActivacion.newDate = new Date(
+    fActivacion.fecha + " " + fActivacion.hora + ":00"
+  );
   // console.log(fActivacion);
   return fActivacion;
 };
 
 const obtenerTolerancia = async (db, tipoFolio, incidencia) => {
   let tiempoTolerancia = 0;
-  await get(child(refDB(db), `catalogo/tipoFolios/` + (incidencia == 1 ? `preventivo` : `correctivo`) + `/${tipoFolio}`))
+  await get(
+    child(
+      refDB(db),
+      `catalogo/tipoFolios/` +
+        (incidencia == 1 ? `preventivo` : `correctivo`) +
+        `/${tipoFolio}`
+    )
+  )
     .then((snapshot) => {
       snapshot.forEach((tiempoFolio) => {
         tiempoTolerancia = tiempoFolio.exportVal();
