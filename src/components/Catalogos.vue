@@ -1,22 +1,24 @@
 <template>
   <div class="flex w-full flex-col space-y-12 pb-16">
-    <div class="flex w-full justify-center">
-      <div class="grid w-[50%] grid-flow-col grid-rows-2 gap-4">
-        <div v-for="(value, index) in options" class="flex w-full space-x-2">
+    <div class="flex w-full justify-center ">
+      <div class="grid grid-flow-col">
+        <div v-for="(value, index) in options" class="flex w-full">
           <button @click="cambiarComponente(value.component, value.control, index)"
-            class="flex h-full w-full items-center p-2 font-semibold">
-            <span class="flex justify-center items-center mr-4 h-8 w-8 rounded-md bg-[#D9D9D9]">
+            class="h-full items-center font-semibold m-2 w-28 h-28 rounded-lg hover:bg-[#E9F0FC]">
+            <div class="flex flex-col items-center max-w-12">
+            <span class="flex justify-center items-center rounded-md  hover:bg-[#FFFFFF] bg-[#E9F0FC] w-10 h-10 shadow-md">
               <component :is="value.componentIco" :color="value.active ? '#2166E5' : '#101D2D'" />
             </span>
-            <span :class="value.active ? 'text-primario' : 'text-[#101D2D]'">
-              {{value.name}}
+            <span :class="[value.active ? 'text-primario' : 'text-[#101D2D]', 'mt-2 w-20 break-words text-base hover:text-primario']">
+              {{ value.name }}
             </span>
+          </div>
           </button>
         </div>
       </div>
     </div>
     <div class="flex h-full w-full pb-12">
-      <component :is="componenteSeleccionado.component" :control="componenteSeleccionado.control"></component>
+      <component :is="componenteSeleccionado.component" :control="componenteSeleccionado.control" />
     </div>
   </div>
 </template>
@@ -42,9 +44,10 @@ const options = [
     active: false,
   },
   {
-    name: "Distritos/Clusters",
-    component: markRaw(Distritos),
-    componentIco: markRaw(DistritosIco),
+    name: "Folios",
+    component: markRaw(CatalogosPestanas),
+    componentIco: markRaw(FoliosIco),
+    control: 2,
     active: false,
   },
   {
@@ -55,13 +58,6 @@ const options = [
     active: false,
   },
   {
-    name: "Conceptos",
-    component: markRaw(Conceptos),
-    componentIco: markRaw(ConseptosIco),
-    active: false,
-  },
-
-  {
     name: "Causas",
     component: markRaw(CatalogosPestanas),
     componentIco: markRaw(CausasIco),
@@ -69,12 +65,19 @@ const options = [
     active: false,
   },
   {
-    name: "Folios",
-    component: markRaw(CatalogosPestanas),
-    componentIco: markRaw(FoliosIco),
-    control: 2,
+    name: "Concepto",
+    component: markRaw(Conceptos),
+    componentIco: markRaw(ConseptosIco),
     active: false,
   },
+  {
+    name: "Distritos/ Clusters",
+    component: markRaw(Distritos),
+    componentIco: markRaw(DistritosIco),
+    active: false,
+  },
+
+
 ];
 
 const oldValue = ref(-1);

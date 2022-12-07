@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full w-full px-4">
+  <div class="h-full w-full px-10">
     <TabGroup>
       <TabList>
         <div class="flex w-full">
