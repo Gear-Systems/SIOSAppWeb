@@ -2,14 +2,14 @@
   <div class="mt-5 flex h-full w-full">
     <!-- Agregar nuevo distrito o cluster -->
     <div class="flex basis-[40%] justify-center">
-      <div class="flex flex-col space-y-8">
+      <div class="flex flex-col space-y-5">
         <h2 class="text-xl font-semibold">Agregar nuevo</h2>
         <!-- Nombre -->
         <div class="flex flex-col">
-          <label class="text-base" for="name">Nombre</label>
+          <label class="text-sm text-gray-500" for="name">Nombre</label>
           <input
             v-model="formData.nombre"
-            class="max-w-sm rounded-xl border-none border-[#C4C4C4] bg-[#F2F2F2] font-semibold placeholder:font-normal focus:ring-0"
+            class="max-w-sm rounded-md border-[1.5px] border-[#7C8495] bg-transparent font-semibold placeholder:text-sm placeholder:font-normal placeholder:text-black focus:ring-0"
             type="text"
             id="name"
           />
@@ -17,8 +17,9 @@
         <!-- tipo de -->
         <Listbox v-model="formData.tipo">
           <div class="relative">
+            <ListboxLabel class="text-sm text-gray-500">Distrito o cluster</ListboxLabel>
             <ListboxButton
-              class="shadow- relative w-full max-w-sm cursor-pointer rounded-xl border-none bg-[#F2F2F2] py-3 pl-3 pr-10 text-left font-semibold focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
+              class="shadow- relative w-full max-w-sm cursor-pointer rounded-md border-[1.5px] border-[#7C8495] py-3 pl-3 pr-10 text-left focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
             >
               <span class="block truncate">{{ formData.tipo }}</span>
               <span
@@ -71,11 +72,11 @@
             </transition>
           </div>
         </Listbox>
-        <div class="flex w-full justify-center">
+        <div class="flex w-full justify-end">
           <button
             @click="guardar"
             type="button"
-            class="rounded-xl bg-[#F2F2F2] py-2 px-4"
+            class="rounded-md bg-primario py-2 px-6 font-light text-white hover:bg-primario/60"
           >
             Guardar
           </button>
@@ -83,13 +84,13 @@
       </div>
     </div>
     <!-- Tabla de distritos o clusters agregados -->
-    <div class="flex basis-[60%] justify-between px-12">
+    <div class="flex space-x-12 w-full justify-end">
       <div>
-        <div><h2 class="text-xl font-semibold">Distritos</h2></div>
+        <div><h2 class="text-xl font-semibold text-center">Distritos</h2></div>
         <DistritosClustersTable :distritosClustersData="distritosData" />
       </div>
       <div>
-        <div><h2 class="text-xl font-semibold">Clusters</h2></div>
+        <div><h2 class="text-xl font-semibold text-center">Clusters</h2></div>
         <DistritosClustersTable :distritosClustersData="clustersData" />
       </div>
     </div>
@@ -114,6 +115,7 @@ import {
   ListboxButton,
   ListboxOptions,
   ListboxOption,
+  ListboxLabel
 } from "@headlessui/vue";
 import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
@@ -137,17 +139,17 @@ const rules = computed(() => {
 
 // Obtener distritos desde base de datos
 await onChildAdded(refDB(db, `catalogo/distritos`), (snapshot) => {
-    distritosData.value.push({
-      nombre: snapshot.key,
-      tipo: "Distritos",
-    });
+  distritosData.value.push({
+    nombre: snapshot.key,
+    tipo: "Distritos",
+  });
 });
 // Obtener clusters desde base de datos
 await onChildAdded(refDB(db, `catalogo/clusters`), (snapshot) => {
-    clustersData.value.push({
-      nombre: snapshot.key,
-      tipo: "Clusters",
-    });
+  clustersData.value.push({
+    nombre: snapshot.key,
+    tipo: "Clusters",
+  });
 });
 
 // Eliminar item de array distrito si se eliminó desde base de datos

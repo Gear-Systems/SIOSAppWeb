@@ -1,17 +1,27 @@
 <template>
-  <div class="flex h-full w-full flex-col">
+  <div
+    class="flex h-full w-full flex-col rounded-md bg-[#F8FAFB] py-6 px-14 shadow-md"
+  >
     <TabGroup :selectedIndex="props.control">
       <TabList>
         <div class="flex w-full border-b border-[#7C8495]">
           <div class="flex w-full select-none justify-start">
-            <div>
+            <div class="mb-[2px]">
+              <Tab v-slot="{ selected }"
+                ><button
+                  :class="[
+                    selected ? 'font-semibold text-primario' : 'text-black',
+                    '-mb-0.5 rounded-md px-14 py-2 hover:bg-[#E9F0FC]',
+                  ]"
+                >
+                  Folios
+                </button></Tab
+              >
               <Tab v-slot="{ selected }">
                 <button
                   :class="[
-                    selected
-                      ? 'border-[##C4C4C4] border-b-4 font-semibold text-black'
-                      : 'text-[#7C8495]',
-                    '-mb-0.5 px-8',
+                    selected ? 'font-semibold text-primario' : 'text-black',
+                    '-mb-0.5 rounded-md px-14 py-2 hover:bg-[#E9F0FC]',
                   ]"
                 >
                   Fallas
@@ -20,34 +30,19 @@
               <Tab v-slot="{ selected }"
                 ><button
                   :class="[
-                    selected
-                      ? 'border-[##C4C4C4] border-b-4 font-semibold text-black'
-                      : 'text-[#7C8495]',
-                    '-mb-0.5 px-8',
+                    selected ? 'font-semibold text-primario' : 'text-black',
+                    '-mb-0.5 rounded-md px-14 py-2 hover:bg-[#E9F0FC]',
                   ]"
                 >
                   Causas
                 </button></Tab
               >
-              <Tab v-slot="{ selected }"
+
+              <Tab v-if="false" v-slot="{ selected }"
                 ><button
                   :class="[
-                    selected
-                      ? 'border-[##C4C4C4] border-b-4 font-semibold text-black'
-                      : 'text-[#7C8495]',
-                    '-mb-0.5 px-8',
-                  ]"
-                >
-                  Folios
-                </button></Tab
-              >
-              <Tab v-slot="{ selected }"
-                ><button
-                  :class="[
-                    selected
-                      ? 'border-[##C4C4C4] border-b-4 font-semibold text-black'
-                      : 'text-[#7C8495]',
-                    '-mb-0.5 px-8',
+                    selected ? 'font-semibold text-primario' : 'text-black',
+                    '-mb-0.5 rounded-md px-14 py-2 hover:bg-[#E9F0FC]',
                   ]"
                 >
                   Relaciones
@@ -59,15 +54,17 @@
       </TabList>
       <TabPanels class="mt-6">
         <TabPanel class="flex h-full w-full"
-          ><Suspense><CatalogosFallas /></Suspense
+          ><Suspense><CatalogosFolios /></Suspense
         ></TabPanel>
         <TabPanel>
-          <Suspense>
-            <CatalogosCausas />
-          </Suspense>
+          <Suspense><CatalogosFallas /></Suspense>
         </TabPanel>
-        <TabPanel><Suspense><CatalogosFolios /></Suspense></TabPanel>
-        <TabPanel><Suspense><RelacionFallasCausas /></Suspense></TabPanel>
+        <TabPanel
+          ><Suspense> <CatalogosCausas /> </Suspense
+        ></TabPanel>
+        <TabPanel v-if="false"
+          ><Suspense><RelacionFallasCausas /></Suspense
+        ></TabPanel>
       </TabPanels>
     </TabGroup>
   </div>

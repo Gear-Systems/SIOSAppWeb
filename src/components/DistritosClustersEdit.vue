@@ -27,13 +27,21 @@
             leave-to="opacity-0 scale-95"
           >
             <DialogPanel
-              class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+              class="w-full max-w-[350px] transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
             >
               <DialogTitle
                 as="h3"
                 class="text-xl font-semibold leading-6 text-gray-900"
               >
-                Editar nombre
+              <div class="relative">
+                  <h2>Editar distrito / cluster</h2>
+                  <div
+                    @click="emit('closeModal')"
+                    class="absolute top-0 right-0 cursor-pointer"
+                  >
+                    <XCircleIcon class="h-6 w-6" />
+                  </div>
+                </div>
               </DialogTitle>
               <div class="mt-4 flex flex-col space-y-6">
                 <div class="flex basis-[20%] flex-col">
@@ -44,19 +52,28 @@
                   <label class="text-base" for="name">Nuevo</label>
                   <input
                     v-model="newName"
-                    class="rounded-xl border-none border-[#C4C4C4] bg-[#F2F2F2] font-semibold placeholder:font-normal focus:ring-0"
+                    class="max-w-sm rounded-md border-[1.5px] border-[#7C8495] placeholder:text-sm placeholder:text-black bg-transparent font-semibold placeholder:font-normal focus:ring-0"
                     type="text"
                     id="name"
                     required
                   />
                 </div>
-                <button
-                  type="button"
-                  class="rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                  @click="actualizar()"
-                >
-                  Guardar
-                </button>
+                <div class="flex justify-between">
+                  <button
+                    type="button"
+                    class="rounded-md py-2 px-6 text-primario hover:bg-[#E9F0FC]"
+                    @click="emit('closeModal')"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="button"
+                    class="rounded-md bg-primario py-2 px-6 font-light text-white hover:bg-primario/60"
+                    @click="actualizar()"
+                  >
+                    Guardar
+                  </button>
+                </div>
               </div>
             </DialogPanel>
           </TransitionChild>
@@ -83,6 +100,7 @@ import {
   child,
   remove,
 } from "firebase/database";
+import { XCircleIcon } from "@heroicons/vue/outline";
 
 const db = getDatabase();
 const props = defineProps(["isOpen", "data"]);

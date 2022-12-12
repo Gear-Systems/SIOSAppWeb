@@ -24,12 +24,16 @@
             <MenuItem v-slot="{ active }">
               <button
               @click="isOpen = true"
-                :class="[
-                  active ? 'bg-violet-500 text-white' : 'text-gray-900',
+              :class="[
+                  active ? 'bg-[#E9F0FC] text-primario' : 'text-black',
                   'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                 ]"
               >
-                <PencilIcon class="mr-2 h-5 w-5" aria-hidden="true" />
+                <EditarIco
+                  class="mr-2 h-6 w-5"
+                  aria-hidden="true"
+                  :colors="active ? '#2166E5' : '#101D2D'"
+                />
                 Editar
               </button>
             </MenuItem>
@@ -39,11 +43,15 @@
               <button
                 @click="eliminar"
                 :class="[
-                  active ? 'bg-violet-500 text-white' : 'text-gray-900',
+                  active ? 'bg-[#E9F0FC] text-primario' : 'text-black',
                   'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                 ]"
               >
-                <TrashIcon class="mr-2 h-5 w-5" aria-hidden="true" />
+                <BoteBasuraIco
+                  class="mr-2 h-5 w-5"
+                  aria-hidden="true"
+                  :colors="active ? '#2166E5' : '#101D2D'"
+                />
                 Eliminar
               </button>
             </MenuItem>
@@ -65,6 +73,8 @@ import {
 } from "@heroicons/vue/outline";
 import { getDatabase, ref as refDB, remove } from "firebase/database";
 import DistritosClustersEdit from "./DistritosClustersEdit.vue";
+import EditarIco from "./iconos/EditarIco.vue";
+import BoteBasuraIco from "./iconos/BoteBasuraIco.vue";
 
 const props = defineProps(["data"]);
 const db = getDatabase();

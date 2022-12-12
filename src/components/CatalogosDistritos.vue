@@ -1,18 +1,16 @@
 <template>
-  <div class="flex h-full w-full flex-col">
+  <div class="flex h-full w-full flex-col rounded-md bg-[#F8FAFB] py-6 px-14 shadow-md">
     <div>
       <TabGroup>
         <TabList>
           <div class="flex w-full border-b border-[#7C8495]">
             <div class="flex w-full select-none justify-start">
-              <div>
+              <div class="mb-[2px]">
                 <Tab v-slot="{ selected }">
                   <button
                     :class="[
-                      selected
-                        ? 'border-[##C4C4C4] border-b-4 font-semibold text-black'
-                        : 'text-[#7C8495]',
-                      '-mb-0.5 px-3',
+                      selected ? 'font-semibold text-primario' : 'text-black',
+                      '-mb-0.5 rounded-md px-14 py-2 hover:bg-[#E9F0FC]',
                     ]"
                   >
                     Distritos/Clusters
@@ -21,10 +19,8 @@
                 <Tab v-slot="{ selected }"
                   ><button
                     :class="[
-                      selected
-                        ? 'border-[##C4C4C4] border-b-4 font-semibold text-black'
-                        : 'text-[#7C8495]',
-                      '-mb-0.5 px-3',
+                      selected ? 'font-semibold text-primario' : 'text-black',
+                      '-mb-0.5 rounded-md px-14 py-2 hover:bg-[#E9F0FC]',
                     ]"
                   >
                     Relaciones
@@ -38,7 +34,9 @@
           <TabPanel class="flex h-full w-full"
             ><Suspense><DistritosClusters /></Suspense
           ></TabPanel>
-          <TabPanel><Suspense><RelacionDistritosClusters/></Suspense></TabPanel>
+          <TabPanel
+            ><Suspense><RelacionDistritosClusters /></Suspense
+          ></TabPanel>
         </TabPanels>
       </TabGroup>
     </div>

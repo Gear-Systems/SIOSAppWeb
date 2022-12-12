@@ -1,45 +1,77 @@
 <template>
-  <div class="mt-5 flex h-full w-full justify-center space-x-12">
+  <div class="mt-5 flex h-full w-full space-x-12 px-14 pb-8">
     <div class="flex justify-center">
       <div class="flex flex-col space-y-8">
         <h2 class="text-xl font-semibold">Agregar nuevo folio</h2>
         <!-- Nombre -->
         <div class="flex flex-col">
-          <label class="text-base" for="name">Nombre</label>
-          <input
-            v-model="formData.nombre"
-            class="max-w-sm rounded-xl border-none border-[#C4C4C4] bg-[#F2F2F2] font-semibold placeholder:font-normal focus:ring-0"
-            type="text"
-            id="name"
-          />
+          <label class="text-sm text-gray-500" for="name">Nombre</label>
+          <div class="relative">
+            <input
+              v-model="formData.nombre"
+              placeholder="Escribe el nombre del folio"
+              class="max-w-sm rounded-md border-[1.5px] border-[#7C8495] bg-transparent font-semibold placeholder:text-sm placeholder:font-normal placeholder:text-black focus:ring-0"
+              type="text"
+              id="name"
+            />
+            <p
+              v-for="error of $v.nombre.$errors"
+              :key="error.$uid"
+              class="absolute text-sm text-red-400"
+            >
+              {{ error.$message }}
+            </p>
+          </div>
         </div>
         <!-- ETA máximo -->
         <div class="flex flex-col">
-          <label class="text-base" for="eta">ETA Máximo</label>
-          <input
-            v-model="formData.ETAmax"
-            class="max-w-sm rounded-xl border-none border-[#C4C4C4] bg-[#F2F2F2] font-semibold placeholder:font-normal focus:ring-0"
-            type="number"
-            id="eta"
-          />
+          <label class="text-sm text-gray-500" for="eta">ETA Máximo</label>
+          <div class="relative">
+            <input
+              v-model="formData.ETAmax"
+              placeholder="000"
+              min="0"
+              class="max-w-sm rounded-md border-[1.5px] border-[#7C8495] bg-transparent font-semibold placeholder:text-sm placeholder:font-normal placeholder:text-black focus:ring-0"
+              type="number"
+              id="eta"
+            />
+            <p
+              v-for="error of $v.ETAmax.$errors"
+              :key="error.$uid"
+              class="absolute text-sm text-red-400"
+            >
+              {{ error.$message }}
+            </p>
+          </div>
         </div>
         <!-- SLA Máximo -->
         <div class="flex flex-col">
-          <label class="text-base" for="sla">SLA Máximo</label>
+          <label class="text-sm text-gray-500" for="sla">SLA Máximo</label>
           <input
             v-model="formData.SLAmax"
-            class="max-w-sm rounded-xl border-none border-[#C4C4C4] bg-[#F2F2F2] font-semibold placeholder:font-normal focus:ring-0"
+            placeholder="000"
+            min="0"
+            class="max-w-sm rounded-md border-[1.5px] border-[#7C8495] bg-transparent font-semibold placeholder:text-sm placeholder:font-normal placeholder:text-black focus:ring-0"
             type="number"
             id="sla"
           />
+          <div class="relative">
+            <p
+              v-for="error of $v.SLAmax.$errors"
+              :key="error.$uid"
+              class="absolute text-sm text-red-400"
+            >
+              {{ error.$message }}
+            </p>
+          </div>
         </div>
         <!-- tipo de -->
         <Listbox v-model="formData.tipoIncidencia">
           <div class="relative">
             <ListboxButton
-              class="shadow- relative w-full max-w-sm cursor-pointer rounded-xl border-none bg-[#F2F2F2] py-3 pl-3 pr-10 text-left font-semibold focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
+              class="shadow- relative w-full max-w-sm cursor-pointer rounded-md border-[1.5px] border-[#7C8495] py-3 pl-3 pr-10 text-left focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
             >
-              <span class="block truncate">{{ formData.tipoIncidencia }}</span>
+              <span class="block truncate">{{ formData.tipoIncidencia }} </span>
               <span
                 class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
               >
@@ -90,24 +122,24 @@
             </transition>
           </div>
         </Listbox>
-        <div class="flex w-full justify-center">
+        <div class="flex w-full justify-end">
           <button
             @click="guardar"
             type="button"
-            class="rounded-xl bg-[#F2F2F2] py-2 px-4"
+            class="rounded-md bg-primario py-2 px-6 font-light text-white hover:bg-primario/60"
           >
             Guardar
           </button>
         </div>
       </div>
     </div>
-    <div class="flex space-x-12">
+    <div class="flex space-x-12 w-full justify-end border-l-2">
       <div class="flex flex-col space-y-6">
-        <h2 class="text-xl font-semibold">Correctivo</h2>
+        <h2 class="text-xl font-semibold text-center">Correctivo</h2>
         <FoliosTable :foliosData="foliosData.correctivo" />
       </div>
       <div class="flex flex-col space-y-6">
-        <h2 class="text-xl font-semibold">Preventivo</h2>
+        <h2 class="text-xl font-semibold text-center">Preventivo</h2>
         <FoliosTable :foliosData="foliosData.preventivo" />
       </div>
     </div>
@@ -134,11 +166,12 @@ import {
   ListboxOption,
 } from "@headlessui/vue";
 import useVuelidate from "@vuelidate/core";
-import { required, maxLength } from "@vuelidate/validators";
+import { required, maxLength, helpers, minValue } from "@vuelidate/validators";
 import FoliosTable from "./FoliosTable.vue";
 
 const db = getDatabase();
 const data = reactive(["Preventivo", "Correctivo", "Todos"]);
+
 const formData = reactive({
   nombre: null,
   ETAmax: null,
@@ -154,11 +187,26 @@ const foliosData = reactive({
 
 const rules = computed(() => {
   return {
-    nombre: required,
-    ETAmax: required,
-    SLAmax: required,
-    tipoIncidencia: required,
-    descripcion: maxLength(255),
+    nombre: {
+      requiredName: helpers.withMessage("Campo requerido.", required),
+    },
+    ETAmax: {
+      requiredEta: helpers.withMessage("Campo requerido.", required),
+      requiredTimeMin: helpers.withMessage(
+        "El tiempo no puede ser menor a cero.",
+        minValue(0)
+      ),
+    },
+    SLAmax: {
+      requiredSla: helpers.withMessage("Campo requerido.", required),
+      requiredTimeMin: helpers.withMessage(
+        "El tiempo no puede ser menor a cero.",
+        minValue(0)
+      ),
+    },
+    tipoIncidencia: {
+      incidencia: helpers.withMessage("Campo requerido.", required),
+    },
   };
 });
 
@@ -203,8 +251,8 @@ onChildRemoved(refDB(db, `catalogo/tipoFolios/preventivo`), (snapshot) => {
 const $v = useVuelidate(rules, formData);
 
 // Guardar valor en base de datos
-const guardar = () => {
-  let result = $v.value.$validate();
+const guardar = async () => {
+  let result = await $v.value.$validate();
   let object = { correctivo: {}, preventivo: {} };
   if (result) {
     if (formData.tipoIncidencia === "Todos") {
@@ -216,6 +264,7 @@ const guardar = () => {
           ),
           { creado: serverTimestamp(), ETAmax: formData.ETAmax, SLAmax: formData.SLAmax }
         ).then((snapshot) => {
+          $v.value.$reset()
           Object.assign(formData, {
             nombre: null,
             ETAmax: null,
@@ -235,6 +284,7 @@ const guardar = () => {
         ),
         { creado: serverTimestamp(), ETAmax: formData.ETAmax, SLAmax: formData.SLAmax }
       ).then((snapshot) => {
+        $v.value.$reset()
         Object.assign(formData, {
           nombre: null,
           ETAmax: null,

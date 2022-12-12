@@ -7,12 +7,12 @@
             {{ $route.meta.title }}
           </div>
           <div class="flex w-full justify-center">
-            <div class="rounded-xl bg-white drop-shadow-md py-3 px-6">
+            <div class="rounded-xl bg-white drop-shadow-md py-3 px-4">
               <Tab v-slot="{ selected }">
                 <button
                   :class="[
                     selected ? 'border-none bg-secundario text-primario font-semibold' : '',
-                    'rounded-lg py-2 px-12',
+                    'rounded-lg py-3 px-8',
                   ]" 
                 >
                   Catálogos
@@ -22,7 +22,7 @@
                 ><button
                   :class="[
                     selected ? 'border-none bg-secundario text-primario font-semibold' : '',
-                    'rounded-lg py-2 px-12',
+                    'rounded-lg py-3 px-8',
                   ]"
                 >
                   Almacén

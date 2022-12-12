@@ -1,24 +1,41 @@
 <template>
   <div class="flex w-full flex-col space-y-12 pb-16">
-    <div class="flex w-full justify-center ">
+    <div class="flex w-full justify-center">
       <div class="grid grid-flow-col">
         <div v-for="(value, index) in options" class="flex w-full">
-          <button @click="cambiarComponente(value.component, value.control, index)"
-            class="h-full items-center font-semibold m-2 w-28 h-28 rounded-lg hover:bg-[#E9F0FC]">
-            <div class="flex flex-col items-center max-w-12">
-            <span class="flex justify-center items-center rounded-md  hover:bg-[#FFFFFF] bg-[#E9F0FC] w-10 h-10 shadow-md">
-              <component :is="value.componentIco" :color="value.active ? '#2166E5' : '#101D2D'" />
-            </span>
-            <span :class="[value.active ? 'text-primario' : 'text-[#101D2D]', 'mt-2 w-20 break-words text-base hover:text-primario']">
-              {{ value.name }}
-            </span>
-          </div>
+          <button
+            @click="cambiarComponente(value.component, value.control, index)"
+            class="group m-2 h-28 w-28 items-center rounded-lg font-semibold hover:bg-[#E9F0FC]"
+            @mouseover="value.hover = true"
+            @mouseleave="value.hover = false"
+          >
+            <div class="max-w-12 flex flex-col items-center">
+              <span
+                class="flex h-10 w-10 items-center justify-center rounded-md bg-[#E9F0FC] shadow-md group-hover:bg-[#FFFFFF]"
+              >
+                <component
+                  :is="value.componentIco"
+                  :color="value.active || value.hover ? '#2166E5' : '#101D2D'"
+                />
+              </span>
+              <span
+                :class="[
+                  value.active ? 'text-primario' : 'text-[#101D2D]',
+                  'mt-2 w-20 break-words text-base group-hover:text-primario',
+                ]"
+              >
+                {{ value.name }}
+              </span>
+            </div>
           </button>
         </div>
       </div>
     </div>
     <div class="flex h-full w-full pb-12">
-      <component :is="componenteSeleccionado.component" :control="componenteSeleccionado.control" />
+      <component
+        :is="componenteSeleccionado.component"
+        :control="componenteSeleccionado.control"
+      />
     </div>
   </div>
 </template>
@@ -36,51 +53,56 @@ import ConseptosIco from "./iconos/ConseptosIco.vue";
 import CausasIco from "./iconos/CausasIco.vue";
 import FoliosIco from "./iconos/FoliosIco.vue";
 
-const options = [
+const options = reactive([
   {
     name: "Usuarios",
     component: markRaw(Usuarios),
     componentIco: markRaw(UsuariosIco),
-    active: false,
+    active: true,
+    hover: false,
   },
   {
     name: "Folios",
     component: markRaw(CatalogosPestanas),
     componentIco: markRaw(FoliosIco),
-    control: 2,
+    control: 0,
     active: false,
+    hover: false,
   },
   {
     name: "Fallas",
     component: markRaw(CatalogosPestanas),
     componentIco: markRaw(FallasIco),
-    control: 0,
+    control: 1,
     active: false,
+    hover: false,
   },
   {
     name: "Causas",
     component: markRaw(CatalogosPestanas),
     componentIco: markRaw(CausasIco),
-    control: 1,
+    control: 2,
     active: false,
+    hover: false,
   },
   {
     name: "Concepto",
     component: markRaw(Conceptos),
     componentIco: markRaw(ConseptosIco),
     active: false,
+    hover: false,
   },
   {
     name: "Distritos/ Clusters",
     component: markRaw(Distritos),
     componentIco: markRaw(DistritosIco),
     active: false,
+    hover: false,
   },
+]);
 
-
-];
-
-const oldValue = ref(-1);
+const oldValue = ref(0);
+const isHover = ref(false);
 
 const componenteSeleccionado = reactive({
   component: markRaw(Usuarios),
@@ -88,9 +110,9 @@ const componenteSeleccionado = reactive({
 });
 
 const cambiarComponente = (componente, control, index) => {
-  console.log(options[index].active)
+  console.log(options[index].active);
   if (oldValue.value >= 0) {
-    options[oldValue.value].active = false
+    options[oldValue.value].active = false;
   }
   options[index].active = true;
   oldValue.value = index;
@@ -98,6 +120,4 @@ const cambiarComponente = (componente, control, index) => {
   componenteSeleccionado.component = componente;
   componenteSeleccionado.control = control;
 };
-
-
 </script>

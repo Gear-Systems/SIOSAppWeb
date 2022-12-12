@@ -4,9 +4,9 @@ import {
   connectAuthEmulator,
   onAuthStateChanged,
 } from "firebase/auth";
-import { getDatabase, connectDatabaseEmulator } from 'firebase/database';
-import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
-import { connectStorageEmulator, getStorage } from 'firebase/storage'
+import { getDatabase, connectDatabaseEmulator } from "firebase/database";
+import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
+import { connectStorageEmulator, getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBqOgizUSx7Sx4RudGJH841N0ODjepjMl4",
@@ -34,8 +34,15 @@ connectFunctionsEmulator(functions, "192.168.100.187", 5001);
 // connectFunctionsEmulator(functions, "localhost", 5001);
 
 const storage = getStorage();
-connectStorageEmulator(storage, "192.168.100.187", 9199)
+connectStorageEmulator(storage, "192.168.100.187", 9199);
 // connectStorageEmulator(storage, "localhost", 9199)
 
+const rol = auth.onAuthStateChanged(async (user) => {
+  let result = "";
+  if (user) {
+    result = (await user.getIdTokenResult()).claims.name;
+  }
+  return result;
+});
 
-export {auth, db, functions, storage}
+export { auth, db, functions, storage, rol };

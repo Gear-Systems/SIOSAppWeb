@@ -1,5 +1,5 @@
 <template>
-  <TransitionRoot appear :show="props.isOpen" as="template">
+  <TransitionRoot appear :show="openEditar" as="template">
     <Dialog as="div" @close="closeModal" class="relative z-10">
       <TransitionChild
         as="template"
@@ -33,18 +33,20 @@
                 as="h3"
                 class="text-lg font-medium leading-6 text-gray-900"
               >
-                Registrar nuevo usuario
+                Editar usuario
               </DialogTitle>
               <div>
                 <div class="mb-4 max-h-[70px] overflow-y-auto">
                   <ul>
-                    <li v-for="error in functionError" class="text-sm text-red-400">{{error}}</li>
+                    <li
+                      v-for="error in functionError"
+                      class="text-sm text-red-400"
+                    >
+                      {{ error }}
+                    </li>
                   </ul>
                 </div>
-                <form
-                  @submit.prevent="crearUsuario"
-                  class="flex w-full flex-col justify-between"
-                >
+                <form class="flex w-full flex-col justify-between">
                   <div class="flex justify-between">
                     <!-- Datos -->
                     <div class="basis-[50%]">
@@ -59,52 +61,19 @@
                             >Nombre</label
                           >
                           <input
-                            v-model="userData.name"
+                            v-model="infoUser.displayName"
                             class="max-w-sm rounded-md border-2 border-[#C4C4C4] font-semibold placeholder:font-normal focus:ring-0"
                             type="text"
                             id="name"
                             placeholder="Nombre"
                           />
                           <p
-                            v-for="error of $v.name.$errors"
+                            v-for="error of $v.displayName.$errors"
                             :key="error.$uid"
                             class="text-sm text-red-400"
                           >
                             {{ error.$message }}
                           </p>
-                        </div>
-                        <!-- apellido -->
-                        <div class="flex flex-col">
-                          <label class="text-sm text-[#C4C4C4]" for="lastname"
-                            >Apellido</label
-                          >
-                          <input
-                            v-model="userData.lastname"
-                            class="max-w-sm rounded-md border-2 border-[#C4C4C4] font-semibold placeholder:font-normal focus:ring-0"
-                            type="text"
-                            id="lastname"
-                            placeholder="Apellido"
-                          />
-                          <p
-                            v-for="error of $v.lastname.$errors"
-                            :key="error.$uid"
-                            class="text-sm text-red-400"
-                          >
-                            {{ error.$message }}
-                          </p>
-                        </div>
-                        <!-- correo -->
-                        <div class="flex flex-col">
-                          <label class="text-sm text-[#C4C4C4]" for="email"
-                            >Correo</label
-                          >
-                          <input
-                            v-model="userData.email"
-                            class="max-w-sm rounded-md border-2 border-[#C4C4C4] font-semibold placeholder:font-normal focus:ring-0"
-                            type="email"
-                            id="email"
-                            placeholder="Correo"
-                          />
                         </div>
                         <!-- contraseña -->
                         <div class="flex flex-col">
@@ -112,7 +81,7 @@
                             >Contraseña</label
                           >
                           <input
-                            v-model="userData.password"
+                            v-model="infoUser.password"
                             class="max-w-sm rounded-md border-2 border-[#C4C4C4] font-semibold placeholder:font-normal focus:ring-0"
                             type="password"
                             id="password"
@@ -125,47 +94,90 @@
                             {{ error.$message }}
                           </p>
                         </div>
-                        <!-- confirmar contraseña -->
-                        <div class="flex flex-col">
-                          <label
-                            class="text-sm text-[#C4C4C4]"
-                            for="password_confirm"
-                            >Confirmar contraseña</label
+                        <div class="flex max-w-sm justify-end">
+                          <button
+                            @click="actualizarUsuario"
+                            :class="[
+                              'flex min-w-[100px] justify-center rounded-lg bg-[#2166E5] py-2 px-4 font-semibold text-white',
+                            ]"
+                            type="button"
                           >
-                          <input
-                            v-model="userData.password_confirm"
-                            class="max-w-sm rounded-md border-2 border-[#C4C4C4] font-semibold placeholder:font-normal focus:ring-0"
-                            type="password"
-                            id="password_confirm"
-                          />
-                          <p
-                            v-for="error of $v.password_confirm.$errors"
-                            :key="error.$uid"
-                            class="text-sm text-red-400"
-                          >
-                            {{ error.$message }}
-                          </p>
+                            <svg
+                              v-if="loading"
+                              aria-hidden="true"
+                              class="duration-900 h-6 w-7 animate-spin fill-secundario text-gray-200 dark:text-gray-600"
+                              viewBox="0 0 100 101"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                fill="currentColor"
+                              />
+                              <path
+                                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                fill="currentFill"
+                              />
+                            </svg>
+                            <div v-else>Guardar</div>
+                          </button>
                         </div>
+                        <SwitchGroup>
+                          <SwitchLabel class="mr-4"
+                            >Login de usuario</SwitchLabel
+                          >
+                          <Switch
+                            v-model="enabled"
+                            :class="enabled ? 'bg-primario' : 'bg-[#90B3F2]'"
+                            class="relative inline-flex h-[20px] w-[40px] shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
+                          >
+                            <span class="sr-only">Use setting</span>
+                            <span
+                              aria-hidden="true"
+                              :class="
+                                enabled ? 'translate-x-5' : 'translate-x-0'
+                              "
+                              class="pointer-events-none inline-block h-[15px] w-[15px] transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out"
+                            />
+                          </Switch>
+                        </SwitchGroup>
                       </div>
                     </div>
                     <!-- Rol -->
                     <div class="basis-[50%]">
-                      <div class="flex flex-col">
-                        <h2>Rol</h2>
-                        <div class="h-0.5 w-2/3 bg-[#D9D9D9]"></div>
+                      <div class="flex justify-between">
+                        <div class="relative w-[75%]">
+                          <h2>Rol</h2>
+                          <div class="h-0.5 w-full bg-[#D9D9D9]"></div>
+                          <div class="absolute -top-3 right-0">
+                            <button
+                              @click="updateRolFunc"
+                              :disabled="!updatingRol"
+                              type="button"
+                              :class="[
+                                'flex min-w-[100px] justify-center rounded-lg bg-[#2166E5] py-1 px-3 font-semibold text-white',
+                                updatingRol
+                                  ? 'cursor-pointer bg-[#2166E5]'
+                                  : 'cursor-not-allowed bg-[#2166E5]/70',
+                              ]"
+                            >
+                              Guardar rol
+                            </button>
+                          </div>
+                        </div>
                       </div>
                       <!-- Rol select -->
                       <div class="mt-6">
                         <label class="text-sm text-[#C4C4C4]" for="rol"
                           >Rol</label
                         >
-                        <Listbox v-model="userData.rol">
+                        <Listbox v-model="infoUser.rol">
                           <div class="relative">
                             <ListboxButton
                               class="shadow- relative w-full max-w-sm cursor-pointer rounded-md border-2 border-[#C4C4C4] bg-white py-2 pl-3 pr-10 text-left font-semibold focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
                             >
                               <span class="block truncate">{{
-                                userData.rol.name
+                                infoUser.rol.name
                               }}</span>
                               <span
                                 class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
@@ -222,17 +234,13 @@
                             </transition>
                           </div>
                         </Listbox>
-                        <p
-                          v-for="error of $v.rol.name.$errors"
-                          :key="error.$uid"
-                          class="text-sm text-red-400"
-                        >
-                          {{ error.$message }}
-                        </p>
                       </div>
                       <!-- relacion supervisor -->
                       <div
-                        v-if="userData.rol.name === 'Supervisor'"
+                        v-if="
+                          infoUser.rol.name === 'Supervisor' &&
+                          infoUser.oldRol.name === 'Supervisor'
+                        "
                         class="mt-6 flex h-auto w-full justify-between"
                       >
                         <!-- distritos -->
@@ -241,7 +249,7 @@
                             <label class="text-sm text-[#C4C4C4]" for="rol"
                               >Distritos</label
                             >
-                            <Listbox v-model="userData.distritos" multiple>
+                            <Listbox v-model="infoUser.distritos" multiple>
                               <div class="relative">
                                 <ListboxButton
                                   class="shadow- relative max-w-xs cursor-pointer rounded-md border-2 border-[#C4C4C4] bg-white py-2 pl-3 pr-10 text-left font-semibold focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
@@ -270,8 +278,9 @@
                                     <ListboxOption
                                       v-slot="{ active, selected }"
                                       v-for="distrito in distritosData"
-                                      :key="distrito"
-                                      :value="distrito"
+                                      :key="distrito.name"
+                                      :value="distrito.name"
+                                      :disabled="distrito.disabled"
                                       as="template"
                                     >
                                       <li
@@ -289,7 +298,7 @@
                                               : 'font-normal',
                                             'block w-full truncate',
                                           ]"
-                                          >{{ distrito }}</span
+                                          >{{ distrito.name }}</span
                                         >
                                         <span
                                           v-if="selected"
@@ -307,7 +316,7 @@
                               </div>
                             </Listbox>
                           </div>
-                          <!-- List distritos -->
+                          <!-- Lista distritos -->
                           <div
                             class="mt-6 h-[150px] max-h-[150px] overflow-y-auto"
                           >
@@ -317,10 +326,13 @@
                               </div>
                               <div class="h-[1px] w-40 bg-[#C4C4C4]/50"></div>
                               <li
-                                v-for="(value, index) in userData.distritos"
+                                v-for="(value, index) in infoUser.distritos"
                                 class="flex items-center space-x-4"
                               >
-                                <div @click="eliminarDistrito(index)">
+                                <div
+                                  @click="eliminarDistrito(index)"
+                                  class="cursor-pointer"
+                                >
                                   <XCircleIcon
                                     class="h-5 w-5"
                                     aria-hidden="true"
@@ -337,7 +349,7 @@
                             <label class="text-sm text-[#C4C4C4]" for="rol"
                               >Técnicos</label
                             >
-                            <Listbox v-model="userData.tecnicos" multiple>
+                            <Listbox v-model="infoUser.tecnicos" multiple>
                               <div class="relative">
                                 <ListboxButton
                                   class="shadow- relative max-w-xs cursor-pointer rounded-md border-2 border-[#C4C4C4] bg-white py-2 pl-3 pr-10 text-left font-semibold focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
@@ -368,6 +380,7 @@
                                       v-for="tecnico in tecnicosData"
                                       :key="tecnico.name"
                                       :value="tecnico"
+                                      :disabled="tecnico.disabled"
                                       as="template"
                                     >
                                       <li
@@ -412,10 +425,13 @@
                             <div class="h-[1px] w-40 bg-[#C4C4C4]/50"></div>
                             <ul>
                               <li
-                                v-for="(value, index) in userData.tecnicos"
+                                v-for="(value, index) in infoUser.tecnicos"
                                 class="flex items-center space-x-4"
                               >
-                                <div @click="eliminarTecnico(index)">
+                                <div
+                                  @click="eliminarTecnico(index)"
+                                  class="cursor-pointer"
+                                >
                                   <XCircleIcon
                                     class="h-5 w-5"
                                     aria-hidden="true"
@@ -438,14 +454,6 @@
                     >
                       Cancelar
                     </button>
-                    <button
-                      :class="[
-                        'rounded-lg bg-[#2166E5] py-2 px-4 font-semibold text-white',
-                      ]"
-                      type="submit"
-                    >
-                      Crear usuario
-                    </button>
                   </div>
                 </form>
               </div>
@@ -458,7 +466,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch } from "vue";
+import { ref, reactive, computed, watch, onMounted } from "vue";
 import {
   TransitionRoot,
   TransitionChild,
@@ -473,6 +481,8 @@ import {
 import { ChevronDownIcon, CheckIcon, SelectorIcon } from "@heroicons/vue/solid";
 import { XCircleIcon } from "@heroicons/vue/outline";
 import useVuelidate from "@vuelidate/core";
+import { auth, functions } from "@/firebase/firebase";
+import { updateProfile, updatePassword } from "firebase/auth";
 import {
   helpers,
   required,
@@ -490,15 +500,29 @@ import {
   query,
   equalTo,
   orderByChild,
-  
+  update,
+  remove,
 } from "@firebase/database";
+import { Switch, SwitchGroup, SwitchLabel } from "@headlessui/vue";
 
-const props = defineProps(["isOpen"]);
-const emit = defineEmits(["closeModal"]);
-const functions = getFunctions(); //Instancia de firebase function
-const addUser = httpsCallable(functions, "addUser"); // Función para crear usuario desde firebase function
+const functionsFirebase = {
+  disable: httpsCallable(functions, "disableUser"),
+  enable: httpsCallable(functions, "enableUser"),
+  updateRol: httpsCallable(functions, "updateRol"),
+};
+const enabled = ref(false);
+const props = defineProps(["openEditar", "data"]);
+const emit = defineEmits(["closeModalEditar"]);
+const updateUser = httpsCallable(functions, "updateUser"); // Función para crear usuario desde firebase function
 const db = getDatabase();
 const functionError = ref([]);
+const loading = ref(false);
+const controlState = ref(false);
+const updatingRol = ref(false);
+const control = reactive({
+  distritos: false,
+  tecnicos: false,
+});
 
 // Data Rol
 const rolData = ref({
@@ -516,21 +540,27 @@ const distritosData = reactive([]);
 
 // User Data
 const userData = reactive({
-  name: null,
-  lastname: null,
-  email: null,
+  name: "prueba",
   password: null,
-  password_confirm: null,
   rol: { name: "Rol" },
   distritos: [],
   tecnicos: [],
 });
 
+const infoUser = reactive({
+  displayName: props.data.name,
+  password: "",
+  rol: { name: props.data.rol },
+  oldRol: { name: props.data.rol },
+  userKey: props.data.key,
+  distritos: [],
+  tecnicos: [],
+});
 
 // Validaciones
 const rules = computed(() => {
   return {
-    name: {
+    displayName: {
       requiredName: helpers.withMessage("Campo requerido.", required),
       minLengthValue: helpers.withMessage(
         "El campo no puede ser menor a 2 caracteres.",
@@ -538,120 +568,304 @@ const rules = computed(() => {
       ),
       maxLengthValue: helpers.withMessage(
         "El campo tiene demasiados caracteres",
-        maxLength(20)
+        maxLength(50)
       ),
     },
-    lastname: {
-      requiredLastname: helpers.withMessage("Campo requerido", required),
-      minLengthValue: helpers.withMessage(
-        "El campo no puede ser menor a 2 caracteres.",
-        minLength(2)
-      ),
-      maxLengthValue: helpers.withMessage(
-        "El campo tiene demasiados caracteres",
-        maxLength(20)
-      ),
-    },
-    email: { required },
     password: {
-      requiredPassword: helpers.withMessage("Campo requerido", required),
       minLengthValue: helpers.withMessage(
         "El campo no puede ser menor a 8 caracteres.",
         minLength(8)
       ),
     },
-    password_confirm: {
-      sameAsPassword: helpers.withMessage(
-        "Las contraseñas no coinciden",
-        sameAs(userData.password)
-      ),
-    },
-    rol: {
-      name: {
-        notSameAs: helpers.withMessage("Selecciona un rol", not(sameAs("Rol"))),
-      },
-    },
   };
 });
 
-const $v = useVuelidate(rules, userData);
+const $v = useVuelidate(rules, infoUser);
 
-// Función para crear usuario
-const crearUsuario = async () => {
-  let result = await $v.value.$validate();
-  if (!result) {
-    return;
-  }
-  addUser(userData)
-    .then((result) => {
-      alert("Usuario creado correctamente.");
-      closeModal();
-    })
-    .catch((error) => {
-      console.log(error.code);
-      console.log(error.message);
-      console.log(error.details);
-      if(error.details.code === 'auth/email-already-exists') {
-        functionError.value.push("El correo ya está en uso.");
-      }
-    });
-};
+const fetchData = async () => {
+  tecnicosData.splice(0);
+  infoUser.distritos.splice(0);
+  infoUser.tecnicos.splice(0);
 
-// Observar si el rol es despacho
-watch(
-  () => {
-    return userData.rol;
-  },
-  async () => {
-    tecnicosData.splice(0);
-    userData.distritos.splice(0);
-    userData.tecnicos.splice(0);
-    const result = query(refDB(db, "usuarios"), orderByChild("rol"), equalTo("Técnico"));
-    // obtener técnicos
-    await get(
-      query(refDB(db, "usuarios"), orderByChild("rol"), equalTo("Técnico"))
-    ).then((snapshot) => {
-      snapshot.forEach((elements) => {
-        tecnicosData.push({
-          key: elements.key,
-          name: elements.val().displayName,
-        });
+  const result = query(
+    refDB(db, "usuarios"),
+    orderByChild("rol"),
+    equalTo("Técnico")
+  );
+
+  // Obtener técnicos
+  await get(
+    query(refDB(db, "usuarios"), orderByChild("rol"), equalTo("Técnico"))
+  ).then((snapshot) => {
+    snapshot.forEach((elements) => {
+      tecnicosData.push({
+        key: elements.key,
+        name: elements.val().displayName,
+        disabled: false,
       });
     });
-    // obtener distritos
-    await get(refDB(db, `catalogo/distritos`)).then((snapshot) => {
-      snapshot.forEach((elements) => {
-        distritosData.push(elements.key)
-      })
-    })
+  });
+
+  // obtener distritos
+  await get(refDB(db, `catalogo/distritos`)).then((snapshot) => {
+    snapshot.forEach((elements) => {
+      distritosData.push({ name: elements.key, disabled: false });
+    });
+  });
+};
+
+await fetchData();
+
+onMounted(async () => {
+  enabled.value = !props.data.disabled;
+  infoUser.name = props.data.displayName;
+  infoUser.rol = rolData.value.roles.filter((element) => {
+    if (element.name === props.data.rol) return element;
+  })[0];
+
+  if (props.data.rol === "Supervisor") {
+    await get(refDB(db, `catalogo/supervisores/${props.data.key}`)).then(
+      (snapshot) => {
+        if (snapshot.hasChild("distritos")) {
+          infoUser.distritos = snapshot.val().distritos;
+          for (let distritoDB in snapshot.val().distritos) {
+            for (let distrito in distritosData) {
+              if (
+                distritosData[distrito].name ===
+                snapshot.val().distritos[distritoDB]
+              ) {
+                distritosData[distrito].disabled = true;
+              }
+            }
+          }
+        }
+      }
+    );
+    await get(refDB(db, `catalogo/supervisores/${props.data.key}`)).then(
+      (snapshot) => {
+        if (snapshot.hasChild("tecnicos")) {
+          for (let tecnico in snapshot.val().tecnicos) {
+            infoUser.tecnicos.push(
+              tecnicosData.filter((element) => element.key.includes(tecnico))[0]
+            );
+          }
+        }
+      }
+    );
   }
-);
+});
 
 // Eliminar técnico de la lista
-const eliminarTecnico = (index) => {
-    userData.tecnicos.splice(index, 1);
-}
+const eliminarTecnico = async (index) => {
+  for (let tecnico in tecnicosData) {
+    if (tecnicosData[tecnico].name === infoUser.tecnicos[index].name) {
+      tecnicosData[tecnico].disabled = false;
+    }
+  }
+  await remove(
+    refDB(
+      db,
+      `catalogo/supervisores/${infoUser.userKey}/tecnicos/${infoUser.tecnicos[index].key}`
+    )
+  );
+  infoUser.tecnicos.splice(index, 1);
+};
 
 // Eliminar distritos de la lista
-const eliminarDistrito = (index) => {
-    userData.distritos.splice(index, 1);
-}
+const eliminarDistrito = async (index) => {
+  for (let distrito in distritosData) {
+    if (distritosData[distrito].name === infoUser.distritos[index]) {
+      distritosData[distrito].disabled = false;
+    }
+  }
+  console.log(infoUser.distritos[index]);
+
+  await remove(
+    refDB(db, `catalogo/distritos/Distrito 2/supervisores/${infoUser.userKey}`)
+  );
+  infoUser.distritos.splice(index, 1);
+  await remove(
+    refDB(db, `catalogo/supervisores/${infoUser.userKey}/distritos`)
+  );
+  await update(
+    refDB(db, `catalogo/supervisores/${infoUser.userKey}/distritos`),
+    { ...infoUser.distritos }
+  );
+};
 
 const resetModal = () => {
-  delete userData.distritos;
-  delete userData.email;
-  delete userData.lastname;
-  delete userData.name;
-  delete userData.password;
-  delete userData.password_confirm;
-  userData.rol = { name: "Rol" };
-  userData.distritos = [];
-  userData.tecnicos = [];
+  delete infoUser.distritos;
+  delete infoUser.email;
+  delete infoUser.lastname;
+  delete infoUser.name;
+  delete infoUser.password;
+  delete infoUser.password_confirm;
+  infoUser.rol = { name: "Rol" };
+  infoUser.distritos = [];
+  infoUser.tecnicos = [];
   $v.value.$reset();
 };
 
 const closeModal = () => {
+  emit("closeModalEditar");
   resetModal();
-  emit("closeModal");
 };
+
+const actualizarUsuario = async () => {
+  loading.value = true;
+  let result = await $v.value.$validate();
+  if (result) {
+    await updateUser({
+      userKey: infoUser.userKey,
+      displayName: infoUser.displayName,
+      password: infoUser.password,
+    })
+      .then(async (result) => {
+        infoUser.password = "";
+        loading.value = false;
+        await update(refDB(db, `usuarios/${infoUser.userKey}`), {
+          displayName: infoUser.displayName,
+          updated: new Date().getTime(),
+        });
+      })
+      .catch((error) => {
+        infoUser.password = "";
+        loading.value = false;
+        console.log(error);
+      });
+  }
+  loading.value = false;
+};
+
+watch(enabled, async () => {
+  if (enabled.value === true) {
+    await functionsFirebase.enable(infoUser.userKey);
+  } else {
+    await functionsFirebase.disable(infoUser.userKey);
+  }
+  controlState.value = true;
+});
+
+watch(
+  () => infoUser.rol,
+  (newValue, oldValue) => {
+    console.log(newValue.name, infoUser.oldRol.name);
+    if (newValue.name != infoUser.oldRol.name) {
+      updatingRol.value = true;
+    } else {
+      updatingRol.value = false;
+    }
+  }
+);
+
+const updateRolFunc = async () => {
+  let result = confirm("Presiona el botón");
+  if (!result) {
+    infoUser.rol = rolData.value.roles.filter((element) => {
+      if (element.name === props.data.rol) return element;
+    })[0];
+  } else {
+    await functionsFirebase
+      .updateRol({ uid: infoUser.userKey, rol: infoUser.rol })
+      .then(async (result) => {
+        if (infoUser.rol.name === "Supervisor")
+          await update(refDB(db, `catalogo/supervisores/${infoUser.userKey}`), {
+            nombre: infoUser.displayName,
+            creado: new Date().getTime(),
+          });
+
+        // Si era supervisor eliminar relaciones
+        if (
+          infoUser.oldRol.name === "Supervisor" &&
+          infoUser.rol.name != "Supervisor"
+        ) {
+          await remove(refDB(db, `catalogo/supervisores/${infoUser.userKey}`));
+          infoUser.distritos.forEach((distrito) => {
+            remove(
+              refDB(
+                db,
+                `catalogo/distritos/${distrito}/supervisores/${infoUser.userKey}`
+              )
+            );
+          });
+        }
+        // Si era técnico eliminar relaciones
+        if (
+          infoUser.oldRol.name === "Técnico" &&
+          infoUser.rol.name != "Técnico"
+        ) {
+          await get(refDB(db, `catalogo/supervisores`)).then((snapshot) => {
+            snapshot.forEach((element) => {
+              if (element.hasChild("tecnicos")) {
+                for (let tecnico in element.val().tecnicos) {
+                  if (tecnico === infoUser.userKey) {
+                    remove(
+                      refDB(
+                        db,
+                        `catalogo/supervisores/${element.key}/tecnicos/${tecnico}`
+                      )
+                    );
+                  }
+                }
+              }
+            });
+          });
+        }
+        updatingRol.value = false;
+        infoUser.oldRol.name = infoUser.rol.name;
+      });
+  }
+};
+
+watch(
+  () => infoUser.distritos,
+  async (newValue, oldValue) => {
+      if (newValue.length > oldValue.length) {
+        await update(
+          refDB(
+            db,
+            `catalogo/distritos/${newValue[newValue.length - 1]}/supervisores/${
+              infoUser.userKey
+            }`
+          ),
+          { nombre: infoUser.displayName }
+        );
+        await update(
+          refDB(db, `catalogo/supervisores/${infoUser.userKey}/distritos`),
+          { ...infoUser.distritos }
+        );
+        for (let distrito in distritosData) {
+          if (distritosData[distrito].name === newValue[newValue.length - 1]) {
+            distritosData[distrito].disabled = true;
+          }
+        }
+      }
+  }
+);
+
+watch(
+  () => infoUser.tecnicos,
+  async (newValue, oldValue) => {
+    if (newValue.length > oldValue.length) {
+      await update(
+        refDB(
+          db,
+          `catalogo/supervisores/${infoUser.userKey}/tecnicos/${
+            newValue[newValue.length - 1].key
+          }`
+        ),
+        { nombre: newValue[newValue.length - 1].name }
+      );
+      for (let tecnico in tecnicosData) {
+        console.log(
+          tecnicosData[tecnico].name,
+          newValue[newValue.length - 1].name
+        );
+        if (tecnicosData[tecnico].name === newValue[newValue.length - 1].name) {
+          tecnicosData[tecnico].disabled = true;
+        }
+      }
+    }
+  }
+);
 </script>
