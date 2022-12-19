@@ -118,6 +118,7 @@
           </TransitionRoot>
         </li>
         <li
+        @click="$router.push({ name: 'reportes' })"
           class="font-medium flex cursor-pointer items-center justify-center space-x-4 rounded-md p-2 transition-all duration-600"
           :class="[$route.path == '/reportes' ? 'bg-secundario text-primario' : '']"
         >

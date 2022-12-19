@@ -208,6 +208,14 @@
                         />
                       </div>
                     </div>
+                    <div class="ml-2 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]">
+                      Turno
+                        <ListSelect
+                          :dataArray="infoData.turnos"
+                          :label="'Selecciona un turno'"
+                          @inputValue="infoSelected.turno = $event"
+                        />
+                      </div>
                   </div>
                 </div>
                 <div class="mt-4 flex justify-around">
@@ -275,12 +283,12 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch } from "vue";
+import { ref, reactive, computed, watch, onMounted } from "vue";
 import { useStore } from "vuex";
 import { XCircleIcon } from "@heroicons/vue/outline";
 import { ref as refDB, get, set, child } from "@firebase/database";
 import { httpsCallable } from "firebase/functions";
-import { db, functions } from "@/firebase/firebase";
+import { db, functions, auth } from "@/firebase/firebase";
 import ListSelect from "@/components/ListSelect.vue";
 import ModalManejoFolio from "@/views/Correctivo/ModalManejoFolio.vue";
 import { useRouter } from "vue-router";
@@ -293,6 +301,7 @@ import {
   Switch,
 } from "@headlessui/vue";
 import { useFolios } from "@/store/folios";
+import { onAuthStateChanged } from "firebase/auth";
 
 const folios = useFolios();
 const router = useRouter();
@@ -329,6 +338,7 @@ const infoData = reactive({
   fallas: [],
   causas: [],
   tecnicos: [],
+  turnos: ["Dia", "Noche"]
 });
 
 const infoSelected = reactive({
@@ -341,6 +351,8 @@ const infoSelected = reactive({
   supervisores: "",
   tecnicos: "",
   olt: "",
+  turno: "",
+  despacho: '',
 });
 
 const fetchData = async () => {
@@ -438,6 +450,12 @@ const validarExistencia = async (value) => {
     error: false,
   });
 };
+
+onAuthStateChanged(auth, (user) => {
+  if(user) {
+    infoSelected.despacho = user.uid
+  }
+})
 
 watch(infoSelected, async () => {
   if (

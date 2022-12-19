@@ -19,57 +19,24 @@
       }}</span>
       <ExclamationCircleIcon class="ml-2 h-4 w-4 text-red-400" />
     </div>
-    <div class="mb-3> mt-5 flex w-[100%]">
-      <div
-        :class="props.incidencia == 1 ? 'flex w-[50%] flex-col' : 'hidden'"
-        class="items-center justify-center"
-      >
-        <span class="mb-2 font-semibold">Foto después</span>
-        <div
-          :class="errores.fotoDespues ? 'border-2 border-red-400' : ''"
-          class="flex h-36 w-[50%] items-center justify-center rounded-xl bg-gray-100"
-        >
-          <label
-            v-if="!fotos.despues.file"
-            for="foto-despues"
-            class="flex w-full cursor-pointer justify-around"
-          >
-            <div
-              @change="selectFileDespues"
-              class="flex w-[65%] justify-around rounded-md bg-gray-400 py-1 px-4 text-white"
-            >
-              <input
-                ref="file1"
-                type="file"
-                accept=".png,.jpg,.heic"
-                class="file:border file:border-solid"
-                id="foto-despues"
-                hidden
-              />
-              <UploadIcon class="h-5 w-5 text-lg"></UploadIcon>
-              <span>Subir</span>
-            </div>
-          </label>
-          <div v-else class="flex h-28 w-[80%] justify-around">
-            <img :src="fotos.despues.file64" class="rounded-md" />
-          </div>
-        </div>
-        <div
-          v-if="fotos.despues.file"
-          class="mt-2 flex w-[70%] items-center rounded-md bg-gray-200 py-2"
-        >
-          <div
-            class="ml-1 flex w-[100%] justify-between truncate px-2 text-sm"
-            :title="fotos.despues.file.name"
-          >
-            {{ fotos.despues.file.name }}
-            <TrashIcon
-              class="mr-1 h-5 w-5 cursor-pointer"
-              @click="eliminarImgDespues"
-            ></TrashIcon>
-          </div>
-        </div>
-      </div>
+    <!-- Si el tipo de folio es diferente a OT -->
+    <div
+      v-if="props.data.tipoFolio != 'OT'"
+      class="mb-4 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]"
+    >
+      OT
+      <input
+        v-model="infoCapturada.ot"
+        class="mt-1 h-10 w-[50%] rounded-lg border-2 border-[#E5E5E5] text-black"
+        type="text"
+        name="ot"
+        id="ot"
+      />
+    </div>
+    <div class="my-3 flex w-[100%] items-center">
+      <div class="flex w-[95%] border-b-2 border-gris-claro/30"></div>
+    </div>
+    <div class="mb-3 mt-5 flex w-[100%]">
       <div
         :class="
           props.incidencia == 1 ? 'flex w-[50%] flex-col' : 'flex w-[100%]'
@@ -404,7 +371,7 @@
                 <td class="items-center">
                   <input
                     @keypress="isNumber($event)"
-                    @change="item.qty === '' ? (item.qty = 1) : item.qty"
+                    @change="item.qty === '' || item.qty == 0 ? (item.qty = 1) : item.qty"
                     v-model="item.qty"
                     class="my-1 h-8 w-[100%] justify-center rounded-lg border-2 border-gris-claro text-center font-semibold text-black"
                     type="number"
@@ -523,7 +490,7 @@
                 <td class="items-center">
                   <input
                     @keypress="isNumber($event)"
-                    @change="item.qty === '' ? (item.qty = 1) : item.qty"
+                    @change="item.qty === '' || item.qty == 0 ? (item.qty = 1) : item.qty"
                     v-model="item.qty"
                     class="my-1 h-8 w-[100%] justify-center rounded-lg border-2 border-gris-claro text-center font-semibold text-black"
                     type="number"
@@ -785,6 +752,7 @@
                 <td class="items-center">
                   <input
                     @keypress="isNumber($event)"
+                    @change="item.qty === '' || item.qty == 0 ? (item.qty = 1) : item.qty"
                     v-model="item.qty"
                     class="my-1 h-8 w-[100%] justify-center rounded-lg border-2 border-gris-claro text-center font-semibold text-black"
                     type="number"
@@ -963,6 +931,7 @@ const validacionHorario = ref([false, false, false]);
 
 const infoCapturada = ref({
   justificacion: "Selecciona una justificación",
+  ot: "",
   tiempoMuerto: store.state.a.tiempoMuerto,
   eta: await calculoEta(
     route.params.id,
@@ -1177,6 +1146,17 @@ const eliminarCoordenada = (n) => {
 };
 
 const openModalConfirmacion = () => {
+  if (infoCapturada.value.ot === "" && props.data.tipoFolio != "OT") {
+    alert("La OT es requerida para finalizar el folio.");
+    return false;
+  }
+  if (
+    infoCapturada.value.conceptos.descripcion.length === 0 &&
+    infoCapturada.value.conceptos.cab24.filter(Boolean).length === 0
+  ) {
+    alert("Se debe colocar al menos un concepto.");
+    return false;
+  }
   modalConfirmacion.value = true;
 };
 
@@ -1200,8 +1180,10 @@ const guardarFechaFunc = (event) => {
 };
 
 const guardarSla = async (sla) => {
-  await update(refDB(db, `folios/correctivos/${route.params.id}`), { sla: sla })
-}
+  await update(refDB(db, `folios/correctivos/${route.params.id}`), {
+    sla: sla,
+  });
+};
 
 const sla = computed(() => {
   let fecha1 = moment(props.data.horaInicio);
@@ -1217,19 +1199,21 @@ const sla = computed(() => {
     let hora = horaCompleta.split(".")[0];
     let minutos = ((0 + "." + horaCompleta.split(".")[1]) * 60).toFixed(0);
 
-    guardarSla(`${hora}:${
-      minutos >= 0 && minutos <= 9 ? `0${minutos.toString()}` : minutos
-    }`)
+    guardarSla(
+      `${hora}:${
+        minutos >= 0 && minutos <= 9 ? `0${minutos.toString()}` : minutos
+      }`
+    );
     // minutos -= infoCapturada.value.tiempoMuerto;
     return `${hora}:${
       minutos >= 0 && minutos <= 9 ? `0${minutos.toString()}` : minutos
     }`;
   }
   if (horaCompleta < 1) {
-    guardarSla(parseInt(horaCompleta * 60))
+    guardarSla(parseInt(horaCompleta * 60));
     return parseInt(horaCompleta * 60);
   }
-  guardarSla(`${horaCompleta.replace(".", ":")}`)
+  guardarSla(`${horaCompleta.replace(".", ":")}`);
   return `${horaCompleta.replace(".", ":")}`;
 });
 

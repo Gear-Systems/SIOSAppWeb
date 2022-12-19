@@ -2588,6 +2588,11 @@
   "resolved" "https://registry.npmjs.org/ws/-/ws-8.11.0.tgz"
   "version" "8.11.0"
 
+"xlsx@https://cdn.sheetjs.com/xlsx-0.19.1/xlsx-0.19.1.tgz":
+  "integrity" "sha512-pPh/ybd1bChlhCrtQ9QmRUx2yjQwMbS4tfvV9MSA2Qmm7vRUHQtPDMlLjAvQ2A4v8G92i2RlrNkSOKb1bwY7ww=="
+  "resolved" "https://cdn.sheetjs.com/xlsx-0.19.1/xlsx-0.19.1.tgz"
+  "version" "0.19.1"
+
 "xmldoc@^1.1.2":
   "integrity" "sha512-2eN8QhjBsMW2uVj7JHLHkMytpvGHLHxKXBy4J3fAT/HujsEtM6yU84iGjpESYGHg6XwK0Vu4l+KgqQ2dv2cCqg=="
   "resolved" "https://registry.npmjs.org/xmldoc/-/xmldoc-1.2.0.tgz"

@@ -9,6 +9,7 @@ import Correctivo from "./views/Correctivo/Correctivo.vue";
 import Configuraciones from "./views/Configuraciones.vue";
 import ConsultarFolios from "./views/ConsultarFolios.vue";
 import Mantenimiento from "./views/Mantenimiento.vue";
+import Reportes from "./views/Reportes.vue";
 
 /** @type {import('vue-router').RouterOptions['routes']} */
 export const routes = [
@@ -60,6 +61,12 @@ export const routes = [
     path: "/configuraciones",
     name: "Configuraciones",
     component: Configuraciones,
+    meta: { title: "", authorization: true },
+  },
+  {
+    path: "/reportes",
+    name: "reportes",
+    component: Reportes,
     meta: { title: "", authorization: true },
   },
   {
