@@ -16,7 +16,7 @@
     "moment": "^2.29.4",
     "pdfmake": "^0.2.5",
     "pinia": "^2.0.23",
-    "read-excel-file": "^5.5.0",
+    "read-excel-file": "^5.5.3",
     "v-calendar": "^3.0.0-alpha.8",
     "vue": "^3.2.37",
     "vue-router": "^4.0.15",
