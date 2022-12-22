@@ -76,7 +76,7 @@
                         class="flex justify-center rounded-md border-2 border-[#E5E5E5] px-4 py-2 text-sm font-medium text-black hover:border-transparent hover:bg-[#E9F0FC] hover:text-[#2166E5] focus-visible:ring-blue-500"
                         @click="asignarFolio"
                       >
-                        Asignar
+                        Asignar a técnico
                       </button>
                     </div>
                     <div
@@ -88,7 +88,7 @@
                         class="flex justify-center rounded-md border border-transparent bg-[#E5E5E5] px-4 py-2 text-sm font-medium text-black hover:bg-[#E9F0FC] hover:text-[#2166E5] focus-visible:ring-blue-500"
                         @click="capturaFolio()"
                       >
-                        Capturar
+                        Capturar despacho
                       </button>
                     </div>
                   </div>
