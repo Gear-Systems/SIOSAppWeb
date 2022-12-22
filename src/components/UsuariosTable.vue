@@ -121,9 +121,9 @@
           </tbody>
         </table>
       </div>
-      <div class="flex w-full justify-end pr-10">
+      <div class="flex w-full justify-end pr-20">
         <button @click="handlePagination().backPage" class="border bg-gray-100 py-1 px-3 hover:bg-gray-50">
-          Prev
+          <ChevronLeftIcon class="w-5 h-5" aria-hidden="true" />
         </button>
         <button class="border bg-gray-100 py-1 px-3 hover:bg-gray-50"
           v-for="item in Math.ceil(usuarios.length / perPage)" :key="item"
@@ -131,7 +131,7 @@
           {{ item }}
         </button>
         <button @click="handlePagination().nextPage" class="border bg-gray-100 py-1 px-3 hover:bg-gray-50">
-          Next
+          <ChevronRightIcon class="w-5 h-5" aria-hidden="true" />
         </button>
       </div>
     </div>
@@ -155,11 +155,12 @@ import {
   ListboxButton,
   ListboxOptions,
   ListboxOption,
-  Switch, 
-  SwitchGroup, 
+  Switch,
+  SwitchGroup,
   SwitchLabel
 } from "@headlessui/vue";
 import { ChevronDownIcon, CheckIcon, SelectorIcon } from "@heroicons/vue/solid";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/vue/outline";
 import EditarIco from "./iconos/EditarIco.vue";
 import BoteBasuraIco from "./iconos/BoteBasuraIco.vue";
 import { auth, functions } from "@/firebase/firebase";
@@ -210,14 +211,6 @@ const updateTable = (data) => {
     created: data.val().created,
   };
 };
-
-// auth.onAuthStateChanged((user) => {
-//   if(user) {
-//     user.getIdTokenResult().then(tokenResult => {
-//       rol.value = tokenResult.claims.name
-//     })
-//   }
-// })
 
 // crear tabla y observar si se agrega un nuevo usuario
 const updateTableNewUser = async (data) => {
@@ -272,7 +265,6 @@ onChildRemoved(usuariosDB, (snapshot) => {
 });
 
 // control paginación
-
 function handlePagination() {
   const paginatedData = computed(() =>
     usuariosFilter.value.slice((page.value - 1) * perPage, page.value * perPage)

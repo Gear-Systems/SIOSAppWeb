@@ -74,7 +74,7 @@
         </thead>
         <tbody>
           <tr
-            v-for="item in filterData"
+            v-for="item in handlePagination().paginatedData.value"
             class="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
           >
             <td class="px-2"><TableMenu :data="item" /></td>
@@ -142,12 +142,25 @@
           </tr>
         </tbody>
       </table>
+      <div class="flex w-full justify-end ">
+          <button @click="handlePagination().backPage" class="border bg-gray-100 py-1 px-3 hover:bg-gray-50">
+            <ChevronLeftIcon class="w-5 h-5" aria-hidden="true" />
+          </button>
+          <button class="border bg-gray-100 py-1 px-3 hover:bg-gray-50"
+            v-for="item in Math.ceil(data.length / perPage)" :key="item"
+            @click="() => handlePagination().goToPage(item)">
+            {{ item }}
+          </button>
+          <button @click="handlePagination().nextPage" class="border bg-gray-100 py-1 px-3 hover:bg-gray-50">
+            <ChevronRightIcon class="w-5 h-5" aria-hidden="true" />
+          </button>
+        </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, computed } from "vue";
 import {
   getDatabase,
   ref as refDB,
@@ -157,7 +170,7 @@ import {
   onChildRemoved,
   child,
 } from "firebase/database";
-import { RefreshIcon } from "@heroicons/vue/outline";
+import { RefreshIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/vue/outline";
 import TableMenu from "./TableMenu.vue";
 
 const db = getDatabase();
@@ -167,6 +180,8 @@ const filtro = reactive({
 });
 const data = ref([]);
 const filterData = ref([]);
+const page = ref(1);
+const perPage = 10;
 
 onChildAdded(child(refDB(db), "folios/correctivos"), (snapshot) => {
   let color = "";
@@ -274,4 +289,36 @@ const reiniciarFiltro = () => {
 };
 
 onChildRemoved(child(refDB(db), "folios"));
+
+// control paginación
+function handlePagination() {
+  const paginatedData = computed(() =>
+    filterData.value.slice((page.value - 1) * perPage, page.value * perPage)
+  );
+
+  const nextPage = () => {
+    if (page.value !== Math.ceil(filterData.value.length / perPage)) {
+      page.value += 1;
+    }
+  };
+
+  const backPage = () => {
+    if (page.value !== 1) {
+      page.value -= 1;
+    }
+  };
+
+  const goToPage = (numPage) => {
+    page.value = numPage;
+  };
+
+  return {
+    paginatedData,
+    perPage,
+    page,
+    nextPage,
+    backPage,
+    goToPage,
+  };
+}
 </script>
