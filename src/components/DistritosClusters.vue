@@ -4,16 +4,6 @@
     <div class="flex basis-[40%] justify-center">
       <div class="flex flex-col space-y-5">
         <h2 class="text-xl font-semibold">Agregar nuevo</h2>
-        <!-- Nombre -->
-        <div class="flex flex-col">
-          <label class="text-sm text-gray-500" for="name">Nombre</label>
-          <input
-            v-model="formData.nombre"
-            class="max-w-sm rounded-md border-[1.5px] border-[#7C8495] bg-transparent font-semibold placeholder:text-sm placeholder:font-normal placeholder:text-black focus:ring-0"
-            type="text"
-            id="name"
-          />
-        </div>
         <!-- tipo de -->
         <Listbox v-model="formData.tipo">
           <div class="relative">
@@ -72,6 +62,17 @@
             </transition>
           </div>
         </Listbox>
+        <!-- Nombre -->
+        <div class="flex flex-col">
+          <label class="text-sm text-gray-500" for="name">Nombre</label>
+          <input
+            v-model="formData.nombre"
+            class="max-w-sm rounded-md border-[1.5px] border-[#7C8495] bg-transparent font-semibold placeholder:text-sm placeholder:font-normal placeholder:text-black focus:ring-0"
+            type="text"
+            id="name"
+          />
+        </div>
+
         <div class="flex w-full justify-end">
           <button
             @click="guardar"

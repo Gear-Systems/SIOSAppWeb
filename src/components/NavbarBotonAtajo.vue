@@ -88,10 +88,10 @@
       </MenuItems>
     </transition>
     <Suspense>
-      <ModalDatosCorrectivo></ModalDatosCorrectivo>
+      <ModalDatosCorrectivo v-if="$store.state.a.modalCorrectivo" />
     </Suspense>
     <Suspense>
-      <ModalDatosPreventivo></ModalDatosPreventivo>
+      <ModalDatosPreventivo />
     </Suspense>
   </Menu>
 </template>

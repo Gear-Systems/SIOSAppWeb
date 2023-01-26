@@ -43,8 +43,6 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
-import ModalDatosCorrectivo from "@/views/Correctivo/ModalDatosCorrectivo.vue";
-import ModalDatosPreventivo from "@/views/Preventivo/ModalDatosPreventivo.vue";
 import FoliosCorrectivos from "@/components/iconos/FoliosCorrectivos.vue";
 import FoliosPreventivos from "@/components/iconos/FoliosPreventivos.vue";
 

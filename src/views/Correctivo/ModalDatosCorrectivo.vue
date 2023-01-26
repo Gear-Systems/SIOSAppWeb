@@ -338,7 +338,7 @@ const infoData = reactive({
   fallas: [],
   causas: [],
   tecnicos: [],
-  turnos: ["Dia", "Noche"]
+  turnos: ["Día", "Noche"]
 });
 
 const infoSelected = reactive({

@@ -44,14 +44,14 @@ export const routes = [
     props: { control: true },
   },
   {
-    path: "/mantenimiento/preventivo/:id",
+    path: "/mantenimiento/preventivos/:id",
     name: "mantenimientoPreventivo",
     component: Preventivo,
     meta: { title: "Folios preventivos", authorization: true },
     props: { control: false },
   },
   {
-    path: "/mantenimiento/correctivo/:id",
+    path: "/mantenimiento/correctivos/:id",
     name: "mantenimientoCorrectivo",
     component: Correctivo,
     meta: { title: "Folios Correctivos", authorization: true },

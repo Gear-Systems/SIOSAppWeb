@@ -257,9 +257,9 @@
   };
   
   inicializarFolioEscucha();
-  const asignarFolioCorrectivo = httpsCallable(
+  const asignarFolioPreventivo = httpsCallable(
     functions,
-    "asignarFolioCorrectivo"
+    "asignarFolioPreventivo"
   );
   
   onMounted(() => {
@@ -317,9 +317,11 @@
   
   // Función para asignar folio al técnico
   const asignarFolio = async () => {
-    await asignarFolioCorrectivo({
+    await asignarFolioPreventivo({
       key: route.params.id,
-      tecnicoUid: infoData2.tecnico,
+      tecnicos: {
+        uid: infoData2.tecnico
+      },
     })
       .then(async (result) => {
         store.commit("cerrarModalManejoFolio");

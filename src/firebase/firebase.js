@@ -11,7 +11,7 @@ import { connectStorageEmulator, getStorage } from "firebase/storage";
 const firebaseConfig = {
   apiKey: "AIzaSyBqOgizUSx7Sx4RudGJH841N0ODjepjMl4",
   authDomain: "siosapp-335118.firebaseapp.com",
-  databaseURL: "http://localhost:9000/?ns=siosapp-335118-default-rtdb",
+  databaseURL: "http://192.168.100.189:9000/?ns=siosapp-335118-default-rtdb",
   projectId: "siosapp-335118",
   storageBucket: "siosapp-335118.appspot.com",
   messagingSenderId: "519653301005",

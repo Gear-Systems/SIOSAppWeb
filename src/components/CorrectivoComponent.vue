@@ -55,7 +55,7 @@
                             </MenuItem>
                             <MenuItem
                               v-slot="{ active }"
-                              v-if="infoData2.paso == 2"
+                              v-if="infoData2.paso == 2 && !infoData2.asignado"
                             >
                               <button
                                 @click="openManejoFolio()"
@@ -110,6 +110,7 @@
                 :estado="infoData2.paso"
                 :tipoFolio="infoData2.tipo"
                 :data="infoData2"
+                @capturarFolio="capturarFolio"
               ></Step1>
               <Step2
                 v-if="infoData2.paso == 2 && !loadingData"
