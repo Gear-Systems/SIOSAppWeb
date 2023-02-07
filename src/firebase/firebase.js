@@ -11,7 +11,7 @@ import { connectStorageEmulator, getStorage } from "firebase/storage";
 const firebaseConfig = {
   apiKey: "AIzaSyBqOgizUSx7Sx4RudGJH841N0ODjepjMl4",
   authDomain: "siosapp-335118.firebaseapp.com",
-  databaseURL: "http://192.168.100.189:9000/?ns=siosapp-335118-default-rtdb",
+  databaseURL: "https://siosapp-335118-default-rtdb.firebaseio.com/",
   projectId: "siosapp-335118",
   storageBucket: "siosapp-335118.appspot.com",
   messagingSenderId: "519653301005",
@@ -22,19 +22,19 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase();
-connectDatabaseEmulator(db, "192.168.100.189", 9000);
+// connectDatabaseEmulator(db, "192.168.100.189", 9000);
 // connectDatabaseEmulator(db, "localhost", 9000);
 
 const auth = getAuth();
-connectAuthEmulator(auth, "http://192.168.100.189:9099");
+// connectAuthEmulator(auth, "http://192.168.100.189:9099");
 // connectAuthEmulator(auth, "http://localhost:9099");
 
 const functions = getFunctions();
-connectFunctionsEmulator(functions, "192.168.100.189", 5001);
+// connectFunctionsEmulator(functions, "192.168.100.189", 5001);
 // connectFunctionsEmulator(functions, "localhost", 5001);
 
 const storage = getStorage();
-connectStorageEmulator(storage, "192.168.100.189", 9199);
+// connectStorageEmulator(storage, "192.168.100.189", 9199);
 // connectStorageEmulator(storage, "localhost", 9199)
 
 const rol = auth.onAuthStateChanged(async (user) => {
