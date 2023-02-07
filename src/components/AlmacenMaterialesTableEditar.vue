@@ -237,21 +237,20 @@ async function crearMaterial() {
   }
 
   if (formData.name.trim() != props.data.key.trim()) {
-    get(
+    await get(
       child(
         refDB(db),
         `inventario/materiales/${props.data.tipo.toLowerCase()}/${
-          props.data.key
+          props.data.key.trim()
         }`
       )
-    ).then((snapshot) => {
-      update(
+    ).then(async (snapshot) => {
+      await update(
         refDB(
           db,
           `inventario/materiales/${formData.tipoMaterial.name.toLowerCase()}/${formData.name.trim()}`
         ),
         {
-          creado: snapshot.val().creado,
           code: formData.code,
           unidad: formData.unidadMedida.id,
           modificado: serverTimestamp(),

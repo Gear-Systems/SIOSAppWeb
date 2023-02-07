@@ -18,7 +18,7 @@
                 </button>
               </Tab>
               <!-- inventario -->
-              <Tab v-slot="{ selected }">
+              <!-- <Tab v-slot="{ selected }">
                 <button
                   :class="[
                     'px-14 py-2',
@@ -27,7 +27,7 @@
                 >
                   Histórico
                 </button>
-              </Tab>
+              </Tab> -->
             </div>
           </TabList>
           <TabPanels class="mt-12">

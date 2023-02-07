@@ -8,19 +8,23 @@
             <div class="flex w-full space-x-4">
               <!-- materiales -->
               <Tab v-slot="{ selected }">
-                <button :class="[
-                  'px-14 py-2',
-                  selected ? 'font-semibold text-primario' : '',
-                ]">
+                <button
+                  :class="[
+                    'px-14 py-2',
+                    selected ? 'font-semibold text-primario' : '',
+                  ]"
+                >
                   Entradas
                 </button>
               </Tab>
               <!-- inventario -->
               <Tab v-slot="{ selected }">
-                <button :class="[
-                  'px-14 py-2',
-                  selected ? 'font-semibold text-primario' : '',
-                ]">
+                <button
+                  :class="[
+                    'px-14 py-2',
+                    selected ? 'font-semibold text-primario' : '',
+                  ]"
+                >
                   Histórico
                 </button>
               </Tab>
@@ -29,11 +33,16 @@
           <TabPanels class="mt-12">
             <TabPanel class="flex w-full justify-center">
               <div v-if="!data.length" class="min-w-[400px] max-w-[500px]">
-                <DropZone #default="{ dropZoneActive }" @files-dropped="readFile">
-                  <div :class="[
-                    'flex justify-center border-2 border-dashed bg-white p-28',
-                    dropZoneActive ? 'bg-gray-50' : '',
-                  ]">
+                <DropZone
+                  #default="{ dropZoneActive }"
+                  @files-dropped="readFile"
+                >
+                  <div
+                    :class="[
+                      'flex justify-center border-2 border-dashed bg-white p-28',
+                      dropZoneActive ? 'bg-gray-50' : '',
+                    ]"
+                  >
                     <div v-if="dropZoneActive">
                       <div>Suelta</div>
                     </div>
@@ -44,10 +53,18 @@
                 </DropZone>
               </div>
               <div v-else class="h-full w-full">
-                <EntradasTable :data="data" @cancelar="data = []" @subir="upload" />
+                <EntradasTable
+                  :data="data"
+                  @cancelar="data = []"
+                  @subir="upload"
+                />
               </div>
             </TabPanel>
-            <TabPanel><Suspense><AlmacenEntradasHistorico /></Suspense></TabPanel>
+            <TabPanel>
+              <Suspense>
+                <AlmacenEntradasHistorico />
+              </Suspense>
+            </TabPanel>
           </TabPanels>
         </TabGroup>
       </div>
@@ -58,10 +75,22 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
-import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from "firebase/storage";
+import {
+  getStorage,
+  ref as refStorage,
+  uploadBytes,
+  getDownloadURL,
+} from "firebase/storage";
 import DropZone from "./DropZone.vue";
 import readXlsxFile from "read-excel-file";
-import { getDatabase, ref as refDB, get, update, set, push } from "firebase/database";
+import {
+  getDatabase,
+  ref as refDB,
+  get,
+  update,
+  set,
+  push,
+} from "firebase/database";
 import { auth } from "@/firebase/firebase";
 import EntradasTable from "./EntradasTable.vue";
 import AlmacenEntradasHistorico from "./AlmacenEntradasHistorico.vue";
@@ -86,12 +115,12 @@ onMounted(() => {
 });
 
 const schema = {
-  codigo: {
+  CODIGO: {
     prop: "codigo",
     type: String,
     required: true,
   },
-  cantidad: {
+  CANTIDAD: {
     prop: "cantidad",
     type: Number,
     required: true,
@@ -136,19 +165,19 @@ function readFile(newFiles) {
 const files = ref();
 
 async function upload(validatedData) {
-  await addFiles()
   alert("Materiales subidos correctamente.");
   data.value = [];
-  // validatedData.forEach((material) => {
-  //  get(refDB(db, `almacen/inventario/${material.descripcion}`)).then(
-  //     (snapshot) => {
-  //       update(refDB(db, `almacen/inventario/${material.descripcion}`), {
-  //         entradas: snapshot.val().entradas + material.cantidad,
-  //         stock: snapshot.val().stock + material.cantidad,
-  //       });
-  //     }
-  //   );
-  // });
+  validatedData.forEach((material) => {
+    get(refDB(db, `almacen/inventario/${material.descripcion}`)).then(
+      (snapshot) => {
+        update(refDB(db, `almacen/inventario/${material.descripcion}`), {
+          entradas: snapshot.val().entradas + material.cantidad,
+          stock: snapshot.val().stock + material.cantidad,
+        });
+      }
+    );
+  });
+  await addFiles();
 }
 
 async function addFiles() {
@@ -168,8 +197,13 @@ async function addFiles() {
     uploadBytes(documentRef, file.value[0])
       .then(async (snapshot) => {
         await getDownloadURL(snapshot.ref).then(async (url) => {
-          await set(historicoPush, { creado: creado, nombre: file.value[0].name, url: url, usuario: auth.currentUser.uid })
-        })
+          await set(historicoPush, {
+            creado: creado,
+            nombre: file.value[0].name,
+            url: url,
+            usuario: auth.currentUser.uid,
+          });
+        });
         console.log("Archivo subido correctamente");
       })
       .catch((error) => {

@@ -53,7 +53,7 @@
       >
         Generar reporte
       </button>
-      <SalidasPDF :generarPDF="generarPDF" />
+      <!-- <SalidasPDF :generarPDF="generarPDF" /> -->
     </div>
   </div>
 </template>
@@ -68,7 +68,7 @@ const functions = getFunctions();
 const salidaInventario = httpsCallable(functions, "salidaInventario");
 const formModel = ref([]);
 const props = defineProps(["data", "supervisor", "distrito"]);
-const emits = defineEmits(["cancelar"]);
+const emits = defineEmits(["cancelar", "limpiar"]);
 const generarPDF = ref(false);
 
 const cancelar = () => {
@@ -138,6 +138,9 @@ const generar = async () => {
     await salidaInventario({ data: formModel.value, supervisor: props.supervisor, distrito: props.distrito })
       .then((result) => {
         console.log(result);
+        alert("Salida registrada correctamente.")
+        emits("limpiar");
+        formModel.value = [];
       })
       .catch((error) => {
         console.log(error);
