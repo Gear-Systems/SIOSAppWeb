@@ -9,7 +9,7 @@
 <script setup>
 import { ref, watch, onMounted, reactive } from "vue";
 import pdfMake from "pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import htmlToPdfmake from "html-to-pdfmake";
 
 const props = defineProps(["generarPDF"]);

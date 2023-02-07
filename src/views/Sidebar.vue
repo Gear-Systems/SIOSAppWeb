@@ -1,6 +1,6 @@
 <template>
   <div
-    class="h-screen select-none items-center justify-center rounded-tr-3xl rounded-br-3xl pt-10 shadow-xl transition-all duration-500 ease-in-out"
+    class="h-screen select-none relative rounded-tr-3xl rounded-br-3xl pt-10 shadow-xl transition-all duration-500 ease-in-out"
     :class="[$store.state.a.openSidebar == true ? 'w-[20%]' : 'w-[5%]']"
   >
     <!-- Tarjeta bienvenido -->
@@ -167,6 +167,9 @@
         </li>
       </ul>
     </div>
+    <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+      v{{ version }}
+    </div>
   </div>
 </template>
 
@@ -190,6 +193,8 @@ const objeto = ref({
   nombre: "Tere",
   edad: 20,
 });
+
+const version = __APP_VERSION__;
 
 onAuthStateChanged(auth, (user) => {
   if (user) {

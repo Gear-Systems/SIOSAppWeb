@@ -8,7 +8,7 @@
         <!-- Formulario -->
         <div class="w-full">
           <div class="mb-12 flex justify-center">
-            <img src="img/SiosApp.svg" width="140" />
+            <img src="/img/SiosApp.svg" width="140" />
           </div>
           <div class="flex w-full justify-center">
             <h1 class="py-8 text-2xl font-semibold tracking-wide">

@@ -22,14 +22,14 @@
       <!-- boton atajo -->
       <NavbarBotonAtajo />
       <!-- boton notificaciones -->
-      <div class="relative h-5 w-5 rounded-full">
+      <!-- <div class="relative h-5 w-5 rounded-full">
         <img src="https://firebasestorage.googleapis.com/v0/b/siosapp-335118.appspot.com/o/resource%2Ficons%2Fsvg%2Fnavbar%2Fnotificacion.svg?alt=media&token=85500e19-ff72-4d33-8271-ed4408b5c8fe" />
         <div
           class="absolute -top-4 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-400 text-white"
         >
           <span class="text-sm">2</span>
         </div>
-      </div>
+      </div> -->
       <!-- Cerrar sesión -->
       <div @click="isOpen = true" class="h-5 w-5 rounded-full cursor-pointer"><img src="https://firebasestorage.googleapis.com/v0/b/siosapp-335118.appspot.com/o/resource%2Ficons%2Fsvg%2Fnavbar%2Fsalir.svg?alt=media&token=16da3e8a-2f1a-4bfe-b9bf-1e55e5c964cc" /></div>
     </div>

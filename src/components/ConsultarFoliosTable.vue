@@ -110,11 +110,11 @@
             </td>
             <td class="flex flex-row space-x-4 py-1 px-6 text-right">
               <!-- <div class="flex cursor-pointer items-center justify-center rounded-full py-5 px-6 hover:bg-[#E9F0FC]">
-                <img src="img/enviar_ico.svg" />
+                <img src="/img/enviar_ico.svg" />
               </div> -->
               <div v-show="item.estatus == 'Finalizado' ? true : false" @click="copiarInfo(item)"
                 class="flex cursor-pointer items-center justify-center rounded-full py-5 px-5 hover:bg-[#E9F0FC]">
-                <img src="img/copiar_ico.svg" />
+                <img src="/img/copiar_ico.svg" />
               </div>
               <div @click="
   $router.push({
@@ -122,7 +122,7 @@
     query: { mantenimiento: true }
   })
               " class="flex cursor-pointer items-center justify-center rounded-full py-5 px-6 hover:bg-[#E9F0FC]">
-                <img src="img/actualizar_ico.svg" />
+                <img src="/img/actualizar_ico.svg" />
               </div>
             </td>
           </tr>
