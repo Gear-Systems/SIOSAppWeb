@@ -112,7 +112,8 @@
               <!-- <div class="flex cursor-pointer items-center justify-center rounded-full py-5 px-6 hover:bg-[#E9F0FC]">
                 <img src="img/enviar_ico.svg" />
               </div> -->
-              <div class="flex cursor-pointer items-center justify-center rounded-full py-5 px-5 hover:bg-[#E9F0FC]">
+              <div v-show="item.estatus == 'Finalizado' ? true : false" @click="copiarInfo(item)"
+                class="flex cursor-pointer items-center justify-center rounded-full py-5 px-5 hover:bg-[#E9F0FC]">
                 <img src="img/copiar_ico.svg" />
               </div>
               <div @click="
@@ -145,6 +146,7 @@ import {
 } from "firebase/database";
 import { RefreshIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/vue/outline";
 import TableMenu from "./TableMenu.vue";
+import clipboard from "@/scripts/clipboard";
 
 const db = getDatabase();
 const refFolios = refDB(db, "folios");
@@ -166,6 +168,10 @@ onChildAdded(child(refDB(db), "folios/correctivos"), (snapshot) => {
     ...snapshot.val(),
   });
 });
+
+const copiarInfo = (item) => {
+ const result = clipboard(item);
+}
 
 onChildAdded(child(refDB(db), "folios/preventivos"), (snapshot) => {
   let color = "";
