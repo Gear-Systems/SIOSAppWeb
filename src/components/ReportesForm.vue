@@ -281,6 +281,7 @@ const exportarArchivo = async () => {
 
 // reporte de folios
 const reporteFolio = async () => {
+  jsonArray.value = [];
   switch (formData.tipoIncidencia.id) {
     case 0:
       await reporteFoliosCorrectivos();
@@ -302,6 +303,7 @@ const reporteFolio = async () => {
 
 // reporte de materiales
 const reporteMateriales = async () => {
+  jsonArray.value = [];
   let fechaInicial = new Date(formData.fechas.start).setHours(0, 0, 0);
   let fechaFinal = new Date(formData.fechas.end).setHours(23, 59, 59);
   let materiales = {};
@@ -323,7 +325,8 @@ const reporteMateriales = async () => {
         });
       }
     );
-    snapshot.forEach(async (folio) => {
+
+    snapshot.forEach((folio) => {
       if (folio.hasChild("materiales/totalplay")) {
         if (folio.val().estatusId === 6) {
           materialesTemp = materiales;
@@ -337,10 +340,9 @@ const reporteMateriales = async () => {
               }
             });
           }
-          const tecnicoName = await get(
-            refDB(db, `usuarios/${folio.val().tecnico}`)
-          );
-
+          // const tecnicoName = get(
+          //   refDB(db, `usuarios/${folio.val().tecnico}`)
+          // );
           jsonArray.value.push({
             FOLIO: folio.val().folio,
             "TIPO FOLIO": folio.val().tipoFolio,
@@ -380,7 +382,7 @@ const reporteMateriales = async () => {
             ETA: folio.val().eta,
             SLA: folio.val().sla,
             ESTATUS: folio.val().estatus,
-            TECNICO: tecnicoName.val().displayName,
+            TECNICO: "",
             CREADO: `${new Date(folio.val().creado).getDate()}/${new Date(
               folio.val().creado
             ).getMonth()}/${new Date(
@@ -393,14 +395,16 @@ const reporteMateriales = async () => {
         }
       }
     });
-  });
 
-  if (jsonArray.value.length > 0) {
-    const ws = utils.json_to_sheet(jsonArray.value);
-    const wb = utils.book_new();
-    utils.book_append_sheet(wb, ws, "Reportes");
-    writeFileXLSX(wb, "PruebaReporte.xlsx");
-  }
+    console.log(jsonArray.value);
+    if (jsonArray.value.length > 0) {
+      console.log("HOLA", jsonArray.value);
+      const ws = utils.json_to_sheet(jsonArray.value);
+      const wb = utils.book_new();
+      utils.book_append_sheet(wb, ws, "Reportes");
+      writeFileXLSX(wb, "PruebaReporte.xlsx");
+    }
+  });
 };
 
 // lógica para reporte de folios
@@ -417,7 +421,9 @@ const reporteFoliosCorrectivos = async () => {
   await get(foliosRef).then(async (snapshot) => {
     for (const folio in snapshot.val()) {
       if (snapshot.val()[folio]["estatusId"] === 6) {
-        const tecnicoName = await get(refDB(db, `usuarios/${snapshot.val()[folio]["tecnico"]}`));
+        const tecnicoName = await get(
+          refDB(db, `usuarios/${snapshot.val()[folio]["tecnico"]}`)
+        );
         jsonArray.value.push({
           FOLIO: snapshot.val()[folio]["folio"],
           "TIPO FOLIO": snapshot.val()[folio]["tipoFolio"],
@@ -437,14 +443,20 @@ const reporteFoliosCorrectivos = async () => {
             snapshot.val()[folio]["horaInicio"]
           ).getFullYear()} ${new Date(
             snapshot.val()[folio]["horaInicio"]
-          ).getHours()}:${new Date(snapshot.val()[folio]["horaInicio"]).getMinutes()}`,
-          LLEGADA: `${new Date(snapshot.val()[folio]["horaLlegada"]).getDate()}/${new Date(
+          ).getHours()}:${new Date(
+            snapshot.val()[folio]["horaInicio"]
+          ).getMinutes()}`,
+          LLEGADA: `${new Date(
+            snapshot.val()[folio]["horaLlegada"]
+          ).getDate()}/${new Date(
             snapshot.val()[folio]["horaLlegada"]
           ).getMonth()}/${new Date(
             snapshot.val()[folio]["horaLlegada"]
           ).getFullYear()} ${new Date(
             snapshot.val()[folio]["horaLlegada"]
-          ).getHours()}:${new Date(snapshot.val()[folio]["horaLlegada"]).getMinutes()}`,
+          ).getHours()}:${new Date(
+            snapshot.val()[folio]["horaLlegada"]
+          ).getMinutes()}`,
           ACTIVACION: `${new Date(
             snapshot.val()[folio]["horaActivacion"]
           ).getDate()}/${new Date(
@@ -453,18 +465,24 @@ const reporteFoliosCorrectivos = async () => {
             snapshot.val()[folio]["horaActivacion"]
           ).getFullYear()} ${new Date(
             snapshot.val()[folio]["horaActivacion"]
-          ).getHours()}:${new Date(snapshot.val()[folio]["horaActivacion"]).getMinutes()}`,
+          ).getHours()}:${new Date(
+            snapshot.val()[folio]["horaActivacion"]
+          ).getMinutes()}`,
           ETA: snapshot.val()[folio]["eta"],
           SLA: snapshot.val()[folio]["sla"],
           ESTATUS: snapshot.val()[folio]["estatus"],
           TECNICO: tecnicoName.val().displayName,
-          CREADO: `${new Date(snapshot.val()[folio]["creado"]).getDate()}/${new Date(
+          CREADO: `${new Date(
+            snapshot.val()[folio]["creado"]
+          ).getDate()}/${new Date(
             snapshot.val()[folio]["creado"]
           ).getMonth()}/${new Date(
             snapshot.val()[folio]["creado"]
           ).getFullYear()} ${new Date(
             snapshot.val()[folio]["creado"]
-          ).getHours()}:${new Date(snapshot.val()[folio]["creado"]).getMinutes()}`,
+          ).getHours()}:${new Date(
+            snapshot.val()[folio]["creado"]
+          ).getMinutes()}`,
         });
       }
     }
@@ -474,66 +492,81 @@ const reporteFoliosCorrectivos = async () => {
 const reporteFoliosPreventivo = async () => {
   let fechaInicial = new Date(formData.fechas.start).setHours(0, 0, 0);
   let fechaFinal = new Date(formData.fechas.end).setHours(23, 59, 59);
-  console.log(fechaInicial, fechaFinal);
+
   const foliosRef = query(
     refDB(db, `folios/preventivos`),
     orderByChild("horaInicio"),
     startAt(fechaInicial),
     endAt(fechaFinal)
   );
-  await get(foliosRef).then((snapshot) => {
-    snapshot.forEach((folio) => {
-      if (folio.val().estatusId === 6) {
+  await get(foliosRef).then(async (snapshot) => {
+    for (const folio in snapshot.val()) {
+      if (snapshot.val()[folio]["estatusId"] === 6) {
+        const tecnicoName = await get(
+          refDB(db, `usuarios/${snapshot.val()[folio]["tecnico"]}`)
+        );
         jsonArray.value.push({
-          FOLIO: folio.val().folio,
-          "TIPO FOLIO": folio.val().tipoFolio,
+          FOLIO: snapshot.val()[folio]["folio"],
+          "TIPO FOLIO": snapshot.val()[folio]["tipoFolio"],
           INCIDENCIA: "Preventivo",
-          OT: folio.val().ot,
-          DISTRITO: folio.val().distrito,
-          ClUSTER: folio.val().cluster,
-          COORDENADAS: folio.val().coordenadas,
-          FALLA: folio.val().falla,
-          CAUSA: folio.val().causa,
-          "CLIENTES AFECTADOS": folio.val().clientesAfectados,
+          OT: snapshot.val()[folio]["ot"],
+          DISTRITO: snapshot.val()[folio]["distrito"],
+          ClUSTER: snapshot.val()[folio]["cluster"],
+          COORDENADAS: snapshot.val()[folio]["coordenadas"],
+          FALLA: snapshot.val()[folio]["falla"],
+          CAUSA: snapshot.val()[folio]["causa"],
+          "CLIENTES AFECTADOS": 0,
           "ASIGNACION IOS": `${new Date(
-            folio.val().horaInicio
+            snapshot.val()[folio]["horaInicio"]
           ).getDate()}/${new Date(
-            folio.val().horaInicio
+            snapshot.val()[folio]["horaInicio"]
           ).getMonth()}/${new Date(
-            folio.val().horaInicio
+            snapshot.val()[folio]["horaInicio"]
           ).getFullYear()} ${new Date(
-            folio.val().horaInicio
-          ).getHours()}:${new Date(folio.val().horaInicio).getMinutes()}`,
-          LLEGADA: `${new Date(folio.val().horaLlegada).getDate()}/${new Date(
-            folio.val().horaLlegada
+            snapshot.val()[folio]["horaInicio"]
+          ).getHours()}:${new Date(
+            snapshot.val()[folio]["horaInicio"]
+          ).getMinutes()}`,
+          LLEGADA: `${new Date(
+            snapshot.val()[folio]["horaLlegada"]
+          ).getDate()}/${new Date(
+            snapshot.val()[folio]["horaLlegada"]
           ).getMonth()}/${new Date(
-            folio.val().horaLlegada
+            snapshot.val()[folio]["horaLlegada"]
           ).getFullYear()} ${new Date(
-            folio.val().horaLlegada
-          ).getHours()}:${new Date(folio.val().horaLlegada).getMinutes()}`,
+            snapshot.val()[folio]["horaLlegada"]
+          ).getHours()}:${new Date(
+            snapshot.val()[folio]["horaLlegada"]
+          ).getMinutes()}`,
           ACTIVACION: `${new Date(
-            folio.val().horaActivacion
+            snapshot.val()[folio]["horaActivacion"]
           ).getDate()}/${new Date(
-            folio.val().horaActivacion
+            snapshot.val()[folio]["horaActivacion"]
           ).getMonth()}/${new Date(
-            folio.val().horaActivacion
+            snapshot.val()[folio]["horaActivacion"]
           ).getFullYear()} ${new Date(
-            folio.val().horaActivacion
-          ).getHours()}:${new Date(folio.val().horaActivacion).getMinutes()}`,
-          ETA: folio.val().eta,
-          SLA: folio.val().sla,
-          ESTATUS: folio.val().estatus,
-          TECNICO: "",
-          CREADO: `${new Date(folio.val().creado).getDate()}/${new Date(
-            folio.val().creado
+            snapshot.val()[folio]["horaActivacion"]
+          ).getHours()}:${new Date(
+            snapshot.val()[folio]["horaActivacion"]
+          ).getMinutes()}`,
+          ETA: snapshot.val()[folio]["eta"],
+          SLA: snapshot.val()[folio]["sla"],
+          ESTATUS: snapshot.val()[folio]["estatus"],
+          TECNICO: tecnicoName.val().displayName,
+          CREADO: `${new Date(
+            snapshot.val()[folio]["creado"]
+          ).getDate()}/${new Date(
+            snapshot.val()[folio]["creado"]
           ).getMonth()}/${new Date(
-            folio.val().creado
+            snapshot.val()[folio]["creado"]
           ).getFullYear()} ${new Date(
-            folio.val().creado
-          ).getHours()}:${new Date(folio.val().creado).getMinutes()}`,
+            snapshot.val()[folio]["creado"]
+          ).getHours()}:${new Date(
+            snapshot.val()[folio]["creado"]
+          ).getMinutes()}`,
         });
       }
-    });
+    }
   });
 };
 </script>

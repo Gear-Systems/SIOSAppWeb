@@ -1,6 +1,6 @@
 {
   "name": "siosapp-web",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
