@@ -14,7 +14,7 @@
                     selected ? 'font-semibold text-primario' : '',
                   ]"
                 >
-                  Entradas
+                  Salidas
                 </button>
               </Tab>
               <!-- inventario -->
