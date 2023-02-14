@@ -1,15 +1,14 @@
 <template>
-  <div class="z-10 mt-6 flex h-auto w-[100%] pl-2">
-    <div class="flex w-[100%] self-start">
+  <div class="z-10 mt-6 flex h-auto w-[100%] lg:pl-2">
+    <div class="flex flex-col lg:flex-row w-[100%] self-start">
       <!-- Contenedor de fecha -->
-      <div class="flex w-1/2 flex-col">
+      <div class="flex lg:w-1/2 flex-col">
         <div class="flex">
-          <div class="flex items-center justify-center pr-10 pb-1">
+          <div class="flex items-center justify-center lg:pr-10 pb-1">
             <h1 class="select-none font-semibold">Fecha</h1>
           </div>
         </div>
-        <div class="flex w-[90%] items-center justify-around rounded-lg py-4">
-          <!-- AQUI -->
+        <div class="flex lg:w-[90%] w-full items-center justify-around rounded-lg lg:py-4">
           <div class="flex self-start pt-[2%]">
             <Popover v-slot="{ close }" class="relative">
               <PopoverButton
@@ -26,12 +25,12 @@
                   <div class="flex">
                     <DatePicker
                       style="border: #000000"
-                      class="flex"
+                      class="flex bg-red-300"
                       v-model="horario"
                       @dayclick="imprimir()"
                     />
                   </div>
-                  <div class="h-15 flex w-[100%] items-center justify-center">
+                  <div class="h-15 flex w-[100%] items-center justify-center bg-red-300">
                     <button
                       as="button"
                       class="z-[100] mb-3 -mt-3 flex rounded-md bg-[#E9F0FC] px-6 py-1"
@@ -98,15 +97,15 @@
         </div>
       </div>
       <!-- Fin Contenedor de fecha -->
+      
       <!-- Contenedor de hora -->
-      <div class="flex w-1/2 flex-col">
+      <div class="flex lg:w-1/2 flex-col">
         <div class="flex">
           <div class="flex items-center justify-center pr-10 pb-1">
             <h1 class="select-none font-semibold">Hora</h1>
           </div>
         </div>
-        <div class="flex w-[90%] items-center space-x-4 rounded-lg py-4">
-          <!-- AQUI -->
+        <div class="flex lg:w-[90%] w-full items-center justify-around rounded-lg lg:py-4">
           <div class="flex select-none self-start pt-[2%]">
             <Popover v-slot="{ inputValue, open }" class="relative">
               <PopoverButton

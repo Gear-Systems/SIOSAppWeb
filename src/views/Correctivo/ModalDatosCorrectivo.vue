@@ -195,9 +195,9 @@
                       </div>
                     </div>
                   </div>
-                  <div class="mb-4 flex w-[100%] items-center self-start justify-between">
+                  <div class="mb-4 flex flex-col space-y-4 lg:flex-row w-[100%] lg:items-center lg:self-start lg:justify-between">
                     <div
-                      class="mr-1.5 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]"
+                      class="lg:mr-1.5 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]"
                     >
                       Causa
                       <div class="flex">
@@ -209,7 +209,7 @@
                       </div>
                     </div>
                     <div
-                      class="ml-2 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]"
+                      class="lg:ml-2 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]"
                     >
                       Clientes afectados
                       <input
@@ -222,7 +222,7 @@
                         max="9999"
                       />
                     </div>
-                    <div class="ml-2 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]">
+                    <div class="lg:ml-2 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]">
                       Turno
                         <ListSelect
                           :dataArray="infoData.turnos"

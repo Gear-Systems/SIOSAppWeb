@@ -1,7 +1,7 @@
 <template>
-  <div class="flex w-full flex-col space-y-12 pb-16">
+  <div class="flex w-full flex-col space-y-12">
     <div class="flex w-full justify-center">
-      <div class="grid grid-flow-col">
+      <div class="grid lg:grid-flow-col grid-cols-2">
         <div v-for="(value, index) in options" class="flex w-full">
           <button
             @click="cambiarComponente(value.component, value.control, index)"
@@ -11,7 +11,7 @@
           >
             <div class="max-w-12 flex flex-col items-center">
               <span
-                class="flex h-10 w-10 items-center justify-center rounded-md bg-[#E9F0FC] shadow-md group-hover:bg-[#FFFFFF]"
+                class="flex h-14 w-14 lg:h-10 lg:w-10 items-center justify-center rounded-md bg-[#E9F0FC] shadow-md group-hover:bg-[#FFFFFF]"
               >
                 <component
                   :is="value.componentIco"
@@ -21,7 +21,7 @@
               <span
                 :class="[
                   value.active ? 'text-primario' : 'text-[#101D2D]',
-                  'mt-2 w-20 break-words text-base group-hover:text-primario',
+                  'mt-2 w-24 break-words text-base lg:text-clip group-hover:text-primario',
                 ]"
               >
                 {{ value.name }}
@@ -31,7 +31,7 @@
         </div>
       </div>
     </div>
-    <div class="flex h-full w-full pb-12">
+    <div class="flex h-full w-full">
       <component
         :is="componenteSeleccionado.component"
         :control="componenteSeleccionado.control"

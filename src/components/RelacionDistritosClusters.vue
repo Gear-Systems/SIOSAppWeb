@@ -68,11 +68,11 @@
         </Listbox>
       </div>
       <div class="font-semibold">Tabla de relaciones</div>
-      <div class="flex space-x-12">
+      <div class="flex flex-col space-y-2 lg:space-y-0 items-center lg:flex-row lg:space-x-12">
         <!-- table relacion -->
-        <div class="flex w-[50%] space-x-4">
+        <div class="flex lg:w-[50%] space-x-4">
           <draggable
-            class="border-[#E5E6EA]bg-transparent flex max-h-[300px] min-h-[350px] min-w-[250px] select-none flex-col overflow-auto rounded-xl border"
+            class="border-[#E5E6EA]bg-transparent flex max-h-[300px] min-h-[350px] min-w-[200px] lg:min-w-[250px] select-none flex-col overflow-auto rounded-xl border"
             :list="clustersRelacionados"
             group="clusters"
             @change="agregarClusters"
@@ -116,7 +116,7 @@
           </draggable>
 
           <draggable
-            class="border-[#E5E6EA]bg-transparent flex max-h-[300px] min-h-[350px] min-w-[250px] max-w-[250px] select-none flex-col overflow-auto rounded-xl border"
+            class="border-[#E5E6EA]bg-transparent flex max-h-[300px] min-h-[350px] min-w-[200px] lg:min-w-[250px] max-w-[250px] select-none flex-col overflow-auto rounded-xl border"
             :list="supervisoresRelacionados"
             group="supervisores"
             @change="agregarSupervisores"
@@ -167,7 +167,7 @@
         <!-- Tabla de datos no relacionados -->
         <div class="flex space-x-4">
           <draggable
-            class="border-[#E5E6EA]bg-transparent flex max-h-[300px] min-h-[350px] min-w-[250px] select-none flex-col overflow-auto rounded-xl border"
+            class="border-[#E5E6EA]bg-transparent flex max-h-[300px] min-h-[350px] min-w-[200px] lg:min-w-[250px] select-none flex-col overflow-auto rounded-xl border"
             :list="clustersData"
             group="clusters"
             @change="log"
@@ -193,7 +193,7 @@
             </template>
           </draggable>
           <draggable
-            class="border-[#E5E6EA]bg-transparent flex max-h-[300px] min-h-[350px] min-w-[250px] select-none flex-col rounded-xl border"
+            class="border-[#E5E6EA]bg-transparent flex max-h-[300px] min-h-[350px] min-w-[200px] lg:min-w-[250px] select-none flex-col rounded-xl border"
             :list="supervisoresData"
             group="supervisores"
             @change="log"

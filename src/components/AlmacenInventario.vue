@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-[400px] w-full bg-[#F8FAFB] py-3 px-28 shadow-md">
+  <div class="min-h-[400px] w-full bg-[#F8FAFB] py-3 px-2 lg:px-28 shadow-md">
     <div class="relative overflow-x-auto">
       <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
         <thead

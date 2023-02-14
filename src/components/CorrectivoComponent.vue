@@ -1,8 +1,8 @@
 <template>
-  <div class="flex w-full">
+  <div class="flex w-full pb-4">
     <Suspense>
       <template #default>
-        <div class="mt-6 flex h-auto w-[100%] flex-col items-center px-10">
+        <div class="relative mt-6 flex h-full w-[100%] flex-col items-center px-6 lg:px-10">
           <div class="mb-7 w-full">
             <div
               v-if="$route.query.mantenimiento"
@@ -13,13 +13,13 @@
               <p>Consulta de folios</p>
             </div>
           </div>
-          <div class="flex h-[70%] w-full">
-            <div class="flex w-[20%] flex-col space-y-3">
+          <div class="flex flex-col lg:flex-row h-[70%] w-full">
+            <div class="flex lg:w-[20%] flex-col space-y-3">
               <div class="flex w-[100%] select-none items-center">
-                <div class="flex w-[60%]">
+                <div class="flex lg:ww-[60%]">
                   <h1 class="select-none font-semibold">Folio Correctivo</h1>
                 </div>
-                <div class="flex w-[40%]">
+                <div class="flex lg:w-[40%]">
                   <div class="flex">
                     <Menu as="div" class="relative inline-block text-left">
                       <div>
@@ -83,7 +83,7 @@
                   }}</span>
                 </div>
                 <!-- Número de folio -->
-                <div class="flex w-[90%] flex-col">
+                <div class="flex w-[50%] lg:w-[90%] flex-col">
                   <span class="text-sm text-gray-500">Número de folio:</span>
                   <div
                     class="mt-2 flex w-[100%] items-center justify-center rounded-lg border py-2 tracking-wider"
@@ -102,7 +102,7 @@
                 ></Notas>
               </div>
             </div>
-            <div class="flex max-h-[95%] w-[80%]">
+            <div class="flex w-full lg:px-0 max-h-[95%] lg:w-[80%]">
               <Step1
                 v-if="infoData2.paso == 1 && !loadingData"
                 :incidencia="2"
@@ -130,7 +130,7 @@
               ></Step3>
             </div>
           </div>
-
+          
           <Timeline :state="infoData2.paso"></Timeline>
 
           <Suspense>

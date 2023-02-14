@@ -5,7 +5,7 @@
         class="bg-gray-50 text-base font-semibold text-black dark:bg-gray-700 dark:text-gray-400"
       >
         <tr>
-          <th scope="col" class="py-3 px-6">Código de producto</th>
+          <th scope="col" class="lg:py-3 px-2 lg:px-6">Código de producto</th>
           <th scope="col" class="py-3 px-6">Descripción</th>
           <th scope="col" class="py-3 px-6">Unidad</th>
           <th scope="col" class="flex justify-center py-3 px-6">Acción</th>

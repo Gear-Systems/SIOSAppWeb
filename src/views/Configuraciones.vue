@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full w-full px-10">
+  <div class=" w-full px-2 lg:px-10 h-fit ">
     <TabGroup>
       <TabList>
         <div class="flex w-full">
@@ -32,7 +32,7 @@
           </div>
         </div>
       </TabList>
-      <TabPanels class="mt-12">
+      <TabPanels class="mt-12 overflow-hidden">
         <TabPanel class="flex w-full h-full"> <Catalogos/> </TabPanel>
         <TabPanel><Almacen /></TabPanel>
       </TabPanels>

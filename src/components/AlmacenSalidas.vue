@@ -2,7 +2,7 @@
   <div class="h-full w-full">
     <div class="flex w-full flex-col space-y-4">
       <!-- Tabla -->
-      <div class="min-h-[400px] w-full bg-[#F8FAFB] py-3 px-28 shadow-md">
+      <div class="min-h-[400px] w-full bg-[#F8FAFB] py-3 px-2 lg:px-28 shadow-md">
         <TabGroup>
           <TabList class="border-b-2">
             <div class="flex w-full space-x-4">
@@ -14,7 +14,7 @@
                     selected ? 'font-semibold text-primario' : '',
                   ]"
                 >
-                  Entradas
+                  Salidas
                 </button>
               </Tab>
               <!-- inventario -->

@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-5 flex h-full w-full space-x-12 px-14 pb-8">
+  <div class="mt-5 flex flex-col lg:flex-row h-full w-full lg:space-x-12 lg:px-14 pb-4 lg:pb-8">
     <div class="flex justify-center">
       <div class="flex flex-col space-y-8">
         <h2 class="text-xl font-semibold">Agregar nuevo folio</h2>
@@ -133,8 +133,8 @@
         </div>
       </div>
     </div>
-    <div class="flex space-x-12 w-full justify-end border-l-2">
-      <div class="flex flex-col space-y-6">
+    <div class="mt-12 lg:mt-0 flex flex-col lg:flex-row lg:space-x-12 w-full justify-center items-center lg:items-start lg:justify-end lg:border-l-2">
+      <div class="flex flex-col space-y-6 ">
         <h2 class="text-xl font-semibold text-center">Correctivo</h2>
         <FoliosTable :foliosData="foliosData.correctivo" />
       </div>
