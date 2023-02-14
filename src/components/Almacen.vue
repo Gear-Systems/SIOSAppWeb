@@ -1,8 +1,8 @@
 <template>
-  <div class="h-full w-full px-16 py-12">
+  <div class="h-full w-full px-2 lg:px-16 py-12">
     <TabGroup>
       <TabList>
-        <div class="flex w-full justify-center space-x-4">
+        <div class="grid grid-cols-2 lg:grid-cols-4 justify-items-center gap-1 lg:px-56">
           <!-- materiales -->
           <Tab v-slot="{ selected }">
             <button

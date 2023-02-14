@@ -1,6 +1,6 @@
 <template>
   <div class="flex w-full">
-    <div class="flex w-[90%] select-none flex-col space-y-3">
+    <div class="flex lg:w-[90%] w-full select-none flex-col space-y-3">
       <div
         class="mt-12 mb-4 flex w-[100%] cursor-pointer items-center"
         @click="abrirModalNotas(null)"

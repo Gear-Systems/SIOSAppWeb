@@ -2,9 +2,16 @@
   <div class="flex h-screen min-h-screen w-screen items-center justify-center">
     <div class="flex h-full min-h-[500px] w-full">
       <div
+        v-show="!mobile"
         class="flex h-[100%] w-[40%] border-r-2 border-black bg-azul-marino"
       ></div>
-      <div class="flex h-[100%] w-[60%] flex-col items-center justify-center">
+      <div
+        class="relative flex h-[100%] w-full flex-col items-center justify-center overflow-hidden lg:w-[60%]"
+      >
+        <div
+        v-show="mobile"
+          class="absolute top-0 -left-28 h-20 w-64 -rotate-45 border-r-2 border-black bg-azul-marino"
+        ></div>
         <!-- Formulario -->
         <div class="w-full">
           <div class="mb-12 flex justify-center">
@@ -108,6 +115,7 @@ const pass = ref("");
 const auth = getAuth();
 const errorMessage = ref("");
 const router = useRouter();
+const props = defineProps(["mobile"]);
 
 const login = () => {
   signInWithEmailAndPassword(auth, correo.value, pass.value)

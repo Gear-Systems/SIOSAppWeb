@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-5 flex h-full w-full justify-center space-x-24">
+  <div class="mt-5 flex flex-col lg:flex-row items-center lg:items-start h-full w-full justify-center lg:space-x-24">
     <div class="flex justify-center">
       <div class="flex flex-col space-y-8">
         <h2 class="text-xl font-semibold">Agregar nuevo Fallo</h2>
@@ -52,7 +52,7 @@
         </div>
       </div>
     </div>
-    <div class="flex space-x-12">
+    <div class="mt-12 lg:mt-0 flex space-x-12">
       <div class="flex flex-col space-y-6">
         <h2 class="text-xl font-semibold text-center">Fallas</h2>
         <FallasTable :fallasData="fallasData" />

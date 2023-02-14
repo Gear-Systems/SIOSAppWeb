@@ -1,14 +1,22 @@
 <template>
-  <div class="flex h-full w-full flex-col">
+  <div class="flex h-full w-full flex-col overflow-hidden">
     <!-- Filtro -->
     <div class="mt-9 flex pl-20">
       <form @submit.prevent="buscar">
-        <div class="flex items-end justify-center space-x-8">
+        <div class="flex items-end justify-center space-x-4 lg:space-x-8">
           <div>
-            <label for="folio" class="mb-1 block text-xs font-medium text-[#7C8495] dark:text-gray-300">Folio</label>
-            <input v-model="filtro.folio" type="text" id="folio"
+            <label
+              for="folio"
+              class="mb-1 block text-xs font-medium text-[#7C8495] dark:text-gray-300"
+              >Folio</label
+            >
+            <input
+              v-model="filtro.folio"
+              type="text"
+              id="folio"
               class="block w-full rounded-lg border border-[#7C8495] bg-gray-50 p-2.5 text-sm text-gray-900 placeholder:text-[#101010] focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-              placeholder="Ingresar folio" />
+              placeholder="Ingresar folio"
+            />
           </div>
           <!-- <div>
           <label
@@ -25,12 +33,18 @@
           </select>
         </div> -->
           <div>
-            <button @click="buscar" type="submit"
-              class="w-full rounded-lg bg-primario px-8 py-3 text-center text-sm font-medium text-white hover:bg-primario/80 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 sm:w-auto">
+            <button
+              @click="buscar"
+              type="submit"
+              class="w-full rounded-lg bg-primario px-8 py-3 text-center text-sm font-medium text-white hover:bg-primario/80 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 sm:w-auto"
+            >
               Buscar
             </button>
           </div>
-          <div @click="reiniciarFiltro" class="flex cursor-pointer items-center justify-center">
+          <div
+            @click="reiniciarFiltro"
+            class="flex cursor-pointer items-center justify-center"
+          >
             <RefreshIcon class="h-5 w-5" aria-hidden="true" />
           </div>
         </div>
@@ -40,95 +54,123 @@
     </div>
     <div class="relative mt-8 px-8 pb-8 shadow-md">
       <!-- Control paginación -->
-      <div class="flex w-full justify-end ">
-        <button @click="handlePagination().backPage" class="border bg-gray-100 py-1 px-3 hover:bg-gray-50">
-          <ChevronLeftIcon class="w-5 h-5" aria-hidden="true" />
+      <div class="flex w-full justify-end">
+        <button
+          @click="handlePagination().backPage"
+          class="border bg-gray-100 py-1 px-3 hover:bg-gray-50"
+        >
+          <ChevronLeftIcon class="h-5 w-5" aria-hidden="true" />
         </button>
-        <button class="border bg-gray-100 py-1 px-3 hover:bg-gray-50" v-for="item in Math.ceil(data.length / perPage)"
-          :key="item" @click="() => handlePagination().goToPage(item)">
+        <button
+          class="border bg-gray-100 py-1 px-3 hover:bg-gray-50"
+          v-for="item in Math.ceil(data.length / perPage)"
+          :key="item"
+          @click="() => handlePagination().goToPage(item)"
+        >
           {{ item }}
         </button>
-        <button @click="handlePagination().nextPage" class="border bg-gray-100 py-1 px-3 hover:bg-gray-50">
-          <ChevronRightIcon class="w-5 h-5" aria-hidden="true" />
+        <button
+          @click="handlePagination().nextPage"
+          class="border bg-gray-100 py-1 px-3 hover:bg-gray-50"
+        >
+          <ChevronRightIcon class="h-5 w-5" aria-hidden="true" />
         </button>
       </div>
-      <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
-        <thead class="bg-[#F2F2F2] text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-          <tr>
-            <th scope="col" class="py-3 px-2"></th>
-            <th scope="col" class="py-3 px-2"></th>
-            <th scope="col" class="py-3 px-6">Folio</th>
-            <th scope="col" class="py-3 px-6">Tipo</th>
-            <th scope="col" class="py-3 px-6">Ubicación</th>
-            <th scope="col" class="py-3 px-6">Detalle</th>
-            <th scope="col" class="py-3 px-6">ETA</th>
-            <th scope="col" class="py-3 px-6">SLA</th>
-            <th scope="col" class="py-3 px-6">Estatus</th>
-            <th scope="col" class="py-3 px-6">
-              <span class="sr-only">Edit</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in handlePagination().paginatedData.value"
-            class="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
-            <td class="px-2">
-              <TableMenu :data="item" />
-            </td>
-            <th scope="row" :class="[
-              'rounded-l-xl dark:text-white',
-              colorsBG(item.estatusId),
-            ]"></th>
-            <td class="py-1 px-6 font-semibold">{{ item.folio }}</td>
-            <td class="py-1 px-6">{{ item.tipoFolio }}</td>
-            <td class="py-1 px-6">
-              <div class="font-semibold">{{ item.distrito }}</div>
-              <div>{{ item.cluster }}</div>
-            </td>
-            <td class="py-1 px-6">
-              <div v-if="item.horaInicio != undefined ? true : false">
-                <div>
-                  {{
-                      `${new Date(item.horaInicio).getDate()}/${new Date(
-                        item.horaInicio
-                      ).getMonth() + 1}/${new Date(item.horaInicio).getFullYear()}`
-                  }}
-                </div>
-                <div>
-                  {{
+      <div class="overflow-x-auto">
+        <table
+          class="w-full text-left text-sm text-gray-500 dark:text-gray-400"
+        >
+          <thead
+            class="bg-[#F2F2F2] text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400"
+          >
+            <tr>
+              <th scope="col" class="py-3 px-2"></th>
+              <th scope="col" class="py-3 px-2"></th>
+              <th scope="col" class="py-3 px-6">Folio</th>
+              <th scope="col" class="py-3 px-6">Tipo</th>
+              <th scope="col" class="py-3 px-6">Ubicación</th>
+              <th scope="col" class="py-3 px-6">Detalle</th>
+              <th scope="col" class="py-3 px-6">ETA</th>
+              <th scope="col" class="py-3 px-6">SLA</th>
+              <th scope="col" class="py-3 px-6">Estatus</th>
+              <th scope="col" class="py-3 px-6">
+                <span class="sr-only">Edit</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="item in handlePagination().paginatedData.value"
+              class="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
+            >
+              <td class="px-2">
+                <TableMenu :data="item" />
+              </td>
+              <th
+                scope="row"
+                :class="[
+                  'rounded-l-xl dark:text-white',
+                  colorsBG(item.estatusId),
+                ]"
+              ></th>
+              <td class="py-1 px-6 font-semibold">{{ item.folio }}</td>
+              <td class="py-1 px-6">{{ item.tipoFolio }}</td>
+              <td class="py-1 px-6">
+                <div class="font-semibold">{{ item.distrito }}</div>
+                <div>{{ item.cluster }}</div>
+              </td>
+              <td class="py-1 px-6">
+                <div v-if="item.horaInicio != undefined ? true : false">
+                  <div>
+                    {{
+                      `${new Date(item.horaInicio).getDate()}/${
+                        new Date(item.horaInicio).getMonth() + 1
+                      }/${new Date(item.horaInicio).getFullYear()}`
+                    }}
+                  </div>
+                  <div>
+                    {{
                       `${new Date(item.horaInicio).getHours()}:${new Date(
                         item.horaInicio
                       ).getMinutes()}`
-                  }}
+                    }}
+                  </div>
                 </div>
-              </div>
-            </td>
-            <td class="py-1 px-6">{{ item.eta }}</td>
-            <td class="py-1 px-6">{{ item.sla }}</td>
-            <td :class="['py-1 px-6 font-semibold', colorsText(item.estatusId)]">
-              {{ item.estatus }}
-            </td>
-            <td class="flex flex-row space-x-4 py-1 px-6 text-right">
-              <!-- <div class="flex cursor-pointer items-center justify-center rounded-full py-5 px-6 hover:bg-[#E9F0FC]">
+              </td>
+              <td class="py-1 px-6">{{ item.eta }}</td>
+              <td class="py-1 px-6">{{ item.sla }}</td>
+              <td
+                :class="['py-1 px-6 font-semibold', colorsText(item.estatusId)]"
+              >
+                {{ item.estatus }}
+              </td>
+              <td class="flex flex-row space-x-4 py-1 px-6 text-right">
+                <!-- <div class="flex cursor-pointer items-center justify-center rounded-full py-5 px-6 hover:bg-[#E9F0FC]">
                 <img src="/img/enviar_ico.svg" />
               </div> -->
-              <div v-show="item.estatus == 'Finalizado' ? true : false" @click="copiarInfo(item)"
-                class="flex cursor-pointer items-center justify-center rounded-full py-5 px-5 hover:bg-[#E9F0FC]">
-                <img src="/img/copiar_ico.svg" />
-              </div>
-              <div @click="
-  $router.push({
-    path: `/mantenimiento/${item.incidencia}/${item.folioKey}`,
-    query: { mantenimiento: true }
-  })
-              " class="flex cursor-pointer items-center justify-center rounded-full py-5 px-6 hover:bg-[#E9F0FC]">
-                <img src="/img/actualizar_ico.svg" />
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
+                <div
+                  v-show="item.estatus == 'Finalizado' ? true : false"
+                  @click="copiarInfo(item)"
+                  class="flex cursor-pointer items-center justify-center rounded-full py-5 px-5 hover:bg-[#E9F0FC]"
+                >
+                  <img src="/img/copiar_ico.svg" />
+                </div>
+                <div
+                  @click="
+                    $router.push({
+                      path: `/mantenimiento/${item.incidencia}/${item.folioKey}`,
+                      query: { mantenimiento: true },
+                    })
+                  "
+                  class="flex w-16 h-16 lg:w-auto lg:h-auto cursor-pointer items-center justify-center rounded-full lg:py-3 lg:px-6 hover:bg-[#E9F0FC]"
+                >
+                  <img src="/img/actualizar_ico.svg" />
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </template>
@@ -144,7 +186,11 @@ import {
   onChildRemoved,
   child,
 } from "firebase/database";
-import { RefreshIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/vue/outline";
+import {
+  RefreshIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from "@heroicons/vue/outline";
 import TableMenu from "./TableMenu.vue";
 import clipboard from "@/scripts/clipboard";
 
@@ -170,8 +216,8 @@ onChildAdded(child(refDB(db), "folios/correctivos"), (snapshot) => {
 });
 
 const copiarInfo = (item) => {
- const result = clipboard(item);
-}
+  const result = clipboard(item);
+};
 
 onChildAdded(child(refDB(db), "folios/preventivos"), (snapshot) => {
   let color = "";

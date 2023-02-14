@@ -191,7 +191,7 @@
         leave-to-class="translate-y-1 opacity-0"
       >
         <PopoverPanel
-          class="absolute -right-56 -top-2 z-10 mt-3 sm:px-0 lg:max-w-3xl"
+          class="absolute w-fit top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 lg:-right-56 lg:top-14 z-10 mt-3 sm:px-0 lg:max-w-3xl"
         >
           <DatePicker v-model="formData.fechas" is-range />
         </PopoverPanel>

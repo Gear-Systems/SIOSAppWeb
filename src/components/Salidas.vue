@@ -1,7 +1,7 @@
 <template>
   <div class="h-full w-full">
     <form>
-      <div class="flex w-full space-x-6">
+      <div class="flex flex-col lg:flex-row w-full lg:space-x-6">
         <div class="mb-6 w-[250px]">
           <label
             for="distrito"

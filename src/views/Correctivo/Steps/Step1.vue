@@ -1,6 +1,6 @@
 <template>
   <div class="flex w-[100%]">
-    <div class="mb-3 flex w-[90%] flex-col items-start justify-start pl-2">
+    <div class="mb-3 flex w-full lg:w-[90%] flex-col items-start justify-start lg:pl-2">
       <Horario :state="props.estado" :incidencia="props.incidencia" :folio="props.folio" :tipoFolio="props.tipoFolio"
         :fechaInicioBD="props.data.horaInicio" :horaInicioBD="props.data.horaInicio" @validarFecha="validarFecha"
         @validarHora="validarHora" @validarMinuto="validarMinuto"></Horario>
