@@ -32,7 +32,7 @@
               leave-to-class="opacity-0"
             >
               <ListboxOptions
-                class="absolute z-30 mt-1 max-h-60 w-full max-w-sm rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+                class="absolute overflow-auto z-30 mt-1 max-h-60 w-full max-w-sm rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
               >
                 <ListboxOption
                   v-slot="{ active, selected }"
@@ -68,11 +68,13 @@
         </Listbox>
       </div>
       <div class="font-semibold">Tabla de relaciones</div>
-      <div class="flex flex-col space-y-2 lg:space-y-0 items-center lg:flex-row lg:space-x-12">
+      <div
+        class="flex flex-col items-center space-y-2 lg:flex-row lg:space-y-0 lg:space-x-12"
+      >
         <!-- table relacion -->
-        <div class="flex lg:w-[50%] space-x-4">
+        <div class="flex space-x-4 lg:w-[50%]">
           <draggable
-            class="border-[#E5E6EA]bg-transparent flex max-h-[300px] min-h-[350px] min-w-[200px] lg:min-w-[250px] select-none flex-col overflow-auto rounded-xl border"
+            class="border-[#E5E6EA]bg-transparent flex max-h-[300px] min-h-[350px] min-w-[200px] select-none flex-col overflow-auto rounded-xl border lg:min-w-[250px]"
             :list="clustersRelacionados"
             group="clusters"
             @change="agregarClusters"
@@ -116,7 +118,7 @@
           </draggable>
 
           <draggable
-            class="border-[#E5E6EA]bg-transparent flex max-h-[300px] min-h-[350px] min-w-[200px] lg:min-w-[250px] max-w-[250px] select-none flex-col overflow-auto rounded-xl border"
+            class="border-[#E5E6EA]bg-transparent flex max-h-[300px] min-h-[350px] min-w-[200px] max-w-[250px] select-none flex-col overflow-auto rounded-xl border lg:min-w-[250px]"
             :list="supervisoresRelacionados"
             group="supervisores"
             @change="agregarSupervisores"
@@ -167,7 +169,7 @@
         <!-- Tabla de datos no relacionados -->
         <div class="flex space-x-4">
           <draggable
-            class="border-[#E5E6EA]bg-transparent flex max-h-[300px] min-h-[350px] min-w-[200px] lg:min-w-[250px] select-none flex-col overflow-auto rounded-xl border"
+            class="border-[#E5E6EA]bg-transparent flex max-h-[300px] min-h-[350px] min-w-[200px] select-none flex-col overflow-auto rounded-xl border lg:min-w-[250px]"
             :list="clustersData"
             group="clusters"
             @change="log"
@@ -193,7 +195,7 @@
             </template>
           </draggable>
           <draggable
-            class="border-[#E5E6EA]bg-transparent flex max-h-[300px] min-h-[350px] min-w-[200px] lg:min-w-[250px] select-none flex-col rounded-xl border"
+            class="flex max-h-[300px] min-h-[350px] min-w-[200px] select-none flex-col overflow-auto rounded-xl border border-[#E5E6EA] bg-transparent lg:min-w-[250px]"
             :list="supervisoresData"
             group="supervisores"
             @change="log"
@@ -212,7 +214,7 @@
             </template>
             <template #header>
               <div
-                class="flex w-full items-center justify-center space-x-4 rounded-t-xl py-2"
+                class="ov flex w-full items-center justify-center space-x-4 rounded-t-xl py-2"
               >
                 <h3 class="text-lg font-semibold">Supervisor/es</h3>
                 <!-- Filtro supervisores -->
@@ -451,10 +453,12 @@ const eliminarSupervisores = (element, item) => {
     ).then(async (snapshot) => {
       await get(refDB(db, `catalogo/supervisores/${element.key}`)).then(
         async (snapshotSupervisor) => {
-          let arraySupervisor = snapshotSupervisor.val().distritos.filter((element) => {
-            if(element != selectedDistrito.value) return element
-          });
-          
+          let arraySupervisor = snapshotSupervisor
+            .val()
+            .distritos.filter((element) => {
+              if (element != selectedDistrito.value) return element;
+            });
+
           await update(refDB(db, `catalogo/supervisores/${element.key}`), {
             distritos: arraySupervisor,
           });
