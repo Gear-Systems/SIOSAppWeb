@@ -828,7 +828,7 @@ watch(
               infoUser.userKey
             }`
           ),
-          { nombre: infoUser.displayName }
+          { nombre: infoUser.displayName, uid: infoUser.userKey }
         );
         await update(
           refDB(db, `catalogo/supervisores/${infoUser.userKey}/distritos`),

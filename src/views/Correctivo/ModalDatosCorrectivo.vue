@@ -372,11 +372,9 @@ const fetchData = async () => {
       }
       // distritos
       if (element.key === "distritos") {
-        console.log(element.val());
         for (let data in element.val()) {
           infoData.distritos.push({ name: data, ...element.val()[data] });
         }
-        console.log(infoData.distritos);
       }
       // fallas
       if (element.key === "fallas") {
@@ -389,7 +387,6 @@ const fetchData = async () => {
         for (let data in element.val()) {
           infoData.causas.push({ name: data, ...element.val()[data] });
         }
-        console.log(infoData.causas);
       }
       //Closter
     });
@@ -404,11 +401,13 @@ onAuthStateChanged(auth, (user) => {
 
 await fetchData();
 
-const obtenerTecnicos = (event) => {
+const obtenerTecnicos = async (event) => {
   infoSelected.supervisores = event;
   infoSelected.tecnicos = [];
   infoData.tecnicos = [];
-  get(refDB(db, `catalogo/supervisores/${event.uid}`)).then((snapshot) => {
+  console.log("Tecnicos", event)
+  console.log("distritos", infoSelected.distrito)
+  await get(refDB(db, `catalogo/supervisores/${event.uid}`)).then((snapshot) => {
     snapshot.forEach((element) => {
       if (element.key === "tecnicos") {
         for (let data in element.val()) {
@@ -493,13 +492,11 @@ watch(infoSelected, async () => {
 
 const submitCorrectivo = async () => {
   loadingSubmit.value = true;
-  console.log(buttonDisabled.value);
   if (!infoSelected.folio || errores.folio.error) {
     return;
   }
   await crearFolio(infoSelected)
     .then((result) => {
-      console.log(result);
       loading.value = false;
       store.commit("cerrarModalCorrectivo");
       router.push({ name: "capturarCorrectivo", params:{ id: result.data } });

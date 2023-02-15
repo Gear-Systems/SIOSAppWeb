@@ -63,6 +63,7 @@
                 v-if="selected"
                 class="absolute inset-y-0 left-0 flex items-center pl-3 text-black"
               >
+                {{ element }}
                 <CheckIcon class="h-5 w-5" aria-hidden="true" />
               </span>
             </li>
@@ -98,14 +99,11 @@ const emits = defineEmits(["inputValue"]);
 onUpdated(() => {
   if (props.default != undefined) {
     if (oldValueDefault.value != props.default) {
-        console.log(props.label);
-        seleccionado.value = props.default;
-        oldValueDefault.value = props.default;
-      }
+      seleccionado.value = props.default;
+      oldValueDefault.value = props.default;
+    }
   }
 });
-
-
 
 onMounted(() => {
   if (props.default != undefined) {
@@ -117,6 +115,7 @@ onMounted(() => {
 });
 
 watch(seleccionado, (value) => {
+  console.log("watch", value);
   emits("inputValue", value);
 });
 </script>
