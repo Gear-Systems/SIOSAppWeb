@@ -195,9 +195,11 @@
                       </div>
                     </div>
                   </div>
-                  <div class="mb-4 flex flex-col space-y-4 lg:flex-row w-[100%] lg:items-center lg:self-start lg:justify-between">
+                  <div
+                    class="mb-4 flex w-[100%] flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:self-start"
+                  >
                     <div
-                      class="lg:mr-1.5 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]"
+                      class="flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4] lg:mr-1.5"
                     >
                       Causa
                       <div class="flex">
@@ -209,7 +211,7 @@
                       </div>
                     </div>
                     <div
-                      class="lg:ml-2 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]"
+                      class="flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4] lg:ml-2"
                     >
                       Clientes afectados
                       <input
@@ -222,14 +224,16 @@
                         max="9999"
                       />
                     </div>
-                    <div class="lg:ml-2 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]">
+                    <div
+                      class="flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4] lg:ml-2"
+                    >
                       Turno
-                        <ListSelect
-                          :dataArray="infoData.turnos"
-                          :label="'Selecciona un turno'"
-                          @inputValue="infoSelected.turno = $event"
-                        />
-                      </div>
+                      <ListSelect
+                        :dataArray="infoData.turnos"
+                        :label="'Selecciona un turno'"
+                        @inputValue="infoSelected.turno = $event"
+                      />
+                    </div>
                   </div>
                 </div>
                 <div class="mt-4 flex justify-around">
@@ -338,7 +342,7 @@ const infoData = reactive({
   fallas: [],
   causas: [],
   tecnicos: [],
-  turnos: ["Día", "Noche"]
+  turnos: ["Día", "Noche"],
 });
 
 const infoSelected = reactive({
@@ -353,10 +357,8 @@ const infoSelected = reactive({
   olt: "",
   clientesAfectados: 0,
   turno: "",
-  despacho: '',
+  despacho: "",
 });
-
-
 
 const fetchData = async () => {
   get(catalogoRef).then((snapshot) => {
@@ -394,10 +396,10 @@ const fetchData = async () => {
 };
 
 onAuthStateChanged(auth, (user) => {
-  if(user) {
-    infoSelected.despacho = user.uid
+  if (user) {
+    infoSelected.despacho = user.uid;
   }
-})
+});
 
 await fetchData();
 
@@ -405,20 +407,22 @@ const obtenerTecnicos = async (event) => {
   infoSelected.supervisores = event;
   infoSelected.tecnicos = [];
   infoData.tecnicos = [];
-  console.log("Tecnicos", event)
-  console.log("distritos", infoSelected.distrito)
-  await get(refDB(db, `catalogo/supervisores/${event.uid}`)).then((snapshot) => {
-    snapshot.forEach((element) => {
-      if (element.key === "tecnicos") {
-        for (let data in element.val()) {
-          infoData.tecnicos.push({
-            name: element.val()[data].nombre,
-            uid: data,
-          });
+  console.log("Tecnicos", event);
+  console.log("distritos", infoSelected.distrito);
+  await get(refDB(db, `catalogo/supervisores/${event.uid}`)).then(
+    (snapshot) => {
+      snapshot.forEach((element) => {
+        if (element.key === "tecnicos") {
+          for (let data in element.val()) {
+            infoData.tecnicos.push({
+              name: element.val()[data].nombre,
+              uid: data,
+            });
+          }
         }
-      }
-    });
-  });
+      });
+    }
+  );
 };
 
 function closeModal() {
@@ -482,7 +486,7 @@ watch(infoSelected, async () => {
     infoSelected.tecnicos &&
     infoSelected.falla &&
     infoSelected.causa &&
-    infoSelected.clientesAfectados > 0
+    infoSelected.clientesAfectados > -1
   ) {
     buttonDisabled.value = false;
   } else {
@@ -495,11 +499,15 @@ const submitCorrectivo = async () => {
   if (!infoSelected.folio || errores.folio.error) {
     return;
   }
+  if (infoSelected.clientesAfectados == "") {
+    infoSelected.clientesAfectados = 0;
+  }
+  
   await crearFolio(infoSelected)
     .then((result) => {
       loading.value = false;
       store.commit("cerrarModalCorrectivo");
-      router.push({ name: "capturarCorrectivo", params:{ id: result.data } });
+      router.push({ name: "capturarCorrectivo", params: { id: result.data } });
     })
     .catch((error) => {
       loading.value = false;
