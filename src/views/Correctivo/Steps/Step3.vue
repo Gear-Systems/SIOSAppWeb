@@ -1,5 +1,5 @@
 <template>
-  <div class="flex w-full flex-col overflow-auto">
+  <div class="flex w-full flex-col">
     <Horario
       :state="props.estado"
       :incidencia="props.incidencia"

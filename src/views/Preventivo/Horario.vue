@@ -17,20 +17,20 @@
                 <CalendarIcon class="h-6 w-6 self-center" />
               </PopoverButton>
               <PopoverPanel
-                class="w-cover absolute max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl"
+                class="w-cover absolute max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl z-50"
               >
                 <div
-                  class="w-[250px] rounded-lg bg-white shadow-lg shadow-black/5 ring-1 ring-black ring-opacity-5"
+                  class="w-[250px] z-50 rounded-lg bg-white shadow-lg shadow-black/5 ring-1 ring-black ring-opacity-5"
                 >
                   <div class="flex">
                     <DatePicker
                       style="border: #000000"
-                      class="flex bg-red-300"
+                      class="flex"
                       v-model="horario"
                       @dayclick="imprimir()"
                     />
                   </div>
-                  <div class="h-15 flex w-[100%] items-center justify-center bg-red-300">
+                  <div class="h-15 flex w-[100%] items-center justify-center z-50">
                     <button
                       as="button"
                       class="z-[100] mb-3 -mt-3 flex rounded-md bg-[#E9F0FC] px-6 py-1"
