@@ -6,7 +6,7 @@
           <div
             class="flex w-full select-none justify-start rounded-lg bg-[#F8FAFB] shadow-md"
           >
-            <div class="lg:ml-28 flex w-full space-x-8 p-2 lg:p-4">
+            <div class="flex w-full space-x-8 p-2 lg:ml-28 lg:p-4">
               <div class="flex w-full border-b-2 border-gray-300">
                 <Tab v-slot="{ selected }">
                   <button
@@ -29,11 +29,21 @@
                     Superv.TTP
                   </button>
                 </Tab>
+                <Tab v-slot="{ selected }"
+                  ><button
+                    :class="[
+                      selected ? 'font-semibold text-[#2166E5]' : 'text-black',
+                      'rounded-md py-2 px-10 hover:bg-[#E9F0FC]',
+                    ]"
+                  >
+                    Despacho.TTP
+                  </button>
+                </Tab>
               </div>
               <div class="flex w-full justify-end lg:pr-12">
                 <button
                   @click="isOpen = true"
-                  class="flex w-auto justify-around items-center rounded-lg bg-[#2166E5] px-4 lg:py-3 lg:px-8 text-sm text-white transition-opacity hover:opacity-50"
+                  class="flex w-auto items-center justify-around rounded-lg bg-[#2166E5] px-4 text-sm text-white transition-opacity hover:opacity-50 lg:py-3 lg:px-8"
                 >
                   <span class="lg:mr-2"><AgregarIco /></span>Nuevo usuario
                 </button>
@@ -53,6 +63,9 @@
           <TabPanel
             ><Suspense><CatalogoSupervisoresTTP /></Suspense
           ></TabPanel>
+          <TabPanel
+            ><Suspense><CatalogoDespachoTTP /></Suspense
+          ></TabPanel>
         </TabPanels>
       </TabGroup>
     </div>
@@ -67,6 +80,7 @@ import UsuariosTable from "@/components/UsuariosTable.vue";
 import UsuariosModalAgregar from "@/components/UsuariosModalAgregar.vue";
 import AgregarIco from "@/components/iconos/AgregarIco.vue";
 import CatalogoSupervisoresTTP from "./CatalogoSupervisoresTTP.vue";
+import CatalogoDespachoTTP from "./CatalogoDespachoTTP.vue";
 
 const isOpen = ref(false);
 </script>

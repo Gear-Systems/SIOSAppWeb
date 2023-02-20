@@ -32,11 +32,72 @@
               leave-to-class="opacity-0"
             >
               <ListboxOptions
-                class="absolute overflow-auto z-30 mt-1 max-h-60 w-full max-w-sm rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+                class="absolute z-30 mt-1 max-h-60 w-full max-w-sm overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
               >
                 <ListboxOption
                   v-slot="{ active, selected }"
                   v-for="item in data"
+                  :key="item"
+                  :value="item"
+                  as="template"
+                >
+                  <li
+                    :class="[
+                      active ? 'bg-gray-100' : 'text-gray-900',
+                      'relative w-full cursor-default select-none py-2 pl-10 pr-4',
+                    ]"
+                  >
+                    <span
+                      :class="[
+                        selected ? 'font-medium' : 'font-normal',
+                        'block w-full truncate',
+                      ]"
+                      >{{ item }}</span
+                    >
+                    <span
+                      v-if="selected"
+                      class="absolute inset-y-0 left-0 flex items-center pl-3"
+                    >
+                      <CheckIcon class="h-5 w-5" aria-hidden="true" />
+                    </span>
+                  </li>
+                </ListboxOption>
+              </ListboxOptions>
+            </transition>
+          </div>
+        </Listbox>
+      </div>
+      <div v-show="selectedDistrito != 'Selecciona un distrito'" class="w-[30%]">
+        <Listbox v-model="selectedDespacho">
+          <div class="relative">
+            <ListboxLabel class="text-sm text-gray-500"
+              >Despacho TTP</ListboxLabel
+            >
+            <ListboxButton
+              class="shadow- relative w-full max-w-sm cursor-pointer rounded-md border-[1.5px] border-[#7C8495] py-2 pl-3 pr-10 text-left focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
+            >
+              <span class="block truncate">{{ selectedDespacho }}</span>
+              <span
+                class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
+              >
+                <SelectorIcon
+                  class="h-5 w-5 text-gray-400"
+                  aria-hidden="true"
+                />
+              </span>
+            </ListboxButton>
+
+            <transition
+              leave-active-class="transition duration-100 ease-in"
+              leave-from-class="opacity-100"
+              leave-to-class="opacity-0"
+            >
+              <ListboxOptions
+                class="absolute z-30 mt-1 max-h-60 w-full max-w-sm overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+              >
+                <ListboxOption
+                  v-slot="{ active, selected }"
+                  v-for="item in dataDespacho"
                   :key="item"
                   :value="item"
                   as="template"
@@ -302,6 +363,7 @@ import BoteBasuraIco from "./iconos/BoteBasuraIco.vue";
 import FiltroIco from "./iconos/FiltroIco.vue";
 
 const data = ref([]);
+const dataDespacho = ref([]);
 const filtroSupervisor = ["Supervisor IOS", "Supervisor TTP"];
 const db = getDatabase();
 
@@ -313,15 +375,30 @@ const supervisorIOSData = ref([]);
 const supervisoresTTPData = ref([]);
 const controlOnStart = ref(true);
 const idGlobal = ref(8);
-// Obtener distritos desde base de datos
-await get(refDB(db, `catalogo/distritos`)).then((snapshot) => {
-  snapshot.forEach((element) => {
-    data.value.push(element.key);
-  });
-});
-
-const selectedDistrito = ref(data.value[0]);
+const selectedDistrito = ref("Selecciona un distrito");
+const selectedDespacho = ref("Selecciona un despacho TTP");
 const selectedSupervisor = ref(filtroSupervisor[0]);
+
+// Fetch data
+const fetcData = async () => {
+  // Obtener distritos desde base de datos
+  await get(refDB(db, `catalogo/distritos`)).then((snapshot) => {
+    snapshot.forEach((element) => {
+      if(element.hasChild("despachoTTP")) {
+        selectedDespacho.value = element.val().despachoTTP;
+      }
+      data.value.push(element.key);
+    });
+  });
+  // Obtener despacho ttp desde base de datos
+  await get(refDB(db, `catalogo/despachoTTP`)).then((snapshot) => {
+    snapshot.forEach((element) => {
+      dataDespacho.value.push(element.key);
+    });
+  });
+};
+
+await fetcData();
 
 const loadData = async () => {
   clustersRelacionados.value = [];
@@ -334,7 +411,6 @@ const loadData = async () => {
     refDB(db, `catalogo/distritos/${selectedDistrito.value}/clusters`)
   ).then((snapshot) => {
     snapshot.forEach((element) => {
-      console.log(element);
       clustersRelacionados.value.push(element.val());
     });
   });
@@ -424,6 +500,19 @@ const loadData = async () => {
   });
 };
 
+// Establecer despacho TTP
+const setDespachoTTP = async () => {
+  await update(
+    refDB(
+      db,
+      `catalogo/distritos/${selectedDistrito.value}`
+    ),
+    {
+      despachoTTP: selectedDespacho.value,
+    }
+  );
+};
+
 watch(selectedDistrito, async () => {
   await loadData();
 });
@@ -433,6 +522,10 @@ await loadData();
 const log = (evt) => {
   console.log(evt);
 };
+
+watch(selectedDespacho, async () => {
+  await setDespachoTTP();
+});
 
 const eliminarClusters = (element, item) => {
   clustersRelacionados.value.splice(item, 1);
@@ -489,7 +582,6 @@ const eliminarSupervisores = (element, item) => {
 };
 
 const agregarSupervisores = (evt) => {
-  console.log(evt.added.element);
   if (evt.added.element.tipo === "supervisor ios") {
     update(
       refDB(
