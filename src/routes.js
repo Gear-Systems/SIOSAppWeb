@@ -10,6 +10,8 @@ import Configuraciones from "./views/Configuraciones.vue";
 import ConsultarFolios from "./views/ConsultarFolios.vue";
 import Mantenimiento from "./views/Mantenimiento.vue";
 import Reportes from "./views/Reportes.vue";
+import MantenimientoPreventivo from "./views/MantenimientoPreventivo.vue"
+import MantenimientoCorrectivo from "./views/MantenimientoCorrectivo.vue"
 
 /** @type {import('vue-router').RouterOptions['routes']} */
 export const routes = [
@@ -46,14 +48,14 @@ export const routes = [
   {
     path: "/mantenimiento/preventivos/:id",
     name: "mantenimientoPreventivo",
-    component: Preventivo,
+    component: MantenimientoPreventivo,
     meta: { title: "Folios preventivos", authorization: true },
     props: { control: false },
   },
   {
     path: "/mantenimiento/correctivos/:id",
     name: "mantenimientoCorrectivo",
-    component: Correctivo,
+    component:  MantenimientoCorrectivo,
     meta: { title: "Folios Correctivos", authorization: true },
     props: { control: true },
   },
