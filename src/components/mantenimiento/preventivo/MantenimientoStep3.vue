@@ -47,7 +47,7 @@
                 <input
                   v-on:change="selectFileDespues"
                   type="file"
-                  accept=".png,.jpg,.heic"
+                  accept=".png,.jpg,.heic,.jpeg"
                   class="file:border file:border-solid"
                   id="foto-despues"
                   hidden

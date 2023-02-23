@@ -86,7 +86,7 @@
                     <input
                       ref="file1"
                       type="file"
-                      accept=".png,.jpg,.heic"
+                      accept=".png,.jpg,.heic,.jpeg"
                       class="file:border file:border-solid"
                       id="foto-antes"
                       hidden
@@ -143,7 +143,7 @@
                     <input
                       ref="file2"
                       type="file"
-                      accept=".png,.jpg,.heic"
+                      accept=".png,.jpg,.heic,.jpeg"
                       class="file:border file:border-solid"
                       id="foto-durante"
                       hidden

@@ -162,7 +162,7 @@
                       query: { mantenimiento: true },
                     })
                   "
-                  class="flex w-16 h-16 lg:w-auto lg:h-auto cursor-pointer items-center justify-center rounded-full lg:py-3 lg:px-6 hover:bg-[#E9F0FC]"
+                  class="flex h-16 w-16 cursor-pointer items-center justify-center rounded-full hover:bg-[#E9F0FC] lg:h-auto lg:w-auto lg:py-3 lg:px-6"
                 >
                   <img src="/img/actualizar_ico.svg" />
                 </div>
@@ -192,7 +192,7 @@ import {
   ChevronRightIcon,
 } from "@heroicons/vue/outline";
 import TableMenu from "./TableMenu.vue";
-import clipboard from "@/scripts/clipboard";
+import { clipboardCorrectivo } from "@/scripts/clipboard";
 
 const db = getDatabase();
 const refFolios = refDB(db, "folios");
@@ -216,7 +216,12 @@ onChildAdded(child(refDB(db), "folios/correctivos"), (snapshot) => {
 });
 
 const copiarInfo = (item) => {
-  const result = clipboard(item);
+  console.log("item", item);
+  if (item.incidencia === "correctivos") {
+    const result = clipboardCorrectivo(item);
+  } else {
+    alert("Lo sentimos, aún no tenemos scripts para folios preventivos.");
+  }
 };
 
 onChildAdded(child(refDB(db), "folios/preventivos"), (snapshot) => {

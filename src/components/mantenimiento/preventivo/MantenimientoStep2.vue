@@ -85,7 +85,7 @@
                     <input
                       v-on:change="selectFileAntes"
                       type="file"
-                      accept=".png,.jpg,.heic"
+                      accept=".png,.jpg,.heic,.jpeg"
                       class="file:border file:border-solid"
                       id="foto-antes"
                       hidden
@@ -146,7 +146,7 @@
                     <input
                       v-on:change="selectFileDurante"
                       type="file"
-                      accept=".png,.jpg,.heic"
+                      accept=".png,.jpg,.heic,.jpeg"
                       class="file:border file:border-solid"
                       id="foto-durante"
                       hidden
