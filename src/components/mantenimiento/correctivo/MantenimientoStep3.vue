@@ -1226,7 +1226,6 @@ watch(
   () => fotos.value.despues.file,
   () => {
     errores.value.fotoDespues = fotos.value.despues.file ? false : true;
-    // console.log(fotos.value.antes.file ? 'existe foto' : 'no hay foto subida');
   }
 );
 
@@ -1298,7 +1297,6 @@ const isNumber = ($event) => {
     $event.preventDefault();
   }
   if ($event) {
-    console.log($event.target.value);
   }
 };
 

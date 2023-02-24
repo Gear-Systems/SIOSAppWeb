@@ -155,7 +155,6 @@ export const calculoSla = async (
   /** MODIFICAR LA FORMA DE OBTENCION DEL COLOR DEL BORDE EN calculo.color  **/
   calculo.color = horas > 0 || minutos > tolerancia ? "border-red-400" : "";
   guardarSla(folio, calculo.tiempo, incidencia, tipoFolio);
-  console.log(calculo.tiempo);
   return calculo;
 };
 
@@ -204,7 +203,6 @@ const obtenerHoraInicio = async (db, folio, incidencia, tipoFolio) => {
     })
     .catch(function (err) {});
   fInicio.newDate = new Date(fInicio.fecha + " " + fInicio.hora + ":00");
-  // console.log(fInicio);
   return fInicio;
 };
 
@@ -231,7 +229,6 @@ const obtenerHoraActivacion = async (db, folio, incidencia, tipoFolio) => {
   fActivacion.newDate = new Date(
     fActivacion.fecha + " " + fActivacion.hora + ":00"
   );
-  // console.log(fActivacion);
   return fActivacion;
 };
 
@@ -248,10 +245,8 @@ const obtenerTolerancia = async (db, tipoFolio, incidencia) => {
     .then((snapshot) => {
       snapshot.forEach((tiempoFolio) => {
         tiempoTolerancia = tiempoFolio.exportVal();
-        // console.log(tiempoFolio.val());
       });
     })
     .catch(function (err) {});
-  // console.log(tiempoTolerancia);
   return tiempoTolerancia;
 };

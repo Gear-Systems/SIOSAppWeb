@@ -1079,7 +1079,6 @@ watch(
   () => fotos.value.despues.file,
   () => {
     errores.value.fotoDespues = fotos.value.despues.file ? false : true;
-    // console.log(fotos.value.antes.file ? 'existe foto' : 'no hay foto subida');
   }
 );
 
@@ -1148,7 +1147,6 @@ const isNumber = ($event) => {
     $event.preventDefault();
   }
   if ($event) {
-    console.log($event.target.value);
   }
 };
 
@@ -1250,7 +1248,6 @@ const validaryEnviarInfo = async () => {
     // Subir imágen del despues
     await uploadBytes(storageRefDespues, fotos.value.despues.file)
       .then(async (snapshot) => {
-        console.log("Archivo subido correctamente", snapshot);
         await getDownloadURL(snapshot.ref).then(async (url) => {
           await update(
             refDB(db, `folios/preventivos/${route.params.id}/imagenes`),
@@ -1312,7 +1309,6 @@ const sla = computed(() => {
   }
 
   let horaCompleta = moment.duration(fecha2.diff(fecha1)).asHours().toFixed(2);
-  alert(horaCompleta);
   if (horaCompleta > 1) {
     let hora = horaCompleta.split(".")[0];
     let minutos = ((0 + "." + horaCompleta.split(".")[1]) * 60).toFixed(0);
@@ -1334,7 +1330,6 @@ const sla = computed(() => {
       minutos >= 0 && minutos <= 9 ? `0${minutos.toString()}` : minutos
     }`;
   } else if (horaCompleta < 1) {
-    alert(parseInt(horaCompleta * 60));
     if (props.data.sla != parseInt(horaCompleta * 60)) {
       guardarSla(parseInt(horaCompleta * 60));
     }

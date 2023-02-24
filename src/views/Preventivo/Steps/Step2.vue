@@ -261,10 +261,8 @@ onMounted(() => {
   listAll(listRef)
     .then((res) => {
       res.prefixes.forEach((folderRef) => {
-        console.log(folderRef);
       });
       res.items.forEach((itemRef) => {
-        console.log(itemRef);
       });
     })
     .catch((error) => {
@@ -276,7 +274,6 @@ watch(
   () => fotos.value.antes.file,
   () => {
     errores.value.fotoAntes = fotos.value.antes.file ? false : true;
-    // console.log(fotos.value.antes.file ? 'existe foto' : 'no hay foto subida');
   }
 );
 
@@ -359,7 +356,6 @@ const selectFileAntes = async (e) => {
   reader.onload = (event) => {
     fotos.value.antes.file64 = reader.result;
   };
-  // console.log(fotos.value.antes.file.name);
 };
 const selectFileDurante = async (e) => {
   fotos.value.durante.file = e.target.files[0];
@@ -406,7 +402,6 @@ const cambiarEstado = async () => {
       antes: '',
       durante: '',
     };
-    console.log(fotos.value.durante.file);
     if (!fotos.value.durante.file || !fotos.value.antes.file) {
       alert("Por favor subir las imágenes");
       return false;
@@ -414,7 +409,6 @@ const cambiarEstado = async () => {
     // Subir imágen del antes
     await uploadBytes(storageRefAntes, fotos.value.antes.file)
       .then(async(snapshot) => {
-        console.log("Archivo subido correctamente", snapshot);
         await getDownloadURL(snapshot.ref).then((url) => {
           objectImage.antes = url;
         })
@@ -426,7 +420,6 @@ const cambiarEstado = async () => {
     // Subir imágen durante
     await uploadBytes(storageRefDurante, fotos.value.durante.file)
       .then(async (snapshot) => {
-        console.log("Archivo subido correctamente", snapshot);
         await getDownloadURL(snapshot.ref).then((url) => {
           objectImage.durante = url;
         })
@@ -471,7 +464,6 @@ const cambiarEstado = async () => {
       storeVuex.commit("agregarErroresCoord", "Campo requerido");
     }
     if (!fotos.value.antes.file || !fotos.value.durante.file) {
-      console.log("Aquí se asignan los errores de las fotos");
       errores.value.fotoAntes = fotos.value.antes.file ? false : true;
       errores.value.fotoDurante = fotos.value.durante.file ? false : true;
     }
@@ -479,7 +471,6 @@ const cambiarEstado = async () => {
 };
 
 const actualizarEstado = async (imageUrl) => {
-  console.log(props.data.horaInicio.fechaSistema, fechaData.value);
   await update(child(refDB(db), `folios/preventivos/${route.params.id}`), {
     paso: 3,
     estatus: "En proceso",

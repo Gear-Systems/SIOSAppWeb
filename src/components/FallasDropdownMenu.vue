@@ -85,7 +85,6 @@ const db = getDatabase();
 const isOpen = ref(false);
 
 const eliminar = () => {
-  console.log(props.data);
   remove(refDB(db, `catalogo/fallas/${props.data.nombre}`));
 };
 </script>

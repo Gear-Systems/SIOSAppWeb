@@ -128,7 +128,6 @@ const schema = {
 };
 function readFile(newFiles) {
   data.value = [];
-  console.log(newFiles);
   file.value = newFiles;
   readXlsxFile(newFiles[0], { schema }).then(({ rows, errors }) => {
     if (errors.length) {
@@ -136,7 +135,6 @@ function readFile(newFiles) {
     } else {
       let validarCodigo;
       rows.forEach((item) => {
-        console.log(item);
         validarCodigo = codigosValidos.value.find(
           (it) => it.codigo === item.codigo
         );
@@ -204,7 +202,6 @@ async function addFiles() {
             usuario: auth.currentUser.uid,
           });
         });
-        console.log("Archivo subido correctamente");
       })
       .catch((error) => {
         console.log(error);

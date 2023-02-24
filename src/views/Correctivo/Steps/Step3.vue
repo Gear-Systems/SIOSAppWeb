@@ -1114,7 +1114,6 @@ const isNumber = ($event) => {
     $event.preventDefault();
   }
   if ($event) {
-    console.log($event.target.value);
   }
 };
 
@@ -1165,7 +1164,6 @@ const validaryEnviarInfo = async () => {
     functions,
     "finalizarFoliosCorrectivos"
   );
-  console.log(infoCapturada.value);
   await finalizarFolioFirebase({
     folioKey: route.params.id,
     ...infoCapturada.value,

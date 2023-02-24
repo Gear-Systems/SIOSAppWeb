@@ -75,7 +75,6 @@ watch(
 onMounted(async () => {
   images.ios = await getBase64ImageFromURL("/img/logo_ios.png");
   images.totalplay = await getBase64ImageFromURL("/img/logo_totalplay.png");
-  console.log(images);
 });
 
 function getBase64ImageFromURL(url) {

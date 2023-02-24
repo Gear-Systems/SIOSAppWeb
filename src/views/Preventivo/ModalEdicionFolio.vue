@@ -1139,7 +1139,6 @@ watch(
 // );
 
 watch(infoSelected, async (value) => {
-  console.log(errores.folio.error);
   if (
     infoSelected.folio != props.folio &&
     infoSelected.tipoFolio != props.infoData.tipoFolio &&

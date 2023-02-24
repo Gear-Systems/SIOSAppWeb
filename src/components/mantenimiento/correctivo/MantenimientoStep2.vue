@@ -238,7 +238,6 @@ watch(
   () => fotos.value.antes.file,
   () => {
     errores.value.fotoAntes = fotos.value.antes.file ? false : true;
-    // console.log(fotos.value.antes.file ? 'existe foto' : 'no hay foto subida');
   }
 );
 
@@ -252,7 +251,6 @@ watch(
 const validarFecha = async (data) => {
   if (data) {
     fecha.value = true;
-    console.log(data);
     fechaData.value = data[5];
     validacionHorario.value[0] = true;
     if (
@@ -321,7 +319,6 @@ const selectFileAntes = async (e) => {
   reader.onload = (event) => {
     fotos.value.antes.file64 = reader.result;
   };
-  // console.log(fotos.value.antes.file.name);
 };
 const selectFileDurante = async (e) => {
   fotos.value.durante.file = e.target.files[0];
@@ -391,7 +388,6 @@ const cambiarEstado = async () => {
       storeVuex.commit("agregarErroresCoord", "Campo requerido");
     }
     if (!fotos.value.antes.file || !fotos.value.durante.file) {
-      console.log("Aquí se asignan los errores de las fotos");
       errores.value.fotoAntes = fotos.value.antes.file ? false : true;
       errores.value.fotoDurante = fotos.value.durante.file ? false : true;
     }

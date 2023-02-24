@@ -110,7 +110,6 @@ const componenteSeleccionado = reactive({
 });
 
 const cambiarComponente = (componente, control, index) => {
-  console.log(options[index].active);
   if (oldValue.value >= 0) {
     options[oldValue.value].active = false;
   }

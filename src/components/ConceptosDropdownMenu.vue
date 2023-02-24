@@ -86,7 +86,6 @@ import ConceptosEdit from "./ConceptosEdit.vue";
   const isOpen = ref(false);
   
   const eliminar = () => {
-    console.log(props.data);
     remove(refDB(db, `catalogo/conceptos/${props.data.nombre}`));
   };
   </script>

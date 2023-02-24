@@ -185,7 +185,6 @@ async function cargarFiltro() {
   await get(refDB(db, "almacen/materiales/totalplay")).then(async (snapshot) => {
     await get(refDB(db, "almacen/inventario")).then((snapshot2) => {
       snapshot.forEach((element) => {
-        console.log("materiales", element.key)
         if (snapshot2.val()[element.key].stock > 0) {
           formData.materiales.push({
             codigo: element.val().code,

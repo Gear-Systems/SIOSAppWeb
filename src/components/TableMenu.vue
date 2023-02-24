@@ -56,7 +56,6 @@ const desasignarFolio = async () => {
   if (result.val().asignado) {
     const folioAsignado = await get(refDB(db, `foliosAsignados/${props.data.incidencia}/${result.val().tecnico}`));
     if (folioAsignado.val()["activo"] === props.data.folioKey) {
-      console.log("Folio asignado borrado (activo)")
       await remove(refDB(db, `foliosAsignados/${props.data.incidencia}/${result.val().tecnico}/activo`)).then(async () => {
         if (props.data.incidencia === "correctivos" && folioAsignado.hasChild("pendientes")) {
           await update(refDB(db, `foliosAsignados/${props.data.incidencia}/${result.val().tecnico}`), {
@@ -70,7 +69,6 @@ const desasignarFolio = async () => {
 
       }
     } else {
-      console.log("Folio asignado borrado (pendiente)")
       await remove(refDB(db, `foliosAsignados/${props.data.incidencia}/${result.val().tecnico}/pendientes/${props.data.folioKey}`))
     }
   }
@@ -83,7 +81,6 @@ const eliminarFolio = async () => {
   if (result.val().asignado) {
     const folioAsignado = await get(refDB(db, `foliosAsignados/${props.data.incidencia}/${result.val().tecnico}`));
     if (folioAsignado.val()["activo"] === props.data.folioKey) {
-      console.log("Folio asignado borrado (activo)")
       await remove(refDB(db, `foliosAsignados/${props.data.incidencia}/${result.val().tecnico}/activo`)).then(async () => {
         if (props.data.incidencia === "correctivos" && folioAsignado.hasChild("pendientes")) {
           await update(refDB(db, `foliosAsignados/${props.data.incidencia}/${result.val().tecnico}`), {
@@ -97,7 +94,6 @@ const eliminarFolio = async () => {
 
       }
     } else {
-      console.log("Folio asignado borrado (pendiente)")
       await remove(refDB(db, `foliosAsignados/${props.data.incidencia}/${result.val().tecnico}/pendientes/${props.data.folioKey}`))
     }
   }

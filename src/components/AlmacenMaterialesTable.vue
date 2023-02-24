@@ -70,7 +70,6 @@ const openModalData = (value) => {
 };
 
 const EliminarRegistro = (value) => {
-  console.log(value);
   let response = confirm("¿Estás seguro que deseas eliminar el material?");
   if (response)
     remove(

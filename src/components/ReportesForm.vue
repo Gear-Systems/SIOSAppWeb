@@ -396,9 +396,7 @@ const reporteMateriales = async () => {
       }
     });
 
-    console.log(jsonArray.value);
     if (jsonArray.value.length > 0) {
-      console.log("HOLA", jsonArray.value);
       const ws = utils.json_to_sheet(jsonArray.value);
       const wb = utils.book_new();
       utils.book_append_sheet(wb, ws, "Reportes");

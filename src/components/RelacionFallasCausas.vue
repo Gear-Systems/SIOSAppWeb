@@ -170,7 +170,6 @@ const causasData = ref([]);
 
 // Obtener fallas desde base de datos
 await get(refDB(db, `catalogo/fallas`)).then((snapshot) => {
-  console.log(snapshot.val());
   snapshot.forEach((element) => {
     data.value.push(element.key);
   });
@@ -185,7 +184,6 @@ const loadData = async () => {
   await get(refDB(db, `catalogo/fallas/${selectedFalla.value}/causas`)).then(
     (snapshot) => {
       snapshot.forEach((element) => {
-        console.log(element);
         causasRelacionados.value.push(element.val());
       });
     }
@@ -195,7 +193,6 @@ const loadData = async () => {
   await get(refDB(db, `catalogo/causas`)).then((snapshot) => {
     let exist = false;
     snapshot.forEach((element) => {
-      console.log(element.key);
       exist =
         causasRelacionados.value.findIndex((value) => value === element.key) !=
         -1
@@ -215,7 +212,6 @@ watch(selectedFalla, async () => {
 await loadData();
 
 const log = (evt) => {
-  console.log(evt);
 };
 
 const eliminarCausas = (element, item) => {

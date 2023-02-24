@@ -114,7 +114,6 @@ onMounted(() => {
 });
 
 watch(seleccionado, (value) => {
-  console.log("watch", value);
   emits("inputValue", value);
 });
 </script>

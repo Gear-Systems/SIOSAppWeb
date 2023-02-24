@@ -445,7 +445,6 @@ const loadData = async () => {
   await get(refDB(db, `catalogo/clusters`)).then((snapshot) => {
     let exist = false;
     snapshot.forEach((element) => {
-      console.log(element.key);
       exist =
         clustersRelacionados.value.findIndex(
           (value) => value === element.key
@@ -520,7 +519,6 @@ watch(selectedDistrito, async () => {
 await loadData();
 
 const log = (evt) => {
-  console.log(evt);
 };
 
 watch(selectedDespacho, async () => {
@@ -555,8 +553,6 @@ const eliminarSupervisores = (element, item) => {
           await update(refDB(db, `catalogo/supervisores/${element.key}`), {
             distritos: arraySupervisor,
           });
-          console.log(arraySupervisor);
-          // console.log("indice", index);
         }
       );
       supervisoresRelacionados.value.splice(item, 1);

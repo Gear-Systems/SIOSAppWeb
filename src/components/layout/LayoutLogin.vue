@@ -120,7 +120,6 @@ const props = defineProps(["mobile"]);
 const login = () => {
   signInWithEmailAndPassword(auth, correo.value, pass.value)
     .then((userCredential) => {
-      console.log(userCredential);
       // localStorage.setItem('toggleButton', true);
       router.push("/dashboard");
     })

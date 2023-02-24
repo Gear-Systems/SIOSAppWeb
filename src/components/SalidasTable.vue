@@ -137,7 +137,6 @@ const generar = async () => {
   if (confirmar) {
     await salidaInventario({ data: formModel.value, supervisor: props.supervisor, distrito: props.distrito })
       .then((result) => {
-        console.log(result);
         alert("Salida registrada correctamente.")
         emits("limpiar");
         formModel.value = [];

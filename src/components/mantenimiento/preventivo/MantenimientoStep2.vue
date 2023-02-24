@@ -282,7 +282,6 @@ watch(
   () => fotos.value.antes.file,
   () => {
     errores.value.fotoAntes = fotos.value.antes.file ? false : true;
-    // console.log(fotos.value.antes.file ? 'existe foto' : 'no hay foto subida');
   }
 );
 

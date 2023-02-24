@@ -193,7 +193,6 @@ const $v = useVuelidate(rules, formData);
 
 async function crearMaterial() {
   let result = await $v.value.$validate();
-  console.log(result);
   if (!result) {
     return;
   }

@@ -16,7 +16,6 @@ const clipboardCorrectivo = async (item) => {
   let despachoTTP = "";
   let ubicacionData = "";
   const coordenadas = item.coordenadas.split(",");
-  console.log("coordenadas", item);
 
   if (!item.ubicacion) {
     const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coordenadas[0]},${coordenadas[1]}&location_type=ROOFTOP&result_type=street_address&key=AIzaSyBqOgizUSx7Sx4RudGJH841N0ODjepjMl4`;
@@ -24,7 +23,6 @@ const clipboardCorrectivo = async (item) => {
       method: "post",
     });
     ubicacionData = await ubicacion.json();
-    console.log("ubicacion", ubicacionData)
     if (!ubicacionData.status == "ZERO_RESULTS") {
       ubicacionData = ubicacionData.results[0].formatted_address;
       update(refDB(db, `folios/correctivos/${item.folioKey}`), {
@@ -93,7 +91,6 @@ SUPERVISOR:\n`;
   } else {
     alert("¡Cuidado! El distrito no tiene despacho de ttp");
   }
-  console.log("supervisores", supervisoresTTP);
 
   for (const supervisorttp in supervisoresTTP) {
     format += `${supervisorttp}\n`;

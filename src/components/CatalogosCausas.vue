@@ -100,7 +100,6 @@ const rules = computed(() => {
 
 // Obtener causas desde base de datos
 await onChildAdded(refDB(db, `catalogo/causas`), (snapshot) => {
-  console.log("Hola");
   causasData.value.push({
     nombre: snapshot.key,
   });

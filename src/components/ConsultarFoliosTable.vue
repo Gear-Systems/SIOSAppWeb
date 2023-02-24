@@ -206,8 +206,6 @@ const perPage = 10;
 
 onChildAdded(child(refDB(db), "folios/correctivos"), (snapshot) => {
   let color = "";
-  console.log(snapshot.val());
-  // console.log(snapshot.key)
   data.value.push({
     incidencia: "correctivos",
     folioKey: snapshot.key,
@@ -216,7 +214,6 @@ onChildAdded(child(refDB(db), "folios/correctivos"), (snapshot) => {
 });
 
 const copiarInfo = (item) => {
-  console.log("item", item);
   if (item.incidencia === "correctivos") {
     const result = clipboardCorrectivo(item);
   } else {
@@ -226,8 +223,6 @@ const copiarInfo = (item) => {
 
 onChildAdded(child(refDB(db), "folios/preventivos"), (snapshot) => {
   let color = "";
-  console.log(snapshot.val());
-  // console.log(snapshot.key)
   data.value.push({
     incidencia: "preventivos",
     folioKey: snapshot.key,

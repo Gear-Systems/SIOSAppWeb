@@ -19,7 +19,6 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from) => {
-  // console.log(to.meta.authorization, localStorage.getItem('user'));
   if (to.meta.authorization && localStorage.getItem("user") === "false") {
     return { path: "/" };
   }
@@ -32,7 +31,6 @@ router.beforeEach((to, from) => {
 });
 
 onAuthStateChanged(auth, (user) => {
-  // console.log('cambió usuario', user);
   if (user) {
     localStorage.setItem("user", true);
   } else localStorage.setItem("user", false);

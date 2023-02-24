@@ -330,7 +330,6 @@ onChildChanged(usuariosDB, (snapshot) => {
 // observador si se crea un nuevo usuario (tiempo real)
 await onChildAdded(usuariosDB, (snapshot) => {
   const data = snapshot;
-  // console.log(snapshot.val())
   updateTableNewUser(data);
 });
 
@@ -373,7 +372,6 @@ function handlePagination() {
 }
 
 watch(selectedFiltro, (value) => {
-  console.log(value);
   switch (value.name) {
     case "Todos":
       usuariosFilter.value = usuarios.value;
@@ -401,7 +399,6 @@ const controlUsuario = async (uid, isDisable) => {
     await functionsFirebase
       .enable(uid)
       .then((result) => {
-        console.log(result);
       })
       .catch((error) => {
         console.log(error);
@@ -410,7 +407,6 @@ const controlUsuario = async (uid, isDisable) => {
     await functionsFirebase
       .disable(uid)
       .then((result) => {
-        console.log(result);
       })
       .catch((error) => {
         console.log(error);

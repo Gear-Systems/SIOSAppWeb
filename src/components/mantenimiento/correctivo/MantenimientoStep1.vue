@@ -176,7 +176,6 @@ const actualizarEstado = async (
 ) => {
   limpiarArreglosHorario();
   let response;
-  // console.log(props.folio)
   response = await update(
     child(
       refDB(db),
