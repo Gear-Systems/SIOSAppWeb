@@ -238,19 +238,22 @@ async function crearMaterial() {
   }
 
   if (formData.name.trim() != props.data.key.trim()) {
-    // Cambiar almacen/inventario
-    await get(
-      child(refDB(db), `almacen/inventario/${props.data.key.trim()}`)
-    ).then(async (snapshot) => {
-      await update(refDB(db, `almacen/inventario/${formData.name.trim()}`), {
-        ...snapshot.val(),
-        code: formData.code,
-        unidad: formData.unidadMedida,
-        modificado: serverTimestamp(),
-      }).then((snapshotUpdated) => {
-        remove(refDB(db, `almacen/inventario/${props.data.key}`));
+    // Si es material de totalplay modificar también el inventario
+    if (props.data.tipo.toLowerCase() == "totalplay") {
+      // Cambiar almacen/inventario
+      await get(
+        child(refDB(db), `almacen/inventario/${props.data.key.trim()}`)
+      ).then(async (snapshot) => {
+        await update(refDB(db, `almacen/inventario/${formData.name.trim()}`), {
+          ...snapshot.val(),
+          code: formData.code,
+          unidad: formData.unidadMedida,
+          modificado: serverTimestamp(),
+        }).then((snapshotUpdated) => {
+          remove(refDB(db, `almacen/inventario/${props.data.key}`));
+        });
       });
-    });
+    }
     // Cambiar almacen/materiales
     await get(
       child(
@@ -303,20 +306,16 @@ async function crearMaterial() {
   //   });
   // }
   else {
-    // almacen/inventario
-    await update(
-      refDB(
-        db,
-        `almacen/inventario/${
-          props.data.key
-        }`
-      ),
-      {
+    // Si es material de totalplay modificar también el inventario
+    if (formData.tipoMaterial.name.toLowerCase() == "totalplay") {
+      // almacen/inventario
+      await update(refDB(db, `almacen/inventario/${props.data.key}`), {
         code: formData.code,
         unidad: formData.unidadMedida,
         modificado: serverTimestamp(),
-      }
-    );
+      });
+    }
+
     // almacen/materiales
     await update(
       refDB(
