@@ -23,7 +23,7 @@ const clipboardCorrectivo = async (item) => {
       method: "post",
     });
     ubicacionData = await ubicacion.json();
-    if (!ubicacionData.status == "ZERO_RESULTS") {
+    if (ubicacionData.status = "OK") {
       ubicacionData = ubicacionData.results[0].formatted_address;
       update(refDB(db, `folios/correctivos/${item.folioKey}`), {
         ubicacion: ubicacionData,

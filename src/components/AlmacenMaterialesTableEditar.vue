@@ -75,6 +75,7 @@
                     >
                     <select
                       v-model="formData.tipoMaterial"
+                      :disabled="true"
                       id="tipoMaterial"
                       class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                     >
@@ -237,18 +238,30 @@ async function crearMaterial() {
   }
 
   if (formData.name.trim() != props.data.key.trim()) {
+    // Cambiar almacen/inventario
+    await get(
+      child(refDB(db), `almacen/inventario/${props.data.key.trim()}`)
+    ).then(async (snapshot) => {
+      await update(refDB(db, `almacen/inventario/${formData.name.trim()}`), {
+        ...snapshot.val(),
+        code: formData.code,
+        unidad: formData.unidadMedida,
+        modificado: serverTimestamp(),
+      }).then((snapshotUpdated) => {
+        remove(refDB(db, `almacen/inventario/${props.data.key}`));
+      });
+    });
+    // Cambiar almacen/materiales
     await get(
       child(
         refDB(db),
-        `inventario/materiales/${props.data.tipo.toLowerCase()}/${
-          props.data.key.trim()
-        }`
+        `almacen/materiales/${props.data.tipo.toLowerCase()}/${props.data.key.trim()}`
       )
     ).then(async (snapshot) => {
       await update(
         refDB(
           db,
-          `inventario/materiales/${formData.tipoMaterial.name.toLowerCase()}/${formData.name.trim()}`
+          `almacen/materiales/${formData.tipoMaterial.name.toLowerCase()}/${formData.name.trim()}`
         ),
         {
           code: formData.code,
@@ -259,39 +272,56 @@ async function crearMaterial() {
         remove(
           refDB(
             db,
-            `inventario/materiales/${props.data.tipo.toLowerCase()}/${
+            `almacen/materiales/${props.data.tipo.toLowerCase()}/${
               props.data.key
             }`
           )
         );
       });
     });
-  } else if (
-    formData.name.trim() === props.data.key.trim() &&
-    formData.tipoMaterial != props.data.tipo
-  ) {
-    update(
+  }
+  // else if (
+  //   formData.name.trim() === props.data.key.trim() &&
+  //   formData.tipoMaterial != props.data.tipo
+  // ) {
+  //   update(
+  //     refDB(
+  //       db,
+  //       `almacen/inventario/materiales/${formData.tipoMaterial.name.toLowerCase()}/${
+  //         props.data.key
+  //       }`
+  //     ),
+  //     {
+  //       code: formData.code,
+  //       unidad: formData.unidadMedida.id,
+  //       modificado: serverTimestamp(),
+  //     }
+  //   ).then((snapshot) => {
+  //     remove(refDB(db, `almacen/inventario/materiales/${props.data.tipo.toLowerCase()}/${
+  //         props.data.key
+  //       }`))
+  //   });
+  // }
+  else {
+    // almacen/inventario
+    await update(
       refDB(
         db,
-        `inventario/materiales/${formData.tipoMaterial.name.toLowerCase()}/${
+        `almacen/inventario/${
           props.data.key
         }`
       ),
       {
         code: formData.code,
-        unidad: formData.unidadMedida.id,
+        unidad: formData.unidadMedida,
         modificado: serverTimestamp(),
       }
-    ).then((snapshot) => {
-      remove(refDB(db, `inventario/materiales/${props.data.tipo.toLowerCase()}/${
-          props.data.key
-        }`))
-    });
-  } else {
-    update(
+    );
+    // almacen/materiales
+    await update(
       refDB(
         db,
-        `inventario/materiales/${formData.tipoMaterial.name.toLowerCase()}/${
+        `almacen/materiales/${formData.tipoMaterial.name.toLowerCase()}/${
           props.data.key
         }`
       ),

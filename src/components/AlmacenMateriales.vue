@@ -98,6 +98,7 @@ const eliminarMaterialTotalplay = (material) => {
     }
   });
   data.totalplay.splice(index, 1);
+  
   //   re-ordenar arreglo
   data.totalplay = data.totalplay.sort(function (a, b) {
     let fecha1 = new Date(a.creado);
