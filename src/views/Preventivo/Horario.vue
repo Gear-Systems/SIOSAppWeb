@@ -225,7 +225,7 @@ onMounted(() => {
   horaMinuto.value.minuto = arrayActiveMinuto;
   if (props.fechaInicioBD) {
     horario.value = new Date(props.fechaInicioBD);
-    emit("guardarFecha", horario.value);
+    // emit("guardarFecha", horario.value);
   } else {
     imprimir();
   }

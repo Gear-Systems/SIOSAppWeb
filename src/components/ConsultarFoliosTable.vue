@@ -144,7 +144,7 @@
               >
                 {{ item.estatus }}
               </td>
-              <td class="flex flex-row space-x-4 py-1 px-6 text-right">
+              <td class="grid grid-cols-2 justify-items-start">
                 <!-- <div class="flex cursor-pointer items-center justify-center rounded-full py-5 px-6 hover:bg-[#E9F0FC]">
                 <img src="/img/enviar_ico.svg" />
               </div> -->

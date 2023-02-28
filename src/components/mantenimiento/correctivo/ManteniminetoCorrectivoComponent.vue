@@ -77,7 +77,7 @@
                   </div>
                 </div>
               </div>
-              <div class="flex flex-col space-y-4">
+              <div class="flex flex-col max-w-[250px] space-y-4">
                 <div class="flex w-[90%] select-none">
                   Tipo:
                   <span class="pl-5 font-semibold">{{

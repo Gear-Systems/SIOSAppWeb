@@ -1002,6 +1002,10 @@ onMounted(async () => {
   const conceptosRef = refDB(db, "catalogo/conceptos");
   const justificacionesRef = refDB(db, "catalogo/justificaciones");
 
+  if (props.data.horaActivacion) {
+    horario.value = props.data.horaActivacion;
+  }
+
   if (props.data.imagenes) {
     if (props.data.imagenes.despues) {
       fotos.value.despues.file = props.data.imagenes.despues;
@@ -1304,42 +1308,47 @@ const sla = computed(() => {
   let fecha1 = moment(props.data.horaInicio);
   let fecha2 = moment(horario.value);
 
-  if (infoCapturada.value.tiempoMuerto) {
-    fecha2.add(-infoCapturada.value.tiempoMuerto, "minutes");
-  }
+  // if (infoCapturada.value.tiempoMuerto) {
+  //   fecha2.add(-infoCapturada.value.tiempoMuerto, "minutes");
+  // }
 
-  let horaCompleta = moment.duration(fecha2.diff(fecha1)).asHours().toFixed(2);
-  if (horaCompleta > 1) {
-    let hora = horaCompleta.split(".")[0];
-    let minutos = ((0 + "." + horaCompleta.split(".")[1]) * 60).toFixed(0);
-
-    if (
-      props.data.sla !=
-      `${hora}:${
-        minutos >= 0 && minutos <= 9 ? `0${minutos.toString()}` : minutos
-      }`
-    ) {
-      guardarSla(
+  if (horario.value) {
+    let horaCompleta = moment
+      .duration(fecha2.diff(fecha1))
+      .asHours()
+      .toFixed(2);
+    console.log("hora", horario.value);
+    if (horaCompleta > 1) {
+      let hora = horaCompleta.split(".")[0];
+      let minutos = ((0 + "." + horaCompleta.split(".")[1]) * 60).toFixed(0);
+      if (
+        props.data.sla !=
         `${hora}:${
           minutos >= 0 && minutos <= 9 ? `0${minutos.toString()}` : minutos
         }`
-      );
+      ) {
+        guardarSla(
+          `${hora}:${
+            minutos >= 0 && minutos <= 9 ? `0${minutos.toString()}` : minutos
+          }`
+        );
+      }
+      // minutos -= infoCapturada.value.tiempoMuerto;
+      return `${hora}:${
+        minutos >= 0 && minutos <= 9 ? `0${minutos.toString()}` : minutos
+      }`;
+    } else if (horaCompleta < 1) {
+      if (props.data.sla != parseInt(horaCompleta * 60)) {
+        guardarSla(parseInt(horaCompleta * 60));
+      }
+      return parseInt(horaCompleta * 60);
+    } else {
+      if (horaCompleta.replace(".", ":") != props.data.sla) {
+        guardarSla(`${horaCompleta.replace(".", ":")}`);
+      }
     }
-    // minutos -= infoCapturada.value.tiempoMuerto;
-    return `${hora}:${
-      minutos >= 0 && minutos <= 9 ? `0${minutos.toString()}` : minutos
-    }`;
-  } else if (horaCompleta < 1) {
-    if (props.data.sla != parseInt(horaCompleta * 60)) {
-      guardarSla(parseInt(horaCompleta * 60));
-    }
-    return parseInt(horaCompleta * 60);
-  } else {
-    if (horaCompleta.replace(".", ":") != props.data.sla) {
-      guardarSla(`${horaCompleta.replace(".", ":")}`);
-    }
+    return `${horaCompleta.replace(".", ":")}`;
   }
-  return `${horaCompleta.replace(".", ":")}`;
 });
 
 const limpiarValores = () => {

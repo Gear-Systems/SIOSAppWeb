@@ -366,7 +366,10 @@
                 v-for="(item, index) in infoCapturada.materiales.miscelaneos"
                 class="border-b border-gris-claro/50"
               >
-                <td class="w-[95%] truncate py-4 pr-2.5 text-sm" :title="item.keyMaterial">
+                <td
+                  class="w-[95%] truncate py-4 pr-2.5 text-sm"
+                  :title="item.keyMaterial"
+                >
                   {{ item.keyMaterial }}
                 </td>
                 <td class="items-center">
@@ -499,7 +502,10 @@
                 v-for="(item, index) in infoCapturada.materiales.ttp"
                 class="border-b border-gris-claro/50"
               >
-                <td class="w-[95%] truncate py-4 pr-2.5 text-sm" :title="item.keyMaterial">
+                <td
+                  class="w-[95%] truncate py-4 pr-2.5 text-sm"
+                  :title="item.keyMaterial"
+                >
                   {{ item.keyMaterial }}
                 </td>
                 <td class="items-center">
@@ -723,7 +729,9 @@
                           <span class="pl-10">{{ index + 1 }}</span>
                           <input
                             v-model="infoCapturada.conceptos.cab24[index]"
-                            :disabled="!infoCapturada.conceptos.cab24[index].action"
+                            :disabled="
+                              !infoCapturada.conceptos.cab24[index].action
+                            "
                             class="h-8 w-[80%] rounded-lg border-2 font-semibold text-black"
                             :class="
                               infoCapturada.conceptos.errores[index] == true
@@ -776,7 +784,10 @@
                 v-for="(item, index) in infoCapturada.conceptos.descripcion"
                 class="border-b border-gris-claro/50"
               >
-                <td class="w-[95%] truncate py-4 pr-2.5 text-sm" :title="item.keyConceptos">
+                <td
+                  class="w-[95%] truncate py-4 pr-2.5 text-sm"
+                  :title="item.keyConceptos"
+                >
                   {{ item.keyConceptos }}
                 </td>
                 <td class="items-center">
@@ -1053,6 +1064,10 @@ onMounted(async () => {
   const almacenTotalplayRef = refDB(db, "almacen/materiales/totalplay");
   const conceptosRef = refDB(db, "catalogo/conceptos");
   const justificacionesRef = refDB(db, "catalogo/justificaciones");
+
+  if (props.data.horaActivacion) {
+    horario.value = props.data.horaActivacion;
+  }
 
   // Obtener materiales miscelaneos
   await get(almacenMiscelaneosRef).then((snapshot) => {
@@ -1403,32 +1418,37 @@ const sla = computed(() => {
   let fecha1 = moment(props.data.horaInicio);
   let fecha2 = moment(horario.value);
 
-  if (infoCapturada.value.tiempoMuerto) {
-    fecha2.add(-infoCapturada.value.tiempoMuerto, "minutes");
-  }
+  // if (infoCapturada.value.tiempoMuerto) {
+  //   fecha2.add(-infoCapturada.value.tiempoMuerto, "minutes");
+  // }
 
-  let horaCompleta = moment.duration(fecha2.diff(fecha1)).asHours().toFixed(2);
+  if (horario.value) {
+    let horaCompleta = moment
+      .duration(fecha2.diff(fecha1))
+      .asHours()
+      .toFixed(2);
 
-  if (horaCompleta > 1) {
-    let hora = horaCompleta.split(".")[0];
-    let minutos = ((0 + "." + horaCompleta.split(".")[1]) * 60).toFixed(0);
+    if (horaCompleta > 1) {
+      let hora = horaCompleta.split(".")[0];
+      let minutos = ((0 + "." + horaCompleta.split(".")[1]) * 60).toFixed(0);
 
-    guardarSla(
-      `${hora}:${
+      guardarSla(
+        `${hora}:${
+          minutos >= 0 && minutos <= 9 ? `0${minutos.toString()}` : minutos
+        }`
+      );
+      // minutos -= infoCapturada.value.tiempoMuerto;
+      return `${hora}:${
         minutos >= 0 && minutos <= 9 ? `0${minutos.toString()}` : minutos
-      }`
-    );
-    // minutos -= infoCapturada.value.tiempoMuerto;
-    return `${hora}:${
-      minutos >= 0 && minutos <= 9 ? `0${minutos.toString()}` : minutos
-    }`;
+      }`;
+    }
+    if (horaCompleta < 1) {
+      guardarSla(parseInt(horaCompleta * 60));
+      return parseInt(horaCompleta * 60);
+    }
+    guardarSla(`${horaCompleta.replace(".", ":")}`);
+    return `${horaCompleta.replace(".", ":")}`;
   }
-  if (horaCompleta < 1) {
-    guardarSla(parseInt(horaCompleta * 60));
-    return parseInt(horaCompleta * 60);
-  }
-  guardarSla(`${horaCompleta.replace(".", ":")}`);
-  return `${horaCompleta.replace(".", ":")}`;
 });
 
 const limpiarValores = () => {
