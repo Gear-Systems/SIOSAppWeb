@@ -104,7 +104,7 @@
               class="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
             >
               <td class="px-2">
-                <TableMenu :data="item" />
+                <TableMenu v-if="user.rol === 'Administrador'" :data="item" />
               </td>
               <th
                 scope="row"
@@ -193,8 +193,10 @@ import {
 } from "@heroicons/vue/outline";
 import TableMenu from "./TableMenu.vue";
 import { clipboardCorrectivo } from "@/scripts/clipboard";
+import { useUser } from "@/store/user";
 
 const db = getDatabase();
+const user = useUser();
 const refFolios = refDB(db, "folios");
 const filtro = reactive({
   folio: "",

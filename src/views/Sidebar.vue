@@ -142,6 +142,7 @@
           </TransitionRoot>
         </li>
         <li
+        v-if="user.rol === 'Administrador'"
           @click="$router.push('/configuraciones')"
           class="font-medium flex cursor-pointer items-center justify-center space-x-4 rounded-md p-2 transition-all duration-600"
           :class="[$route.path == '/configuraciones' ? 'bg-secundario text-primario' : '']"
@@ -184,8 +185,10 @@ import CapturarFolioIco from "@/components/iconos/CapturarFolioIco.vue";
 import ConsultarFolioIco from "@/components/iconos/ConsultarFolioIco.vue";
 import ReportesIco from "@/components/iconos/ReportesIco.vue";
 import ConfiguracionIco from "@/components/iconos/ConfiguracionIco.vue";
+import { useUser } from "@/store/user";
 
 const i = ref(0);
+const user = useUser();
 const userData = reactive({
   displayName: "",
 });
