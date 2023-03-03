@@ -230,7 +230,7 @@
         <!-- Tabla de datos no relacionados -->
         <div class="flex space-x-4">
           <draggable
-            class="border-[#E5E6EA]bg-transparent flex max-h-[300px] min-h-[350px] min-w-[200px] select-none flex-col overflow-auto rounded-xl border lg:min-w-[250px]"
+            class="border-[#E5E6EA]bg-transparent flex max-h-[300px] min-h-[350px] min-w-[200px] max-w-[200px] select-none flex-col overflow-auto rounded-xl border lg:min-w-[250px]"
             :list="clustersData"
             group="clusters"
             @change="log"
@@ -240,7 +240,7 @@
             <template #item="{ element }">
               <div class="mt-2 flex h-fit w-full space-x-2 px-4">
                 <div
-                  class="w-full items-center truncate rounded-md bg-[#E5E6EA] px-4 py-2"
+                  class="w-full items-center truncate rounded-md bg-[#E5E6EA] px-4 py-2 cursor-move"
                   :title="element"
                 >
                   {{ element }}
@@ -256,7 +256,7 @@
             </template>
           </draggable>
           <draggable
-            class="flex max-h-[300px] min-h-[350px] min-w-[200px] select-none flex-col overflow-auto rounded-xl border border-[#E5E6EA] bg-transparent lg:min-w-[250px]"
+            class="flex max-h-[300px] min-h-[350px] min-w-[200px]  select-none flex-col overflow-auto rounded-xl border border-[#E5E6EA] bg-transparent lg:min-w-[250px]"
             :list="supervisoresData"
             group="supervisores"
             @change="log"
@@ -266,7 +266,7 @@
             <template #item="{ element }">
               <div class="mt-2 flex h-fit w-full space-x-2 px-4">
                 <div
-                  class="w-full items-center truncate rounded-md bg-[#E5E6EA] px-4 py-2"
+                  class="w-full items-center truncate rounded-md bg-[#E5E6EA] px-4 py-2 cursor-move"
                   :title="element.name"
                 >
                   {{ element.name ? element.name : element.key }}
