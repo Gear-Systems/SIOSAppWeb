@@ -91,6 +91,12 @@ export const calculoEta = async (
 
   let eta = new Date(fecha2.diff(fecha1));
 
+  let minutosDiff = fecha2.diff(fecha1, "minutes");
+
+  if(minutosDiff < 0 || minutosDiff > 90) {
+    alert("¡Advertencia! Por favor verificar el ETA esté correcto.")
+  }
+
   update(refDB(db, `folios/${incidenciaPath}/${folio}`), {
     eta: fecha2.diff(fecha1, "minutes"),
   });

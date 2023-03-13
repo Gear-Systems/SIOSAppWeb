@@ -10,6 +10,7 @@
         :tipoFolio="props.tipoFolio"
         :fechaInicioBD="props.data.horaLlegada"
         :horaInicioBD="props.data.horaLlegada"
+        @guardarFecha="() => cambioEstado"
         @validarFecha="validarFecha"
         @validarHora="validarHora"
         @validarMinuto="validarMinuto"
@@ -215,6 +216,7 @@ const fecha = ref();
 const hora = ref();
 const minuto = ref();
 const error = ref(false);
+const controlCambio = ref(false);
 const rebotar = ref("");
 const validacionHorario = ref([false, false, false]);
 const fechaData = ref("");

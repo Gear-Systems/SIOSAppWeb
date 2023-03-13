@@ -123,8 +123,8 @@
                 <div v-if="item.horaInicio != undefined ? true : false">
                   <div>
                     {{
-                      `${new Date(item.horaInicio).getDate()}/${
-                        new Date(item.horaInicio).getMonth() + 1
+                      `${new Date(item.horaInicio).getDate().toString().padStart(2, 0)}/${
+                        (new Date(item.horaInicio).getMonth() + 1).toString().padStart(2, 0)
                       }/${new Date(item.horaInicio).getFullYear()}`
                     }}
                   </div>
@@ -132,7 +132,7 @@
                     {{
                       `${new Date(item.horaInicio).getHours()}:${new Date(
                         item.horaInicio
-                      ).getMinutes()}`
+                      ).getMinutes().toString().padStart(2, 0)}`
                     }}
                   </div>
                 </div>

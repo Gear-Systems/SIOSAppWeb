@@ -422,6 +422,8 @@ const reporteFoliosCorrectivos = async () => {
         const tecnicoName = await get(
           refDB(db, `usuarios/${snapshot.val()[folio]["tecnico"]}`)
         );
+        const despachoName = await get(refDB(db, `usuarios/${snapshot.val()[folio]["despacho"]}`));
+        console.log(despachoName.val());
         jsonArray.value.push({
           FOLIO: snapshot.val()[folio]["folio"],
           "TIPO FOLIO": snapshot.val()[folio]["tipoFolio"],
@@ -433,6 +435,7 @@ const reporteFoliosCorrectivos = async () => {
           FALLA: snapshot.val()[folio]["falla"],
           CAUSA: snapshot.val()[folio]["causa"],
           "CLIENTES AFECTADOS": snapshot.val()[folio]["clientesAfectados"],
+          "DESPACHO": !despachoName.exists() ? "Administrador" : despachoName.val().displayName,
           "ASIGNACION IOS": `${new Date(
             snapshot.val()[folio]["horaInicio"]
           ).getDate()}/${new Date(
@@ -503,6 +506,7 @@ const reporteFoliosPreventivo = async () => {
         const tecnicoName = await get(
           refDB(db, `usuarios/${snapshot.val()[folio]["tecnico"]}`)
         );
+        const despachoName = await get(refDB(db, `usuarios/${snapshot.val()[folio]["despacho"]}`));
         jsonArray.value.push({
           FOLIO: snapshot.val()[folio]["folio"],
           "TIPO FOLIO": snapshot.val()[folio]["tipoFolio"],
@@ -514,6 +518,7 @@ const reporteFoliosPreventivo = async () => {
           FALLA: snapshot.val()[folio]["falla"],
           CAUSA: snapshot.val()[folio]["causa"],
           "CLIENTES AFECTADOS": 0,
+          "DESPACHO": !despachoName.exists() ? "Administrador" : despachoName.val().displayName,
           "ASIGNACION IOS": `${new Date(
             snapshot.val()[folio]["horaInicio"]
           ).getDate()}/${new Date(
