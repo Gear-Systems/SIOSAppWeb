@@ -3,14 +3,14 @@
     <div class="flex w-full flex-col space-y-4">
       <!-- Titulo | Nuevo material -->
       <div
-        class="flex w-full items-center justify-between rounded-xl bg-[#F8FAFB] py-3 px-20 shadow-md"
+        class="flex w-full items-center justify-between rounded-xl bg-[#F8FAFB] py-3 px-2 lg:px-20 shadow-md"
       >
         <div class="font-semibold">Catálogo de materiales</div>
         <div>
           <button
             @click="isOpenModal = true"
             type="button"
-            class="flex items-center space-x-4 rounded-xl bg-primario px-4 py-3 text-white hover:bg-primario/80"
+            class="flex items-center text-sm lg:text-md space-x-4 rounded-xl bg-primario px-2 lg:px-4 py-2 lg:py-3 text-white hover:bg-primario/80"
           >
             <PlusCircleIcon class="h-5 w-5" aria-hidden="false" />
             <span>Agregar material</span>
@@ -18,10 +18,10 @@
         </div>
       </div>
       <!-- Tabla -->
-      <div class="min-h-[400px] w-full bg-[#F8FAFB] py-3 px-28 shadow-md">
+      <div class="min-h-[400px] w-full bg-[#F8FAFB] py-3 px-2 lg:px-28 shadow-md">
         <TabGroup>
           <TabList class="border-b-2">
-            <div class="flex w-full space-x-4">
+            <div class="flex justify-center lg:justify-start w-full space-x-4">
               <!-- materiales -->
               <Tab v-slot="{ selected }">
                 <button
@@ -98,6 +98,7 @@ const eliminarMaterialTotalplay = (material) => {
     }
   });
   data.totalplay.splice(index, 1);
+  
   //   re-ordenar arreglo
   data.totalplay = data.totalplay.sort(function (a, b) {
     let fecha1 = new Date(a.creado);

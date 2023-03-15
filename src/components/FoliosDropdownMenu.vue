@@ -77,7 +77,6 @@ const props = defineProps(["data"]);
 const isOpen = ref(false);
 
 const eliminar = async () => {
-  console.log("Datos", props.data);
   await remove(
     refDB(
       db,

@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-36 my-20 flex w-[100%] w-full flex-col items-center text-2xl   font-medium ">
+  <div class="mx-12 my-4 lg:mx-36 lg:my-20 flex w-full flex-col items-center text-2xl font-medium ">
     <h1 class="mb-14">Bienvenido/a al espacio SIOS App</h1>
     <p class="mb-10">Te presentamos la nueva version web del sistema de
       iOS Comunicaciones. Este espacio tiene como meta

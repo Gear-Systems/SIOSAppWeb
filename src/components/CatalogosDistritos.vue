@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-full w-full flex-col rounded-md bg-[#F8FAFB] py-6 px-14 shadow-md">
+  <div class="flex h-full w-full flex-col rounded-md bg-[#F8FAFB] py-6 px-2 lg:px-14 shadow-md">
     <div>
       <TabGroup>
         <TabList>

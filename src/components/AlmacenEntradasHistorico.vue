@@ -16,7 +16,7 @@
                         {{ item.nombre }}
                     </th>
                     <td class="py-4 px-6 text-center">{{ `${new Date(item.creado).getDate()}/${new
-                            Date(item.creado).getMonth()}/${new Date(item.creado).getFullYear()} ${new
+                            Date(item.creado).getMonth() + 1}/${new Date(item.creado).getFullYear()} ${new
                                 Date(item.creado).getHours()}:${new Date(item.creado).getMinutes()}`
                     }}</td>
                     <td class="py-4 px-6 text-center">

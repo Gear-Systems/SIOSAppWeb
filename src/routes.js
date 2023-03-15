@@ -10,6 +10,8 @@ import Configuraciones from "./views/Configuraciones.vue";
 import ConsultarFolios from "./views/ConsultarFolios.vue";
 import Mantenimiento from "./views/Mantenimiento.vue";
 import Reportes from "./views/Reportes.vue";
+import MantenimientoPreventivo from "./views/MantenimientoPreventivo.vue"
+import MantenimientoCorrectivo from "./views/MantenimientoCorrectivo.vue"
 
 /** @type {import('vue-router').RouterOptions['routes']} */
 export const routes = [
@@ -17,51 +19,51 @@ export const routes = [
     path: "/",
     component: Login,
     name: "login",
-    meta: { title: "Login", authorization: false, layout: true },
+    meta: { title: "Login", authorization: false, layout: true, adminRequired: false },
   },
   {
     path: "/dashboard",
     component: Dashboard,
-    meta: { title: "Dashboard", authorization: true },
+    meta: { title: "Dashboard", authorization: true, adminRequired: false },
   },
   {
     path: "/capturar-folio",
     component: CapturarFolio,
-    meta: { title: "Capturar Folio", authorization: true },
+    meta: { title: "Capturar Folio", authorization: true, adminRequired: false },
   },
   {
     path: "/capturar-folio/preventivo/:id",
     name: "capturarPreventivo",
     component: Preventivo,
-    meta: { title: "Folios preventivos", authorization: true },
+    meta: { title: "Folios preventivos", authorization: true, adminRequired: false },
     props: { control: false },
   },
   {
     path: "/capturar-folio/correctivo/:id",
     name: "capturarCorrectivo",
     component: Correctivo,
-    meta: { title: "Folios Correctivos", authorization: true },
+    meta: { title: "Folios Correctivos", authorization: true, adminRequired: false },
     props: { control: true },
   },
   {
     path: "/mantenimiento/preventivos/:id",
     name: "mantenimientoPreventivo",
-    component: Preventivo,
-    meta: { title: "Folios preventivos", authorization: true },
+    component: MantenimientoPreventivo,
+    meta: { title: "Folios preventivos", authorization: true, adminRequired: false },
     props: { control: false },
   },
   {
     path: "/mantenimiento/correctivos/:id",
     name: "mantenimientoCorrectivo",
-    component: Correctivo,
-    meta: { title: "Folios Correctivos", authorization: true },
+    component:  MantenimientoCorrectivo,
+    meta: { title: "Folios Correctivos", authorization: true, adminRequired: false },
     props: { control: true },
   },
   {
     path: "/configuraciones",
     name: "Configuraciones",
     component: Configuraciones,
-    meta: { title: "", authorization: true },
+    meta: { title: "", authorization: true, adminRequired: true },
   },
   {
     path: "/reportes",

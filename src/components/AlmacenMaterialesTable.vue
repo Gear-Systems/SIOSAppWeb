@@ -5,7 +5,7 @@
         class="bg-gray-50 text-base font-semibold text-black dark:bg-gray-700 dark:text-gray-400"
       >
         <tr>
-          <th scope="col" class="py-3 px-6">Código de producto</th>
+          <th scope="col" class="px-2 lg:py-3 lg:px-6">Código de producto</th>
           <th scope="col" class="py-3 px-6">Descripción</th>
           <th scope="col" class="py-3 px-6">Unidad</th>
           <th scope="col" class="flex justify-center py-3 px-6">Acción</th>
@@ -57,7 +57,7 @@
 import { ref, reactive } from "vue";
 import { PencilIcon, TrashIcon } from "@heroicons/vue/outline";
 import AlmacenMaterialesTableEditar from "./AlmacenMaterialesTableEditar.vue";
-import { getDatabase, remove, ref as refDB } from "firebase/database";
+import { getDatabase, remove, ref as refDB, get } from "firebase/database";
 
 const props = defineProps(["data"]);
 const isOpenModal = ref(false);
@@ -69,16 +69,33 @@ const openModalData = (value) => {
   isOpenModal.value = true;
 };
 
-const EliminarRegistro = (value) => {
+const EliminarRegistro = async (value) => {
   console.log(value);
-  let response = confirm("¿Estás seguro que deseas eliminar el material?");
-  if (response)
-    remove(
-      refDB(
-        db,
-        `almacen/materiales/${value.tipo.toLowerCase()}/${value.key}`
-      )
-    );
-  else return;
+  if (value.tipo.toLowerCase() == "miscelaneos") {
+    let response = confirm("¿Estás seguro que deseas eliminar el material?");
+    if (response)
+      remove(
+        refDB(db, `almacen/materiales/${value.tipo.toLowerCase()}/${value.key}`)
+      );
+    else return;
+  } else {
+    let inventario = await get(refDB(db, `almacen/inventario/${value.key}`));
+    if (inventario.val().stock != 0 || inventario.val().entradas != 0) {
+      alert(
+        "Para eliminar un material con movimiento en inventario por favor contactar con soporte."
+      );
+    } else {
+      let response = confirm("¿Estás seguro que deseas eliminar el material?");
+      if (response) {
+        await remove(
+          refDB(
+            db,
+            `almacen/materiales/${value.tipo.toLowerCase()}/${value.key}`
+          )
+        );
+        await remove(refDB(db, `almacen/inventario/${value.key}`));
+      }
+    }
+  }
 };
 </script>

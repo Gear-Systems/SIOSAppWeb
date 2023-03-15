@@ -2,7 +2,6 @@ import { getDatabase, ref as refDB, child, update } from "@firebase/database";
 
 export const guardarCierre = async (estado, incidencia, folio, tipoFolio, data ) => {
   const db = getDatabase();
-  console.log(estado);
   let objetoMaterialesMiscelaneos = {};
   let objetoMaterialesTp = {};
   let objetoConceptos = {};

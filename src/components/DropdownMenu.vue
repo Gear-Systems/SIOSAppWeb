@@ -81,7 +81,6 @@ const db = getDatabase();
 const isOpen = ref(false);
 
 const eliminar = () => {
-  console.log(props.data);
   remove(
     refDB(db, `catalogo/${props.data.tipo.toLowerCase()}/${props.data.nombre}`)
   );

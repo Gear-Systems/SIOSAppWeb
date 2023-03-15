@@ -137,7 +137,6 @@ const formData = reactive({
 });
 
 const actualizar = () => {
-  console.log(props.data, formData);
   if (
     formData.newName != props.data.nombre ||
     formData.ETAmax != props.data.ETAmax ||

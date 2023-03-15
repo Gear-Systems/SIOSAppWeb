@@ -108,7 +108,6 @@
   const newName = ref(props.data.nombre);
   
   const actualizar = () => {
-    console.log(props.data);
     if (newName) {
       get(child(refDB(db), `catalogo/conceptos/${props.data.nombre}`)).then(
         (snapshot) => {

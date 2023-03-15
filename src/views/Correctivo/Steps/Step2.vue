@@ -1,6 +1,6 @@
 <template>
   <div class="flex w-[100%]">
-    <div class="mb-3 flex w-[90%] flex-col items-start justify-start pl-2">
+    <div class="mb-3 flex lg:w-[90%] w-full flex-col items-start justify-start lg:pl-2">
       <Horario
         :state="props.estado"
         :incidencia="props.incidencia"
@@ -23,12 +23,12 @@
         <ExclamationCircleIcon class="ml-2 h-4 w-4 text-red-400" />
       </div>
       <div class="mt-5 flex w-[100%]">
-        <div class="mt-5 flex w-[50%] flex-col">
+        <div class="mt-5 flex lg:w-[50%] flex-col">
           <div class="flex w-[100%] pb-1 font-semibold">Coordenadas</div>
           <div
-            class="flex w-[95%] flex-col items-center justify-around rounded-lg py-4 shadow-customized"
+            class="flex lg:w-[95%] flex-col items-center justify-around rounded-lg py-4 shadow-customized"
           >
-            <div class="flex w-[90%] items-center">
+            <div class="flex lg:w-[90%] items-center">
               <div class="flex w-[90%] justify-center">
                 <input
                   v-model="coordenadas"

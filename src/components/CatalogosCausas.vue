@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-5 flex h-full w-full justify-center space-x-24">
+  <div class="mt-5 flex flex-col lg:flex-row items-center lg:items-start h-full w-full justify-center lg:space-x-24">
     <div class="flex justify-center">
       <div class="flex flex-col space-y-8">
         <h2 class="text-xl font-semibold">Agregar nueva causa</h2>
@@ -54,7 +54,7 @@
         </div>
       </div>
     </div>
-    <div class="flex space-x-12">
+    <div class="mt-12 flex space-x-12">
       <div class="flex flex-col space-y-6">
         <h2 class="text-xl font-semibold text-center">Causas</h2>
         <CausasTable :causasData="causasData" />
@@ -100,7 +100,6 @@ const rules = computed(() => {
 
 // Obtener causas desde base de datos
 await onChildAdded(refDB(db, `catalogo/causas`), (snapshot) => {
-  console.log("Hola");
   causasData.value.push({
     nombre: snapshot.key,
   });

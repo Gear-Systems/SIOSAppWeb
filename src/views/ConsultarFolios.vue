@@ -21,7 +21,6 @@ const tipoFolio = ref([]);
 onMounted(() => {
   get(refDB(db, `catalogo/tipoFolios`)).then((snapshot) => {
     snapshot.forEach((element) => {
-      console.log(element.val());
     })
   })
 })

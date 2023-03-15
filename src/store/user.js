@@ -20,5 +20,8 @@ export const useUser = defineStore({
           });
       });
     },
+    setUserRol(isRol) {
+      this.rol = isRol
+    },
   },
 });

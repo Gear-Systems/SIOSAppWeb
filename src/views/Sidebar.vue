@@ -1,6 +1,6 @@
 <template>
   <div
-    class="h-screen select-none items-center justify-center rounded-tr-3xl rounded-br-3xl pt-10 shadow-xl transition-all duration-500 ease-in-out"
+    class="h-screen select-none relative rounded-tr-3xl rounded-br-3xl pt-10 shadow-xl transition-all duration-500 ease-in-out"
     :class="[$store.state.a.openSidebar == true ? 'w-[20%]' : 'w-[5%]']"
   >
     <!-- Tarjeta bienvenido -->
@@ -142,6 +142,7 @@
           </TransitionRoot>
         </li>
         <li
+        v-if="user.rol === 'Administrador'"
           @click="$router.push('/configuraciones')"
           class="font-medium flex cursor-pointer items-center justify-center space-x-4 rounded-md p-2 transition-all duration-600"
           :class="[$route.path == '/configuraciones' ? 'bg-secundario text-primario' : '']"
@@ -167,6 +168,9 @@
         </li>
       </ul>
     </div>
+    <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+      v{{ version }}
+    </div>
   </div>
 </template>
 
@@ -181,8 +185,10 @@ import CapturarFolioIco from "@/components/iconos/CapturarFolioIco.vue";
 import ConsultarFolioIco from "@/components/iconos/ConsultarFolioIco.vue";
 import ReportesIco from "@/components/iconos/ReportesIco.vue";
 import ConfiguracionIco from "@/components/iconos/ConfiguracionIco.vue";
+import { useUser } from "@/store/user";
 
 const i = ref(0);
+const user = useUser();
 const userData = reactive({
   displayName: "",
 });
@@ -190,6 +196,8 @@ const objeto = ref({
   nombre: "Tere",
   edad: 20,
 });
+
+const version = __APP_VERSION__;
 
 onAuthStateChanged(auth, (user) => {
   if (user) {

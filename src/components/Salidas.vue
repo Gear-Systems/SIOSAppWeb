@@ -1,7 +1,7 @@
 <template>
   <div class="h-full w-full">
     <form>
-      <div class="flex w-full space-x-6">
+      <div class="flex flex-col lg:flex-row w-full lg:space-x-6">
         <div class="mb-6 w-[250px]">
           <label
             for="distrito"
@@ -121,6 +121,7 @@
       :data="formModel.materiales"
       :supervisor="formModel.supervisor"
       :distrito="formModel.distrito"
+      @limpiar="limpiar"
       @cancelar="cancelar"
       v-if="
         formModel.distrito != 'Selecciona un distrito' &&
@@ -168,21 +169,21 @@ const formModel = reactive({
   materiales: [],
 });
 
-function cargarFiltro() {
+async function cargarFiltro() {
   let key = "";
-  get(refDB(db, "catalogo/distritos")).then((snapshot) => {
+  await get(refDB(db, "catalogo/distritos")).then((snapshot) => {
     snapshot.forEach((element) => {
       formData.distritos.push(element.key);
     });
   });
-  get(refDB(db, "catalogo/supervisores")).then((snapshot) => {
+  await get(refDB(db, "catalogo/supervisores")).then((snapshot) => {
     snapshot.forEach((element) => {
       formData.supervisor.push(element.val().nombre);
       key = snapshot.key;
     });
   });
-  get(refDB(db, "almacen/materiales/totalplay")).then((snapshot) => {
-    get(refDB(db, "almacen/inventario")).then((snapshot2) => {
+  await get(refDB(db, "almacen/materiales/totalplay")).then(async (snapshot) => {
+    await get(refDB(db, "almacen/inventario")).then((snapshot2) => {
       snapshot.forEach((element) => {
         if (snapshot2.val()[element.key].stock > 0) {
           formData.materiales.push({
@@ -220,4 +221,12 @@ const cancelar = () => {
     materiales: [],
   });
 };
+
+const limpiar = () => {
+  Object.assign(formModel, {
+    distrito: "Selecciona un distrito",
+    supervisor: "Supervisor",
+    materiales: [],
+  });
+}
 </script>

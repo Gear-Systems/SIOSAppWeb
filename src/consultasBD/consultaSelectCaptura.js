@@ -60,7 +60,6 @@ export const infoSelectCaptura = () => {
     })
     .catch(function (err) {});
 
-    // console.log(concentradoInfoSelect);
 
   return concentradoInfoSelect;
 };

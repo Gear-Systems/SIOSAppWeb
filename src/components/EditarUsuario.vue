@@ -678,7 +678,6 @@ const eliminarDistrito = async (index) => {
       distritosData[distrito].disabled = false;
     }
   }
-  console.log(infoUser.distritos[index]);
 
   await remove(
     refDB(db, `catalogo/distritos/Distrito 2/supervisores/${infoUser.userKey}`)
@@ -749,7 +748,6 @@ watch(enabled, async () => {
 watch(
   () => infoUser.rol,
   (newValue, oldValue) => {
-    console.log(newValue.name, infoUser.oldRol.name);
     if (newValue.name != infoUser.oldRol.name) {
       updatingRol.value = true;
     } else {
@@ -828,7 +826,7 @@ watch(
               infoUser.userKey
             }`
           ),
-          { nombre: infoUser.displayName }
+          { nombre: infoUser.displayName, uid: infoUser.userKey }
         );
         await update(
           refDB(db, `catalogo/supervisores/${infoUser.userKey}/distritos`),
@@ -857,10 +855,6 @@ watch(
         { nombre: newValue[newValue.length - 1].name }
       );
       for (let tecnico in tecnicosData) {
-        console.log(
-          tecnicosData[tecnico].name,
-          newValue[newValue.length - 1].name
-        );
         if (tecnicosData[tecnico].name === newValue[newValue.length - 1].name) {
           tecnicosData[tecnico].disabled = true;
         }

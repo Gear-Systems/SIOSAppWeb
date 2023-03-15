@@ -49,7 +49,6 @@ export const actualizarFolioBD = async (infoConcentradoFolio, incidencia, folioP
   }else{
     await get(child(refDB(db), `folios/` + (incidencia == 1 ? `preventivos` : `correctivos`) + `/${folioPrevio}`))
     .then((snapshot) => {
-      // console.log(snapshot);
       update(child(refDB(db), 
         `folios/` + (incidencia == 1 ? `preventivos` : `correctivos`) + `/${infoConcentradoFolio.folio}`), 
         snapshot.val())

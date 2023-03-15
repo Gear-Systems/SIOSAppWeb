@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-5 flex h-full w-full">
+  <div class="mt-5 flex flex-col lg:flex-row h-full w-full">
     <!-- Agregar nuevo distrito o cluster -->
     <div class="flex basis-[40%] justify-center">
       <div class="flex flex-col space-y-5">
@@ -85,7 +85,7 @@
       </div>
     </div>
     <!-- Tabla de distritos o clusters agregados -->
-    <div class="flex space-x-12 w-full justify-end">
+    <div class="mt-12 lg:mt-0 flex flex-col lg:flex-row items-center lg:items-start lg:space-x-12 w-full justify-end">
       <div>
         <div><h2 class="text-xl font-semibold text-center">Distritos</h2></div>
         <DistritosClustersTable :distritosClustersData="distritosData" />

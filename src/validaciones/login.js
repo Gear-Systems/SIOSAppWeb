@@ -17,5 +17,4 @@ export const validacion = (error) => {
             console.log(error.code);
         break;
     }
-    // console.log(error.code);
 }

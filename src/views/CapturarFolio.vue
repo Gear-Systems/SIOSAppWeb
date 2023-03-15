@@ -1,13 +1,13 @@
 <template>
   <div class="mt-12 flex w-full flex-col items-center">
-    <div class="flex w-[500px] flex-col">
+    <div class="flex w-[500px] flex-col px-6 lg:px-0">
       <div class="flex w-full justify-center">
         <h1 class="flex flex-col items-center">
           <span class="font-medium">Capturar</span
           ><span class="text-3xl font-semibold">Nuevo folio</span>
         </h1>
       </div>
-      <div class="mt-14 flex justify-between">
+      <div class="mt-14 flex flex-col lg:flex-row items-center lg:items-start space-y-12 lg:space-y-0 justify-between">
         <div
           class="group flex cursor-pointer items-center space-x-5"
           @click="toggleModalCorrectivo"

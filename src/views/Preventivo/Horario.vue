@@ -1,15 +1,14 @@
 <template>
-  <div class="z-10 mt-6 flex h-auto w-[100%] pl-2">
-    <div class="flex w-[100%] self-start">
+  <div class="z-10 mt-6 flex h-auto w-[100%] lg:pl-2">
+    <div class="flex flex-col lg:flex-row w-[100%] self-start">
       <!-- Contenedor de fecha -->
-      <div class="flex w-1/2 flex-col">
+      <div class="flex lg:w-1/2 flex-col">
         <div class="flex">
-          <div class="flex items-center justify-center pr-10 pb-1">
+          <div class="flex items-center justify-center lg:pr-10 pb-1">
             <h1 class="select-none font-semibold">Fecha</h1>
           </div>
         </div>
-        <div class="flex w-[90%] items-center justify-around rounded-lg py-4">
-          <!-- AQUI -->
+        <div class="flex lg:w-[90%] w-full items-center justify-around rounded-lg lg:py-4">
           <div class="flex self-start pt-[2%]">
             <Popover v-slot="{ close }" class="relative">
               <PopoverButton
@@ -18,10 +17,10 @@
                 <CalendarIcon class="h-6 w-6 self-center" />
               </PopoverButton>
               <PopoverPanel
-                class="w-cover absolute max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl"
+                class="w-cover absolute max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl z-50"
               >
                 <div
-                  class="w-[250px] rounded-lg bg-white shadow-lg shadow-black/5 ring-1 ring-black ring-opacity-5"
+                  class="w-[250px] z-50 rounded-lg bg-white shadow-lg shadow-black/5 ring-1 ring-black ring-opacity-5"
                 >
                   <div class="flex">
                     <DatePicker
@@ -31,7 +30,7 @@
                       @dayclick="imprimir()"
                     />
                   </div>
-                  <div class="h-15 flex w-[100%] items-center justify-center">
+                  <div class="h-15 flex w-[100%] items-center justify-center z-50">
                     <button
                       as="button"
                       class="z-[100] mb-3 -mt-3 flex rounded-md bg-[#E9F0FC] px-6 py-1"
@@ -98,15 +97,15 @@
         </div>
       </div>
       <!-- Fin Contenedor de fecha -->
+      
       <!-- Contenedor de hora -->
-      <div class="flex w-1/2 flex-col">
+      <div class="flex lg:w-1/2 flex-col">
         <div class="flex">
           <div class="flex items-center justify-center pr-10 pb-1">
             <h1 class="select-none font-semibold">Hora</h1>
           </div>
         </div>
-        <div class="flex w-[90%] items-center space-x-4 rounded-lg py-4">
-          <!-- AQUI -->
+        <div class="flex lg:w-[90%] w-full items-center justify-around rounded-lg lg:py-4">
           <div class="flex select-none self-start pt-[2%]">
             <Popover v-slot="{ inputValue, open }" class="relative">
               <PopoverButton
@@ -226,7 +225,7 @@ onMounted(() => {
   horaMinuto.value.minuto = arrayActiveMinuto;
   if (props.fechaInicioBD) {
     horario.value = new Date(props.fechaInicioBD);
-    emit("guardarFecha", horario.value);
+    // emit("guardarFecha", horario.value);
   } else {
     imprimir();
   }
