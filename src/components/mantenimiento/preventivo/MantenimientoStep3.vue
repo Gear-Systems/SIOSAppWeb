@@ -1,14 +1,15 @@
 <template>
-  <div class="flex w-full flex-col overflow-auto">
+  <div class="flex w-full flex-col relative overflow-visible">
     <Horario
-      :state="props.estado"
-      :incidencia="props.incidencia"
-      :folio="props.folio"
-      :tipoFolio="props.tipoFolio"
-      :fechaInicioBD="props.data.horaActivacion"
-      :horaInicioBD="props.data.horaActivacion"
-      @guardarFecha="guardarFechaFunc"
+    :state="props.estado"
+    :incidencia="props.incidencia"
+    :folio="props.folio"
+    :tipoFolio="props.tipoFolio"
+    :fechaInicioBD="props.data.horaActivacion"
+    :horaInicioBD="props.data.horaActivacion"
+    @guardarFecha="guardarFechaFunc"
     ></Horario>
+    <div class="overflow-auto">
     <div
       v-if="error"
       class="mt-2 flex w-[100%] items-center justify-center py-1"
@@ -366,7 +367,7 @@
                 <ListboxButton
                   class="relative w-full cursor-default rounded-lg border-2 border-[#E5E5E5] bg-white py-2 pl-3 pr-10 text-left text-black hover:cursor-pointer focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
                 >
-                  <span class="block truncate">Selecciona una material</span>
+                  <span class="block truncate">Selecciona un material</span>
                   <span
                     class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
                   >
@@ -836,6 +837,7 @@
           </Dialog>
         </TransitionRoot>
       </div>
+    </div>
     </div>
   </div>
 </template>

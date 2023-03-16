@@ -124,6 +124,7 @@
               />
             </div>
           </div>
+          
           <MantenimientoTimeline
             :state="infoData2.paso"
             :pasoDB="pasoDB"
