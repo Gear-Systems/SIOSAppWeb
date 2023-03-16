@@ -84,7 +84,7 @@
                   <Notas
                     v-if="infoData2.paso >= 2 && infoData2.paso <= 3  && !loadingData"
                     :folio="$route.params.id"
-                    :incidencia="2"
+                    :incidencia="1"
                     :tipoFolio="infoData2.tipoFolio"
                     :notasData="infoData2.notas"
                   ></Notas>
