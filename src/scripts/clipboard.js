@@ -23,7 +23,7 @@ const clipboardCorrectivo = async (item) => {
       method: "post",
     });
     ubicacionData = await ubicacion.json();
-    if (ubicacionData.status = "OK") {
+    if ((ubicacionData.status = "OK")) {
       ubicacionData = ubicacionData.results[0].formatted_address;
       update(refDB(db, `folios/correctivos/${item.folioKey}`), {
         ubicacion: ubicacionData,
@@ -39,22 +39,26 @@ const clipboardCorrectivo = async (item) => {
   }
 
   let format = ` *FOLIO*: ${item.folio}
-*OT*: ${item.ot ? item.ot: horaPremerMedicion}
+*OT*: ${item.ot ? item.ot : horaPremerMedicion}
 *UBICACIÓN_DE_1er_,_2do_NIVEL_Y_DERIVACION_CON_SU*: null
 *CAUSA DEL DAÑO*: ${item.causa}
 *UBICACIÓN DEL DAÑO*: null
 *COORDENADAS_DEL_DAÑO*: ${item.coordenadas}
-*DESCRIP_DE_ACTIVIDADES*: null
 *POTENCIA INICIAL*: ${item.potenciales.potenciaInicial}
 *POTENCIA FINAL*: ${item.potenciales.potenciaFinal}
-*TRABAJOS_REALIZADOS (CONCEPTOS)*: null
 *COORDENADAS_DEL CAB_24*: null
-*CONCEPTOS*: `
- 
+*TRABAJOS_REALIZADOS (CONCEPTOS)*: `;
 
   item.conceptos.forEach((e) => {
     format += `${e.keyConceptos}\n`;
   });
+
+  format += `*DESCRIP_DE_ACTIVIDADES*: `;
+
+  for (const nota in item.notas) {
+    console.log(item.notas[nota].texto);
+    format += `-${item.notas[nota].texto}\n`;
+  }
 
   format += `*MATERIALES UTILIZADOS*: `;
 
