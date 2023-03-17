@@ -1028,9 +1028,9 @@ const validarTipoFolio = async (event) => {
 // Validar existencia del folio en la base de datos.
 const validarExistencia = async () => {
   loading.value = true;
-  if (infoSelected.folio.length < 7) {
+  if (infoSelected.folio.length < 4) {
     Object.assign(errores.folio, {
-      message: "El folio no puede ser menor a 7 digitos",
+      message: "El folio no puede ser menor a 4 digitos",
       error: true,
     });
     loading.value = false;

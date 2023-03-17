@@ -4,8 +4,8 @@ export const validacionFolio = async (folio, tipoFolio, incidencia) => {
     let existe;
     if(folio == '' || folio == null){
         return 'Campo requerido';
-    }else if(folio.length < 7){
-        return 'El campo debe ser mayor o igual a 7 dígitos';
+    }else if(folio.length < 4){
+        return 'El campo debe ser mayor o igual a 4 dígitos';
     }else{
         existe = await validarExistencia(folio, tipoFolio, incidencia);
         if(existe){
