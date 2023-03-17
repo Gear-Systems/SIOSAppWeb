@@ -213,7 +213,14 @@ onChildAdded(child(refDB(db), "folios/correctivos"), (snapshot) => {
     folioKey: snapshot.key,
     ...snapshot.val(),
   });
+  data.value.sort((a, b) => {
+    let fecha1 = new Date(a.horaInicio);
+    let fecha2 = new Date(b.horaInicio);
+    return fecha2 - fecha1
+  })
 });
+
+ 
 
 const copiarInfo = (item) => {
   if (item.incidencia === "correctivos") {
