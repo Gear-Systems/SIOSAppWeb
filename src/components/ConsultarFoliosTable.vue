@@ -61,14 +61,25 @@
         >
           <ChevronLeftIcon class="h-5 w-5" aria-hidden="true" />
         </button>
-        <button
+        <span class="px-4"
+          ><input
+            class="mr-2 h-8 w-20 rounded-lg"
+            @keyup.enter="searchPage"
+            v-model="goPageSearch"
+            type="number"
+            min="1"
+            :max="Math.ceil(filterData.length / perPage)"
+          />
+          de {{ Math.ceil(filterData.length / perPage) }}</span
+        >
+        <!-- <button
           class="border bg-gray-100 py-1 px-3 hover:bg-gray-50"
           v-for="item in Math.ceil(data.length / perPage)"
           :key="item"
           @click="() => handlePagination().goToPage(item)"
         >
           {{ item }}
-        </button>
+        </button> -->
         <button
           @click="handlePagination().nextPage"
           class="border bg-gray-100 py-1 px-3 hover:bg-gray-50"
@@ -76,6 +87,7 @@
           <ChevronRightIcon class="h-5 w-5" aria-hidden="true" />
         </button>
       </div>
+      <!--  -->
       <div class="overflow-x-auto">
         <table
           class="w-full text-left text-sm text-gray-500 dark:text-gray-400"
@@ -205,6 +217,23 @@ const data = ref([]);
 const filterData = ref([]);
 const page = ref(1);
 const perPage = 10;
+const goPageSearch = ref(1);
+
+const searchPage = (e) => {
+  if (
+    goPageSearch.value < 1 ||
+    !goPageSearch.value ||
+    goPageSearch.value > Math.ceil(filterData.value.length / perPage)
+  ) {
+    alert("Error en el filtro");
+    goPageSearch.value = 1;
+    handlePagination().goToPage(1);
+    return false;
+  } else {
+    handlePagination().goToPage(goPageSearch.value);
+    return true;
+  }
+};
 
 onChildAdded(child(refDB(db), "folios/correctivos"), (snapshot) => {
   let color = "";
@@ -216,11 +245,9 @@ onChildAdded(child(refDB(db), "folios/correctivos"), (snapshot) => {
   data.value.sort((a, b) => {
     let fecha1 = new Date(a.horaInicio);
     let fecha2 = new Date(b.horaInicio);
-    return fecha2 - fecha1
-  })
+    return fecha2 - fecha1;
+  });
 });
-
- 
 
 const copiarInfo = (item) => {
   if (item.incidencia === "correctivos") {
@@ -312,9 +339,11 @@ const colorsText = (estatus) => {
 };
 
 const buscar = () => {
+  goPageSearch.value = 1;
   filterData.value = data.value.filter((e) => {
     return e.folio.includes(filtro.folio);
   });
+  handlePagination().goToPage(1);
 };
 
 const reiniciarFiltro = () => {
@@ -333,12 +362,14 @@ function handlePagination() {
   const nextPage = () => {
     if (page.value !== Math.ceil(filterData.value.length / perPage)) {
       page.value += 1;
+      goPageSearch.value = page.value
     }
   };
 
   const backPage = () => {
     if (page.value !== 1) {
       page.value -= 1;
+      goPageSearch.value = page.value
     }
   };
 
