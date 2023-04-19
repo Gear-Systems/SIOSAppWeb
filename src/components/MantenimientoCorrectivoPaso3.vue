@@ -1,27 +1,19 @@
 <template>
   <div class="flex w-full flex-col">
-    <Horario
-      :state="props.estado"
-      :incidencia="props.incidencia"
-      :folio="props.folio"
-      :tipoFolio="props.tipoFolio"
-      :fechaInicioBD="props.data.horaActivacion"
-      :horaInicioBD="props.data.horaActivacion"
-      @guardarFecha="guardarFechaFunc"
-    ></Horario>
+    <Horario />
     <div
-      v-if="error"
+      v-if="error.code == 2"
       class="mt-2 flex w-[100%] items-center justify-center py-1"
       :class="rebotar"
     >
       <span class="text-xs font-semibold text-red-400">{{
-        "Campo(s) requerido(s). Selecciona una fecha y horario válido"
+        error.message
       }}</span>
       <ExclamationCircleIcon class="ml-2 h-4 w-4 text-red-400" />
     </div>
     <!-- Si el tipo de folio es diferente a OT -->
     <div
-      v-if="props.data.tipoFolio != 'OT'"
+      v-if="foliosData.tipoFolio != 'OT'"
       class="mb-4 flex w-1/2 flex-col text-xs font-normal text-[#C4C4C4]"
     >
       OT
@@ -136,31 +128,16 @@
             <div class="flex pb-2 text-xs text-gris-claro">ETA</div>
             <div
               class="w-[60%] items-center justify-center rounded-md border-2 bg-white p-1 text-center"
-              :class="
-                infoCapturada.eta.tiempo == ''
-                  ? 'border-gris-claro'
-                  : infoCapturada.eta.color
-              "
             >
-              {{
-                moment(props.data.horaLlegada).diff(
-                  moment(props.data.horaInicio),
-                  "minutes"
-                )
-              }}
+              {{ foliosController.eta }}
             </div>
           </div>
           <div class="flex w-[30%] flex-col">
             <div class="flex pb-2 text-xs text-gris-claro">SLA</div>
             <div
               class="w-[65%] items-center justify-center rounded-md border-2 bg-white p-1 text-center"
-              :class="
-                infoCapturada.sla.tiempo == '--:--'
-                  ? 'border-gris-claro'
-                  : infoCapturada.sla.color
-              "
             >
-              {{ sla }}
+              {{ foliosController.sla }}
             </div>
           </div>
         </div>
@@ -236,29 +213,29 @@
               </PopoverPanel>
             </Popover>
             <!-- <div class="flex items-center">
-              <input
-                v-model="infoCapturada.primeraMedicion.horas"
-                class="flex w-[50%] rounded-lg border-transparent border-gris-claro bg-transparent text-center text-base font-medium focus:ring-0"
-                @blur="actualizarHoraMedicion"
-                @keypress="isNumber($event)"
-                type="number"
-                min="0"
-                max="24"
-              />
-              <span class="pr-2 pl-2">H</span>
-            </div>
-            <div class="flex items-center px-3">
-              <input
-                v-model="infoCapturada.primeraMedicion.minutos"
-                class="flex w-[50%] rounded-lg border-transparent border-gris-claro bg-transparent text-center text-base font-medium focus:ring-0"
-                @blur="actualizarMinutoMedicion"
-                @keypress="isNumber($event)"
-                type="number"
-                min="0"
-                max="59"
-              />
-              <span class="pr-2 pl-2">M</span>
-            </div> -->
+                  <input
+                    v-model="infoCapturada.primeraMedicion.horas"
+                    class="flex w-[50%] rounded-lg border-transparent border-gris-claro bg-transparent text-center text-base font-medium focus:ring-0"
+                    @blur="actualizarHoraMedicion"
+                    @keypress="isNumber($event)"
+                    type="number"
+                    min="0"
+                    max="24"
+                  />
+                  <span class="pr-2 pl-2">H</span>
+                </div>
+                <div class="flex items-center px-3">
+                  <input
+                    v-model="infoCapturada.primeraMedicion.minutos"
+                    class="flex w-[50%] rounded-lg border-transparent border-gris-claro bg-transparent text-center text-base font-medium focus:ring-0"
+                    @blur="actualizarMinutoMedicion"
+                    @keypress="isNumber($event)"
+                    type="number"
+                    min="0"
+                    max="59"
+                  />
+                  <span class="pr-2 pl-2">M</span>
+                </div> -->
           </div>
         </div>
       </div>
@@ -299,7 +276,7 @@
                   >
                     <ListboxOption
                       v-slot="{ active, selected }"
-                      v-for="element in materialesData.miscelaneos"
+                      v-for="element in data.materialMisc"
                       :key="element.keyMaterial"
                       :value="element"
                       as="template"
@@ -358,6 +335,7 @@
                 <th class="w-[40%] text-center text-xs text-gris-claro">
                   Cantidad
                 </th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -365,13 +343,20 @@
                 v-for="(item, index) in infoCapturada.materiales.miscelaneos"
                 class="border-b border-gris-claro/50"
               >
-                <td class="w-[95%] truncate py-4 pr-2.5 text-sm" :title="item">
+                <td
+                  class="w-[95%] truncate py-4 pr-2.5 text-sm"
+                  :title="item.keyMaterial"
+                >
                   {{ item.keyMaterial }}
                 </td>
                 <td class="items-center">
                   <input
                     @keypress="isNumber($event)"
-                    @change="item.qty === '' || item.qty == 0 ? (item.qty = 1) : item.qty"
+                    @change="
+                      item.qty === '' || item.qty == 0
+                        ? (item.qty = 1)
+                        : item.qty
+                    "
                     v-model="item.qty"
                     class="my-1 h-8 w-[100%] justify-center rounded-lg border-2 border-gris-claro text-center font-semibold text-black"
                     type="number"
@@ -379,6 +364,15 @@
                     min="1"
                     max="1000"
                   />
+                </td>
+                <td class="relative cursor-pointer">
+                  <div
+                    v-if="!item.action"
+                    v-on:click="eliminarMaterialMiscelaneo(item, index)"
+                    class=""
+                  >
+                    <XIcon class="absolute h-4 w-4 -translate-y-1/2" />
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -418,7 +412,7 @@
                   >
                     <ListboxOption
                       v-slot="{ active, selected }"
-                      v-for="element in materialesData.totalplay"
+                      v-for="element in data.materialTTP"
                       :key="element.keyMaterial"
                       :value="element"
                       as="template"
@@ -477,6 +471,7 @@
                 <th class="w-[40%] text-center text-xs text-gris-claro">
                   Cantidad
                 </th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -484,13 +479,20 @@
                 v-for="(item, index) in infoCapturada.materiales.ttp"
                 class="border-b border-gris-claro/50"
               >
-                <td class="w-[95%] truncate py-4 pr-2.5 text-sm" :title="item">
+                <td
+                  class="w-[95%] truncate py-4 pr-2.5 text-sm"
+                  :title="item.keyMaterial"
+                >
                   {{ item.keyMaterial }}
                 </td>
                 <td class="items-center">
                   <input
                     @keypress="isNumber($event)"
-                    @change="item.qty === '' || item.qty == 0 ? (item.qty = 1) : item.qty"
+                    @change="
+                      item.qty === '' || item.qty == 0
+                        ? (item.qty = 1)
+                        : item.qty
+                    "
                     v-model="item.qty"
                     class="my-1 h-8 w-[100%] justify-center rounded-lg border-2 border-gris-claro text-center font-semibold text-black"
                     type="number"
@@ -498,6 +500,15 @@
                     min="1"
                     max="1000"
                   />
+                </td>
+                <td class="relative cursor-pointer">
+                  <div
+                    v-if="!item.action"
+                    v-on:click="eliminarMaterialTotalplay(item, index)"
+                    class=""
+                  >
+                    <XIcon class="absolute h-4 w-4 -translate-y-1/2" />
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -544,9 +555,10 @@
                   >
                     <ListboxOption
                       v-slot="{ active, selected }"
-                      v-for="element in conceptosData"
+                      v-for="element in data.conceptos"
                       :key="element.keyConceptos"
                       :value="element"
+                      :title="element.descripcion ? element.descripcion : ''"
                       as="template"
                     >
                       <li
@@ -591,7 +603,12 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
+                  <tr
+                    :class="[
+                      error.code === 3 ? 'border-b-2 border-red-300' : '',
+                      'relative',
+                    ]"
+                  >
                     <td
                       class="mt-2 w-[95%] truncate pr-2.5 text-sm font-semibold text-black"
                       title="CAB 24"
@@ -609,17 +626,25 @@
                       <div class="flex w-[100%] items-center justify-center">
                         <PencilAltIcon
                           class="h-5 w-5 cursor-pointer text-center text-black"
-                          @click="openModal()"
+                          @click="isOpen = true"
                         />
                       </div>
                     </td>
+                    <span
+                      class="absolute -bottom-5 left-0 text-xs font-semibold text-red-400"
+                      >{{ error.message }}</span
+                    >
                   </tr>
                 </tbody>
               </table>
             </div>
             <!-- Modal de Coordenadas -->
             <TransitionRoot appear :show="isOpen" as="template" class="z-50">
-              <Dialog as="div" @close="closeModal" class="relative z-50">
+              <Dialog
+                as="div"
+                @close="validarCoordenadasCompletas"
+                class="relative z-50"
+              >
                 <TransitionChild
                   as="template"
                   enter="duration-300 ease-out"
@@ -659,13 +684,13 @@
                             <XCircleIcon
                               class="h-6 w-6 text-black"
                               aria-hidden="true"
-                              @click="closeModal"
+                              @click="validarCoordenadasCompletas"
                             />
                           </div>
                         </DialogTitle>
                         <div
                           class="flex h-6 w-fit cursor-pointer items-center justify-center"
-                          @click="agregarCoordenada"
+                          @click="() => infoCapturada.conceptos.cab24.push('')"
                         >
                           <PlusSmIcon
                             class="h-5 w-5 text-black hover:text-black"
@@ -705,19 +730,22 @@
                             :name="'coordenada' + index"
                             :id="'coordenada' + index"
                             placeholder="00.000000, 00.000000"
-                            @blur="corroborarCoordenadas(index, item)"
+                            @blur="validarCoordenadas(index, item)"
                           />
                           <XCircleIcon
                             class="h-6 w-6 text-black hover:text-black"
                             aria-hidden="true"
-                            @click="eliminarCoordenada(index)"
+                            @click="
+                              () =>
+                                infoCapturada.conceptos.cab24.splice(index, 1)
+                            "
                           />
                         </div>
                         <div class="mt-4 flex justify-center">
                           <button
                             type="button"
                             class="mt-2 inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                            @click="closeModal"
+                            @click="validarCoordenadasCompletas"
                           >
                             Aceptar
                           </button>
@@ -739,6 +767,7 @@
                 <th class="w-[45%] text-center text-xs text-gris-claro">
                   Cantidad
                 </th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -746,13 +775,20 @@
                 v-for="(item, index) in infoCapturada.conceptos.descripcion"
                 class="border-b border-gris-claro/50"
               >
-                <td class="w-[95%] truncate py-4 pr-2.5 text-sm" :title="item">
+                <td
+                  class="w-[95%] truncate py-4 pr-2.5 text-sm"
+                  :title="item.keyConceptos"
+                >
                   {{ item.keyConceptos }}
                 </td>
                 <td class="items-center">
                   <input
                     @keypress="isNumber($event)"
-                    @change="item.qty === '' || item.qty == 0 ? (item.qty = 1) : item.qty"
+                    @change="
+                      item.qty === '' || item.qty == 0
+                        ? (item.qty = 1)
+                        : item.qty
+                    "
                     v-model="item.qty"
                     class="my-1 h-8 w-[100%] justify-center rounded-lg border-2 border-gris-claro text-center font-semibold text-black"
                     type="number"
@@ -761,15 +797,34 @@
                     max="1000"
                   />
                 </td>
+                <td class="relative cursor-pointer">
+                  <div
+                    v-if="!item.action"
+                    v-on:click="eliminarConceptos(item, index)"
+                    class=""
+                  >
+                    <XIcon class="absolute h-4 w-4 -translate-y-1/2" />
+                  </div>
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-      <div class="mt-14 mb-2 flex w-[100%] items-center justify-center">
+      <div
+        class="mt-14 mb-2 flex w-[100%] items-center justify-center space-x-4"
+      >
         <button
           type="button"
-          @click="openModalConfirmacion()"
+          @click="actualizarPaso3(infoCapturada)"
+          class="flex w-[20%] items-center justify-center rounded-xl bg-[#F2F2F2] px-10 py-2 font-medium"
+          :class="agitar"
+        >
+          Actualizar
+        </button>
+        <button
+          type="button"
+          @click="modalConfirmacion = true"
           class="flex w-[20%] items-center justify-center rounded-xl bg-[#F2F2F2] px-10 py-2 font-medium"
           :class="agitar"
         >
@@ -783,7 +838,7 @@
         >
           <Dialog
             as="div"
-            @close="closeModalConfirmacion"
+            @close="modalConfirmacion = false"
             class="relative z-40"
           >
             <TransitionChild
@@ -823,7 +878,7 @@
                       >
                       <div class="flex w-[20%] justify-end pr-2">
                         <XCircleIcon
-                          @click="closeModalConfirmacion"
+                          @click="modalConfirmacion = false"
                           class="h-5 w-5 cursor-pointer"
                         />
                       </div>
@@ -836,7 +891,7 @@
                         <button
                           type="button"
                           class="flex justify-center rounded-md border-2 border-[#E5E5E5] px-4 py-2 text-sm font-medium text-black hover:border-transparent hover:bg-[#E9F0FC] hover:text-[#2166E5] focus-visible:ring-blue-500"
-                          @click="closeModalConfirmacion"
+                          @click="modalConfirmacion = false"
                         >
                           Cancelar
                         </button>
@@ -861,7 +916,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed, onMounted, reactive } from "vue";
+import { ref, onMounted, reactive, onBeforeMount } from "vue";
 import {
   Listbox,
   ListboxLabel,
@@ -877,7 +932,12 @@ import {
   ExclamationIcon,
   ExclamationCircleIcon,
 } from "@heroicons/vue/solid";
-import { XCircleIcon, UploadIcon, TrashIcon } from "@heroicons/vue/outline";
+import {
+  XCircleIcon,
+  UploadIcon,
+  TrashIcon,
+  XIcon,
+} from "@heroicons/vue/outline";
 import {
   TransitionRoot,
   TransitionChild,
@@ -900,7 +960,7 @@ import { ref as refDB, get, set, child, update } from "@firebase/database";
 import { getStorage, ref as refStorage, uploadBytes } from "firebase/storage";
 import { validacionCoordenadasCab24 } from "@/validaciones/coordenadas.js";
 import { arrayActiveHora, arrayActiveMinuto } from "@/JS/arreglosHorario.js";
-import Horario from "@/views/Preventivo/Horario.vue";
+import Horario from "@/components/Horario.vue";
 import { store } from "@/store";
 import { guardarCierre } from "@/consultasBD/guardarCierre.js";
 import { useRouter, useRoute } from "vue-router";
@@ -909,6 +969,141 @@ import { DatePicker } from "v-calendar";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
 import { CalendarIcon, ClockIcon } from "@heroicons/vue/outline";
 import { httpsCallable } from "@firebase/functions";
+import { useFolios } from "@/store/foliosController";
+import { storeToRefs } from "pinia";
+
+const foliosController = useFolios();
+const { foliosData, error } = storeToRefs(foliosController);
+const { actualizarPaso3 } = foliosController;
+const data = reactive({
+  materialTTP: [],
+  materialMisc: [],
+  conceptos: [],
+});
+const fetchData = async () => {
+  // Cargar materiales totalplay
+  await get(refDB(db, `almacen/materiales/totalplay`)).then((snapshot) => {
+    snapshot.forEach((item) => {
+      data.materialTTP.push({ keyMaterial: item.key, ...item.val(), qty: 1 });
+    });
+  });
+  // Cargar materiales Miscelaneos
+  await get(refDB(db, `almacen/materiales/miscelaneos`)).then((snapshot) => {
+    snapshot.forEach((item) => {
+      data.materialMisc.push({ keyMaterial: item.key, ...item.val(), qty: 1 });
+    });
+  });
+  // Cargar conceptos
+  await get(refDB(db, `catalogo/conceptos`)).then((snapshot) => {
+    snapshot.forEach((item) => {
+      data.conceptos.push({ keyConceptos: item.key, ...item.val(), qty: 1 });
+    });
+  });
+};
+
+await fetchData();
+
+// Eliminar material miscelaneo
+const eliminarMaterialMiscelaneo = (item, indexItem) => {
+  infoCapturada.materiales.miscelaneos.splice(indexItem, 1);
+  let index = data.materialMisc.findIndex(
+    (material) => material.keyMaterial === item.keyMaterial
+  );
+  if (index == -1) {
+    data.materialMisc.push({ ...item });
+  }
+};
+
+// Eliminar material totalplay
+const eliminarMaterialTotalplay = (item, indexItem) => {
+  infoCapturada.materiales.ttp.splice(indexItem, 1);
+  let index = data.materialTTP.findIndex(
+    (material) => material.keyMaterial === item.keyMaterial
+  );
+  if (index == -1) {
+    data.materialTTP.push({ ...item });
+  }
+};
+
+// Eliminar conceptos
+const eliminarConceptos = (item, indexItem) => {
+  infoCapturada.conceptos.descripcion.splice(indexItem, 1);
+  let index = data.conceptos.findIndex(
+    (concepto) => concepto.keyConceptos === item.keyConceptos
+  );
+  if (index == -1) {
+    data.conceptos.push({ ...item });
+  }
+};
+
+// Validar coordenadas de cab24
+const validarCoordenadas = async (index, item) => {
+  if (
+    !/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/.test(
+      item
+    ) ||
+    item == ""
+  ) {
+    if (!error.value.isError) {
+      Object.assign(error.value, {
+        code: 3,
+        isError: true,
+        message: "El formato es invalido o vacío",
+      });
+    }
+  } else {
+    // if (error.value.code == 3) {
+    //   Object.assign(error.value, {
+    //     code: 0,
+    //     isError: false,
+    //     message: "",
+    //   });
+    // }
+  }
+};
+
+// Validar coordenadas de cab24
+const validarCoordenadasCompletas = () => {
+  let isError = false;
+  if (infoCapturada.conceptos.cab24.length > 0) {
+    infoCapturada.conceptos.cab24.forEach((item) => {
+      if (
+        !/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/.test(
+          item
+        ) ||
+        item == ""
+      ) {
+          isError = true;
+        if (!error.value.isError) {
+          Object.assign(error.value, {
+            code: 3,
+            isError: true,
+            message: "El formato es invalido o vacío",
+          });
+        }
+      }
+    });
+    if (!isError) {
+      if (error.value.code == 3) {
+        Object.assign(error.value, {
+          code: 0,
+          isError: false,
+          message: "",
+        });
+      }
+    }
+  }
+  isOpen.value = false;
+};
+
+const isNumber = ($event) => {
+  let keyCode = $event.keyCode ? $event.keyCode : $event.which;
+  if (keyCode < 48 || keyCode > 57) {
+    $event.preventDefault();
+  }
+  if ($event) {
+  }
+};
 
 const storeVuex = useStore();
 const router = useRouter();
@@ -929,16 +1124,10 @@ const errorCoord = ref(false);
 const cab24 = ref(0);
 const validacionHorario = ref([false, false, false]);
 
-const infoCapturada = ref({
+const infoCapturada = reactive({
   justificacion: "Selecciona una justificación",
   ot: "",
   tiempoMuerto: store.state.a.tiempoMuerto,
-  eta: await calculoEta(
-    route.params.id,
-    props.incidencia,
-    props.data.horaInicio,
-    props.data.horaLlegada
-  ), // ETA
   // Calculo realizado mediante la resta de la hora de
   // llegada menos la hora de inicio
   sla: store.state.a.sla, //SLA
@@ -978,9 +1167,13 @@ const materialesData = reactive({
   miscelaneos: [],
 });
 
+const materialesFilterData = reactive({
+  totalplay: [],
+  miscelaneos: [],
+});
+
 const justificacionesData = ref([]);
 //
-const error = ref(false);
 const fecha = ref();
 const hora = ref();
 const minuto = ref();
@@ -993,245 +1186,59 @@ const agitar = ref("");
 const concentradoDatos = ref(concentradoMaterialConcepto());
 concentradoDatos.value.justificaciones.sort();
 const conceptosData = ref([]);
+const conceptosFilterData = ref([]);
 
-onMounted(async () => {
-  const almacenMiscelaneosRef = refDB(db, "almacen/materiales/miscelaneos");
-  const almacenTotalplayRef = refDB(db, "almacen/materiales/totalplay");
-  const conceptosRef = refDB(db, "catalogo/conceptos");
-  const justificacionesRef = refDB(db, "catalogo/justificaciones");
-
-  // Obtener materiales miscelaneos
-  await get(almacenMiscelaneosRef).then((snapshot) => {
-    snapshot.forEach((element) => {
-      materialesData.miscelaneos.push({
-        keyMaterial: element.key,
-        qty: 1,
-        ...element.val(),
-      });
-    });
-  });
-  // Obtener materiales totaplay
-  await get(almacenTotalplayRef).then((snapshot) => {
-    snapshot.forEach((element) => {
-      materialesData.totalplay.push({
-        keyMaterial: element.key,
-        qty: 1,
-        ...element.val(),
-      });
-    });
-  });
-
-  // Obtener conceptos del catálogo
-  await get(conceptosRef).then((snapshot) => {
-    snapshot.forEach((element) => {
-      conceptosData.value.push({
-        keyConceptos: element.key,
-        qty: 1,
-        ...element.val(),
-      });
-    });
-  });
-
-  // Obtener justificaciones del catálogo
-  await get(justificacionesRef).then((snapshot) => {
-    justificacionesData.value = snapshot.val();
-  });
-});
-
-watch(
-  () => fotos.value.despues.file,
-  () => {
-    errores.value.fotoDespues = fotos.value.despues.file ? false : true;
-    // console.log(fotos.value.antes.file ? 'existe foto' : 'no hay foto subida');
-  }
-);
-
-function closeModal() {
-  isOpen.value = false;
-}
-async function closeModalConfirmacion() {
-  modalConfirmacion.value = false;
-  return "closing";
-}
-const openModal = () => {
-  let i = 0;
-  if (infoCapturada.value.conceptos.cab24.length > 1) {
-    while (i <= infoCapturada.value.conceptos.cab24.length) {
-      if (i != 0 && infoCapturada.value.conceptos.cab24[i] == "") {
-        infoCapturada.value.conceptos.cab24.splice(i, 1);
-        infoCapturada.value.conceptos.errores.splice(i, 1);
-        i--;
+onBeforeMount(() => {
+  if (foliosData.value.materiales.miscelaneos) {
+    foliosData.value.materiales.miscelaneos.forEach((item) => {
+      let index = data.materialMisc.findIndex(
+        (material) => material.keyMaterial === item.keyMaterial
+      );
+      if (index != -1) {
+        data.materialMisc.splice(index, 1);
       }
-      i++;
+    });
+    infoCapturada.materiales.miscelaneos =
+      foliosData.value.materiales.miscelaneos;
+  }
+  if (foliosData.value.materiales.totalplay) {
+    foliosData.value.materiales.totalplay.forEach((item) => {
+      let index = data.materialTTP.findIndex(
+        (material) => material.keyMaterial === item.keyMaterial
+      );
+      if (index != -1) {
+        data.materialTTP.splice(index, 1);
+      }
+    });
+    infoCapturada.materiales.ttp = foliosData.value.materiales.totalplay;
+  }
+  if (foliosData.value.conceptos) {
+    foliosData.value.conceptos.forEach((item) => {
+      let index = data.conceptos.findIndex(
+        (concepto) => concepto.keyConceptos === item.keyConceptos
+      );
+      if (index != -1) {
+        data.conceptos.splice(index, 1);
+      }
+    });
+    infoCapturada.conceptos.descripcion = foliosData.value.conceptos;
+  }
+  if (foliosData.value.potenciales) {
+    if (foliosData.value.potenciales.potenciaInicial) {
+      infoCapturada.potenciaInicial =
+        foliosData.value.potenciales.potenciaInicial;
+    }
+    if (foliosData.value.potenciales.potenciaFinal) {
+      infoCapturada.potenciaFinal = foliosData.value.potenciales.potenciaFinal;
+    }
+    if (foliosData.value.potenciales.horaPrimeraMedicion) {
+      infoCapturada.primeraMedicion = new Date(
+        foliosData.value.potenciales.horaPrimeraMedicion
+      );
     }
   }
-  isOpen.value = true;
-};
-
-function cambiarError() {
-  if (errorCoord.value) {
-    errorCoord.value = false;
+  if(foliosData.value.cab24) {
+    infoCapturada.conceptos.cab24 = foliosData.value.cab24;
   }
-}
- 
-const selectFileDespues = async (e) => {
-  fotos.value.despues.file = e.target.files[0];
-  let reader = new FileReader();
-  reader.readAsDataURL(fotos.value.despues.file);
-  reader.onload = (event) => {
-    fotos.value.despues.file64 = reader.result;
-  };
-  // fotos.value.despues.file64 = URL.createObjectURL(fotos.value.despues.file64)
-};
-/* const eliminarImgDespues = () => {
-  fotos.value.despues.file = null;
-  fotos.value.despues.file64 = null;
-};
-const actualizarTiempoMuerto = async () => {
-  if (infoCapturada.value.tiempoMuerto == "") {
-    infoCapturada.value.tiempoMuerto = 0;
-  }
-  store.commit("actualizarTiempoMuerto", infoCapturada.value.tiempoMuerto);
-  guardarTiempoMuerto(
-    props.folio,
-    infoCapturada.value.tiempoMuerto,
-    props.incidencia,
-    props.tipoFolio
-  );
-  let sla = await calculoSla(
-    props.folio,
-    props.incidencia,
-    props.tipoFolio,
-    store.state.a.tiempoMuerto
-  );
-  store.commit("asignarSla", sla);
-  validarTiempoMuerto.value = true;
-}; */
-
-const isNumber = ($event) => {
-  let keyCode = $event.keyCode ? $event.keyCode : $event.which;
-  if (keyCode < 48 || keyCode > 57) {
-    $event.preventDefault();
-  }
-  if ($event) {
-  }
-};
-
-const agregarCoordenada = () => {
-  infoCapturada.value.conceptos.cab24.push("");
-};
-const corroborarCoordenadas = (index, item) => {
-  mostrarErrorCoordenadas.value = false;
-  infoCapturada.value.conceptos.errores[index] =
-    validacionCoordenadasCab24(item);
-  infoCapturada.value.conceptos.errores.forEach((element, index) => {
-    if (element) {
-      mostrarErrorCoordenadas.value = true;
-    }
-  });
-};
-const eliminarCoordenada = (n) => {
-  infoCapturada.value.conceptos.cab24.splice(n, 1);
-  infoCapturada.value.conceptos.errores.splice(n, 1);
-  mostrarErrorCoordenadas.value = false;
-  infoCapturada.value.conceptos.errores.forEach((element) => {
-    if (element) {
-      mostrarErrorCoordenadas.value = true;
-    }
-  });
-  if (infoCapturada.value.conceptos.cab24.length == 0) {
-    agregarCoordenada();
-  }
-};
-
-const openModalConfirmacion = () => {
-  if (infoCapturada.value.ot === "" && props.data.tipoFolio != "OT") {
-    alert("La OT es requerida para finalizar el folio.");
-    return false;
-  }
-  if (
-    infoCapturada.value.conceptos.descripcion.length === 0 &&
-    infoCapturada.value.conceptos.cab24.filter(Boolean).length === 0
-  ) {
-    alert("Se debe colocar al menos un concepto.");
-    return false;
-  }
-  modalConfirmacion.value = true;
-};
-
-const validaryEnviarInfo = async () => {
-  const finalizarFolioFirebase = httpsCallable(
-    functions,
-    "finalizarFoliosCorrectivos"
-  );
-  await finalizarFolioFirebase({
-    folioKey: route.params.id,
-    ...infoCapturada.value,
-  });
-  storeVuex.commit("cerrarModalManejoFolio");
-  router.push("/capturar-folio");
-  // limpiarValores();
-};
-
-const guardarFechaFunc = (event) => {
-  horario.value = event;
-};
-
-const guardarSla = async (sla) => {
-  await update(refDB(db, `folios/correctivos/${route.params.id}`), {
-    sla: sla,
-  });
-};
-
-const sla = computed(() => {
-  let fecha1 = moment(props.data.horaInicio);
-  let fecha2 = moment(horario.value);
-
-  if (infoCapturada.value.tiempoMuerto) {
-    fecha2.add(-infoCapturada.value.tiempoMuerto, "minutes");
-  }
-
-  let horaCompleta = moment.duration(fecha2.diff(fecha1)).asHours().toFixed(2);
-
-  if (horaCompleta > 1) {
-    let hora = horaCompleta.split(".")[0];
-    let minutos = ((0 + "." + horaCompleta.split(".")[1]) * 60).toFixed(0);
-
-    guardarSla(
-      `${hora}:${
-        minutos >= 0 && minutos <= 9 ? `0${minutos.toString()}` : minutos
-      }`
-    );
-    // minutos -= infoCapturada.value.tiempoMuerto;
-    return `${hora}:${
-      minutos >= 0 && minutos <= 9 ? `0${minutos.toString()}` : minutos
-    }`;
-  }
-  if (horaCompleta < 1) {
-    guardarSla(parseInt(horaCompleta * 60));
-    return parseInt(horaCompleta * 60);
-  }
-  guardarSla(`${horaCompleta.replace(".", ":")}`);
-  return `${horaCompleta.replace(".", ":")}`;
 });
-
-const limpiarValores = () => {
-  arrayActiveHora.forEach((value, index) => {
-    arrayActiveHora[index] = "";
-  });
-  arrayActiveMinuto.forEach((value, index) => {
-    arrayActiveMinuto[index] = "";
-  });
-  fecha.value = null;
-  hora.value = null;
-  minuto.value = null;
-  error.value = false;
-  rebotar.value = "";
-  validacionHorario.value = [false, false, false];
-
-  // --> Limpiar la muestra de justificacion con el commit
-  // --> Limpiar la SLA con el commit
-  store.commit("limpiarJustificacion");
-  store.commit("limpiarSLA");
-};
 </script>

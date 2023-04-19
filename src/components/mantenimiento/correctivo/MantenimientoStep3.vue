@@ -729,9 +729,7 @@
                           <span class="pl-10">{{ index + 1 }}</span>
                           <input
                             v-model="infoCapturada.conceptos.cab24[index]"
-                            :disabled="
-                              !infoCapturada.conceptos.cab24[index].action
-                            "
+                          
                             class="h-8 w-[80%] rounded-lg border-2 font-semibold text-black"
                             :class="
                               infoCapturada.conceptos.errores[index] == true

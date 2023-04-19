@@ -38,11 +38,11 @@ const clipboardCorrectivo = async (item) => {
     ubicacionData = item.ubicacion;
   }
 
-  let format = ` *FOLIO*: ${item.folio}
-*OT*: ${item.ot ? item.ot : horaPremerMedicion}
+  let format = ` *FOLIO*: ${item.tipoFolio} ${item.folio}
+*OT*: ${item.ot ? item.ot : ''}
 *UBICACIÓN_DE_1er_,_2do_NIVEL_Y_DERIVACION_CON_SU*: null
 *CAUSA DEL DAÑO*: ${item.causa}
-*UBICACIÓN DEL DAÑO*: null
+*UBICACIÓN DEL DAÑO*: ${ubicacionData}
 *COORDENADAS_DEL_DAÑO*: ${item.coordenadas}
 *POTENCIA INICIAL*: ${item.potenciales.potenciaInicial}
 *POTENCIA FINAL*: ${item.potenciales.potenciaFinal}

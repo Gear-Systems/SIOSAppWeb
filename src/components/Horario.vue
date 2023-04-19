@@ -12,7 +12,7 @@
           class="flex w-full items-center justify-around rounded-lg lg:w-[90%] lg:py-4"
         >
           <div class="flex self-start pt-[2%]">
-            <Popover v-slot="{ close }" class="relative">
+            <Popover v-slot="{ close }" class="">
               <PopoverButton
                 class="group inline-flex items-center rounded-md bg-transparent bg-[#90B3F2] p-2 text-base font-medium text-white"
               >
@@ -27,10 +27,9 @@
                   <div class="flex">
                     <DatePicker
                       v-model="horario"
-                      @change="alert('HOLA')"
-                      is-required="true"
+                      is-required
                       mode="datetime"
-                      is24hr="true"
+                      is24hr
                     />
                   </div>
                 </div>
@@ -103,31 +102,11 @@
           class="flex w-full items-center justify-around rounded-lg lg:w-[90%] lg:py-4"
         >
           <div class="flex select-none self-start pt-[2%]">
-            <Popover v-slot="{ inputValue, open }" class="relative">
-              <PopoverButton
-                class="group inline-flex items-center rounded-md bg-transparent bg-[#90B3F2] p-2 text-base font-medium text-white"
-              >
-                <ClockIcon class="h-6 w-6 self-center" />
-              </PopoverButton>
-              <PopoverPanel
-                class="absolute -left-[150%] w-full max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl"
-              >
-                <div
-                  class="w-[250px] rounded-lg bg-white shadow-lg shadow-black/5 ring-1 ring-black ring-opacity-5"
-                >
-                  <!-- <div class="flex">
-                    <DatePicker
-                      style="border: #000000"
-                      mode="time"
-                      :is24hr="true"
-                      class="flex"
-                      v-model="horario"
-                      @change="imprimir()"
-                    />
-                  </div> -->
-                </div>
-              </PopoverPanel>
-            </Popover>
+            <div
+              class="group inline-flex items-center rounded-md bg-transparent bg-[#90B3F2] p-2 text-base font-medium text-white"
+            >
+              <ClockIcon class="h-6 w-6 self-center" />
+            </div>
           </div>
           <div
             class="flex select-none flex-col items-center justify-center pl-2"
@@ -162,60 +141,51 @@
 </template>
 
 <script setup>
-import { ref, onMounted, reactive, computed } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { CalendarIcon, ClockIcon } from "@heroicons/vue/outline";
 import { DatePicker } from "v-calendar";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
-import { arrayActiveHora, arrayActiveMinuto } from "@/JS/arreglosHorario.js";
-import {
-  guardarFechaInicio,
-  guardarFechaLlegada,
-  guardarFechaActivacion,
-} from "@/consultasBD/guardarHorario";
-import { useStore } from "vuex";
-
-
-const props = defineProps({
-  paso: Number,
-});
+import { useFolios } from "@/store/foliosController";
+import { storeToRefs } from "pinia";
 
 const horario = ref(new Date());
+const foliosController = useFolios();
+const { horaInicio, horaLlegada, horaActivacion, paso } =
+  storeToRefs(foliosController);
 
 onMounted(() => {
-  
-})
-
-const horaMinuto = ref({
-  hora: arrayActiveHora,
-  minuto: arrayActiveMinuto,
-});
-
-onMounted(() => {
-  // horaMinuto.value.hora = arrayActiveHora;
-  // horaMinuto.value.minuto = arrayActiveMinuto;
-  // if (props.fechaInicioBD) {
-  //   horario.value = new Date(props.fechaInicioBD);
-  //   // emit("guardarFecha", horario.value);
-  // } else {
-  //   imprimir();
-  // }
-});
-
-const imprimir = () => {
-  // emit("guardarFecha", horario.value);
-  switch (props.state) {
+  switch (paso.value) {
     case 1:
-      guardarFechaInicio(props.folio, props.incidencia, horario.value);
+      horario.value = horaInicio.value;
       break;
     case 2:
-      guardarFechaLlegada(props.folio, props.incidencia, horario.value);
+      horario.value = horaLlegada.value;
       break;
     case 3:
-      store.commit("asignarMuestraJustificacion", 0);
-      guardarFechaActivacion(props.folio, props.incidencia, horario.value);
+      horario.value = horaActivacion.value;
       break;
   }
-};
+});
+
+watch(horario, (value) => {
+  switch (paso.value) {
+    case 1:
+      if (horario.value != horaInicio.value) {
+        horaInicio.value = horario.value;
+      }
+      break;
+    case 2:
+      if (horario.value != horaLlegada.value) {
+        horaLlegada.value = horario.value;
+      }
+      break;
+    case 3:
+      if (horario.value != horaActivacion.value) {
+        horaActivacion.value = horario.value;
+      }
+      break;
+  }
+});
 </script>
 
 <style>

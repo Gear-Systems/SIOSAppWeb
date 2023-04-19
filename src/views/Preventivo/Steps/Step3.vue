@@ -861,7 +861,7 @@ import { store } from "@/store";
 import { guardarCierre } from "@/consultasBD/guardarCierre.js";
 import { useRouter, useRoute } from "vue-router";
 import moment from "moment";
-import { SetupCalendar, Calendar, DatePicker } from "v-calendar";
+import { DatePicker } from "v-calendar";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
 import { CalendarIcon, ClockIcon } from "@heroicons/vue/outline";
 import { httpsCallable } from "@firebase/functions";

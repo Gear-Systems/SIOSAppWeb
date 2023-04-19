@@ -11,7 +11,7 @@ import 'flowbite';
 import { createPinia } from 'pinia'
 import { useUser } from "@/store/user";
 
-const pinia =  createPinia()
+const pinia =  createPinia();
 const app = createApp(App);
 
 const router = createRouter({

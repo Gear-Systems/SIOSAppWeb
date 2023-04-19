@@ -11,7 +11,8 @@ import ConsultarFolios from "./views/ConsultarFolios.vue";
 import Mantenimiento from "./views/Mantenimiento.vue";
 import Reportes from "./views/Reportes.vue";
 import MantenimientoPreventivo from "./views/MantenimientoPreventivo.vue"
-import MantenimientoCorrectivo from "./views/MantenimientoCorrectivo.vue"
+// import MantenimientoCorrectivo from "./views/MantenimientoCorrectivo.vue"
+import MantenimientoCorrectivo from "./views/Correctivo.vue";
 
 /** @type {import('vue-router').RouterOptions['routes']} */
 export const routes = [
