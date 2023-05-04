@@ -4,7 +4,7 @@
         class="flex h-[100%] w-full justify-center rounded-lg shadow-customized"
       >
         <!-- Inicio -->
-        <div @click="paso = 1" class="flex w-1/3 flex-col items-center justify-center cursor-pointer">
+        <div @click="paso1()" class="flex w-1/3 flex-col items-center justify-center cursor-pointer">
           <div
             class="flex h-14 w-14 items-center justify-center rounded-full"
             :class="[
@@ -33,7 +33,7 @@
           </div>
         </div>
         <!-- Llegada -->
-        <div @click="paso = 2" class="flex w-1/3 flex-col items-center justify-center cursor-pointer">
+        <div @click="paso2()" class="flex w-1/3 flex-col items-center justify-center cursor-pointer">
           <div
             class="flex h-14 w-14 items-center justify-center rounded-full"
             :class="[
@@ -62,7 +62,7 @@
           </div>
         </div>
         <!-- cierre -->
-        <div @click="paso = 3" class="flex w-1/3 flex-col items-center justify-center cursor-pointer">
+        <div @click="paso3()" class="flex w-1/3 flex-col items-center justify-center cursor-pointer">
           <div
             class="flex h-14 w-14 items-center justify-center rounded-full"
             :class="[
@@ -104,7 +104,21 @@
 
   const foliosController = useFolios();
   const { paso } = storeToRefs(foliosController);
-  // const props = defineProps(["state", "pasoDB"]);
-  // const emits = defineEmits(["setPaso"]);
+
+  const paso1 = () => {
+    paso.value = 1;
+  }
+
+  const paso2 = () => {
+    if(foliosController.foliosData.paso >= 2) {
+      paso.value = 2;
+    }
+  }
+
+  const paso3 = () => {
+    if(foliosController.foliosData.paso == 3) {
+      paso.value = 3;
+    }
+  }
   </script>
   

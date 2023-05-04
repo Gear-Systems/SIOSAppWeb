@@ -122,7 +122,7 @@ export const useFolios = defineStore("folios-controller", {
       }
     },
     async paso1() {
-      if (this.foliosData.paso == 1) {
+      if (this.foliosData.paso == 1 ) {
         this.modalManejoFolio = true;
       } else {
         this.asignarHoraInicio().then(() => {
