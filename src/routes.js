@@ -2,7 +2,7 @@ import Home from "./views/Home.vue";
 import Login from "./views/Login.vue";
 import About from "./views/About.vue";
 import NotFound from "./views/NotFound.vue";
-import Preventivo from "./views/Preventivo/Preventivo.vue";
+import Preventivo from "./views/Preventivo.vue";
 import Dashboard from "./views/Dashboard.vue";
 import CapturarFolio from "./views/CapturarFolio.vue";
 import Correctivo from "./views/Correctivo/Correctivo.vue";

@@ -128,7 +128,7 @@ const asignarFolio = async () => {
       await asignarHoraInicio();
       await asignarCorrectivo(route.params.id).then(() => {
         setIsOpen();
-        paso = 2;
+        paso.value = 2;
       });
   }
 };

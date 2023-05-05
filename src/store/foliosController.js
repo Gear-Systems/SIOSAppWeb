@@ -122,9 +122,11 @@ export const useFolios = defineStore("folios-controller", {
       }
     },
     async paso1() {
-      if (this.foliosData.paso == 1 ) {
+      if (this.foliosData.paso == 1 && this.foliosData.incidencia != "preventivos") {
         this.modalManejoFolio = true;
-      } else {
+      } else if(this.foliosData.paso == 1 && this.foliosData.incidencia == "preventivos"){
+        this.asignarHoraInicio()
+      } else{
         this.asignarHoraInicio().then(() => {
           alert("Folio actualizado");
         });
