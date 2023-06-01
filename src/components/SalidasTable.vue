@@ -67,7 +67,6 @@ import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import App from "@/App.vue";
 import logo_iosComunicaciones from "../../public/img/logo_iosComunicaciones.jpg";
-import logo_ios from "../../public/img/logo_ios.png";
 import { base } from "@tailwindcss/typography/src/styles";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -99,7 +98,7 @@ props.data.forEach((e) => {
 /* Exportar PDF */
 
 let generatePdf = async () => {
-  fetch(logo_iosComunicaciones)
+  await fetch(logo_iosComunicaciones)
     .then((response) => response.blob())
     .then((blob) => toBase64(blob))
     .then((base64Image) => {
@@ -127,12 +126,12 @@ let generatePdf = async () => {
                 margin: [320, 0, 0, 0],
                 width: "90%",
                 fontSize: 13,
-                text: `Fecha: ${fecha.getDay()}/${fecha.getMonth()}/${fecha.getFullYear()}`,
+                text: `Fecha: ${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}`,
               },
             ],
           },
-          { text: "SALIDA DE MATERIAL", margin: [180, 0, 0, 0], fontSize: 16 },
-          { text: "Datos:", fontSize: 16, margin: [0, 50, 0, 0] },
+          { text: "SALIDA DE MATERIAL", margin: [180, 0, 0, 0], fontSize: 16, bold: 300, color: "#204D73" },
+          { text: "Datos:", fontSize: 16, margin: [0, 50, 0, 0], bold: 100, color: "#204D73" },
           {
             text: `Distrito: ${props.distrito}`,
             fontSize: 12,
@@ -150,15 +149,18 @@ let generatePdf = async () => {
           },
           {
             text: "Detalles de salida de material:",
-            fontSize: 14,
+            fontSize: 16,
             margin: [0, 20, 0, 0],
+            bold: 300,
+            color: "#204D73",
+            margin: [0, 20, 0, 10],
           },
           {
             style: "tableExample",
             table: {
               widths: [100, 300, 100],
               body: [
-                ["CODIGO", "DESCRIPCIÓN", "CANTIDAD"],
+                [{text:"CODIGO", bold: 300, fillColor: "#E9F0FC"}, {text:"DESCRIPCIÓN", bold: 300, fillColor: "#E9F0FC"}, {text:"CANTIDAD", bold: 300, fillColor: "#E9F0FC"}],
                 ...materialesArray,
               ],
             },
@@ -169,11 +171,13 @@ let generatePdf = async () => {
                 width: "50%",
                 margin: [50, 200, 0, 0],
                 text: "Nombre y Firma de Validación",
+                color: "#204D73",
               },
               {
                 width: "50%",
                 margin: [50, 200, 0, 0],
                 text: "Nombre y Firma de Almacen",
+                color: "#204D73",
               },
             ],
           },
@@ -181,16 +185,18 @@ let generatePdf = async () => {
             width: "50%",
             margin: [160, 70, 0, 0],
             text: "Nombre y Firma de quien recibe",
+            color: "#204D73",
           },
         ],
         styles: {
           tableExample: {
             margin: [0, 5, 0, 15],
+            fontSize: 10
           },
         },
       };
 
-      pdfMake.createPdf(docDefinition).open();
+      pdfMake.createPdf(docDefinition).download();
     });
 };
 
@@ -253,7 +259,8 @@ const generar = async () => {
       supervisor: props.supervisor,
       distrito: props.distrito,
     })
-      .then((result) => {
+      .then(async(result) => {
+        await generatePdf();
         alert("Salida registrada correctamente.");
         emits("limpiar");
         formModel.value = [];
@@ -261,7 +268,7 @@ const generar = async () => {
       .catch((error) => {
         console.log(error);
       });
-    generatePdf();
+    
   }
 };
 </script>
