@@ -53,7 +53,6 @@
       >
         Generar reporte
       </button>
-      <button @click="generatePdf">PDF</button>
     </div>
   </div>
 </template>
