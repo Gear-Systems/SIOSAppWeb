@@ -60,10 +60,10 @@
               <UsuariosTable />
             </Suspense>
           </TabPanel>
-          <TabPanel
+          <TabPanel 
             ><Suspense><CatalogoSupervisoresTTP /></Suspense
           ></TabPanel>
-          <TabPanel
+          <TabPanel 
             ><Suspense><CatalogoDespachoTTP /></Suspense
           ></TabPanel>
         </TabPanels>

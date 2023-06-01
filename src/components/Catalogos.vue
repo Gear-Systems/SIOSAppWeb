@@ -31,7 +31,7 @@
         </div>
       </div>
     </div>
-    <div class="flex h-full w-full">
+    <div class="flex h-full w-full mb-12">
       <component
         :is="componenteSeleccionado.component"
         :control="componenteSeleccionado.control"

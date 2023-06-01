@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex h-full w-full flex-col rounded-md bg-[#F8FAFB] py-6 px-14 shadow-md"
+    class="flex h-full w-full flex-col rounded-md bg-[#F8FAFB] py-16 px-14 shadow-md mb-12"
   >
     <Suspense><DespachoTTP /></Suspense>
   </div>
