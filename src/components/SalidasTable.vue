@@ -66,10 +66,9 @@ import { getFunctions, httpsCallable } from "firebase/functions";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import App from "@/App.vue";
-import logo_iosComunicaciones from "../../public/img/logo_iosComunicaciones.jpg"
-import logo_ios from "../../public/img/logo_ios.png"
+import logo_iosComunicaciones from "../../public/img/logo_iosComunicaciones.jpg";
+import logo_ios from "../../public/img/logo_ios.png";
 import { base } from "@tailwindcss/typography/src/styles";
-
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -80,12 +79,13 @@ const props = defineProps(["data", "supervisor", "distrito"]);
 const emits = defineEmits(["cancelar", "limpiar"]);
 const generarPDF = ref(false);
 
-const toBase64 = file => new Promise((resolve, reject) => {
-  const reader = new FileReader();
-  reader.readAsDataURL(file);
-  reader.onload = () => resolve(reader.result);
-  reader.onerror = error => reject(error);
-});
+const toBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
 
 props.data.forEach((e) => {
   formModel.value.push({
@@ -98,20 +98,100 @@ props.data.forEach((e) => {
 });
 /* Exportar PDF */
 
-let generatePdf = async() => {
-  fetch(logo_iosComunicaciones).then(response => response.blob()).then(blob => toBase64(blob)).then(base64Image => {
-    let fecha = new Date();
-   salidaInventario({ data: formModel.value, supervisor: props.supervisor, distrito: props.distrito })
-  let docDefinition = {
-  info: {
-	title: 'Salida de materiales',
-	author: 'iOS Comunicaciones',
-  },
-  content: [{columns: [{image: base64Image, width: 100, height: 100},{margin: [320, 0, 0, 0], width: '90%',fontSize: 13, text:`Fecha: ${fecha.getDay()}/${fecha.getMonth()}/${fecha.getFullYear()}`},]}, {text: "SALIDA DE MATERIAL", margin: [180,0,0,0], fontSize: 16}, {text: "Datos:", fontSize: 16, margin: [0, 50, 0, 0]},{text: `Distrito:`, fontSize: 12, margin: [10, 20, 0, 0]},{text: `Supervisor:`, fontSize: 12, margin: [10, 10, 0, 0]},{text: 'Detalles de salida de material:',fontSize: 14, margin: [0, 20, 0, 0]}, {columns: [{width: '33%', margin: [30, 20, 0, 20],background: '#E9F0FC',text: 'Código:'}, {width: '33%', margin: [30, 20, 0, 20],background: '#E9F0FC',text: 'Descripción:'}, {width: '33%', margin: [30, 20, 0, 20],background: '#E9F0FC',text: 'Cantidad:'}]}, {columns: [{width: '50%', margin: [50, 200, 0, 0],text: 'Nombre y Firma de Validación'}, {width: '50%', margin: [50, 200, 0, 0], text: 'Nombre y Firma de Almacen'}]}, {width: '50%', margin: [160, 70, 0, 0],text: 'Nombre y Firma de quien recibe'}]
-}
-  
-  pdfMake.createPdf(docDefinition).open();
-  })
+let generatePdf = async () => {
+  fetch(logo_iosComunicaciones)
+    .then((response) => response.blob())
+    .then((blob) => toBase64(blob))
+    .then((base64Image) => {
+      let fecha = new Date();
+      let materialesArray = []
+      // salidaInventario({
+      //   data: formModel.value,
+      //   supervisor: props.supervisor,
+      //   distrito: props.distrito,
+      // });
+      formModel.value.forEach((material) => {
+        console.log(material)
+        materialesArray.push([material.codigo, material.descripcion, material.cantidad])
+      })
+      let docDefinition = {
+        info: {
+          title: "Salida de materiales",
+          author: "iOS Comunicaciones",
+        },
+        content: [
+          {
+            columns: [
+              { image: base64Image, width: 100, height: 100 },
+              {
+                margin: [320, 0, 0, 0],
+                width: "90%",
+                fontSize: 13,
+                text: `Fecha: ${fecha.getDay()}/${fecha.getMonth()}/${fecha.getFullYear()}`,
+              },
+            ],
+          },
+          { text: "SALIDA DE MATERIAL", margin: [180, 0, 0, 0], fontSize: 16 },
+          { text: "Datos:", fontSize: 16, margin: [0, 50, 0, 0] },
+          {
+            text: `Distrito: ${props.distrito}`,
+            fontSize: 12,
+            margin: [10, 20, 0, 0],
+          },
+          {
+            text: `Supervisor: ${props.supervisor}`,
+            fontSize: 12,
+            margin: [10, 10, 0, 0],
+          },
+          {
+            text: `Proyecto: Poliza`,
+            fontSize: 12,
+            margin: [10, 10, 0, 0],
+          },
+          {
+            text: "Detalles de salida de material:",
+            fontSize: 14,
+            margin: [0, 20, 0, 0],
+          },
+          {
+            style: "tableExample",
+            table: {
+              widths: [100, 300, 100],
+              body: [
+                ["CODIGO", "DESCRIPCIÓN", "CANTIDAD"],
+                ...materialesArray,
+              ],
+            },
+          },
+          {
+            columns: [
+              {
+                width: "50%",
+                margin: [50, 200, 0, 0],
+                text: "Nombre y Firma de Validación",
+              },
+              {
+                width: "50%",
+                margin: [50, 200, 0, 0],
+                text: "Nombre y Firma de Almacen",
+              },
+            ],
+          },
+          {
+            width: "50%",
+            margin: [160, 70, 0, 0],
+            text: "Nombre y Firma de quien recibe",
+          },
+        ],
+        styles: {
+          tableExample: {
+            margin: [0, 5, 0, 15],
+          },
+        },
+      };
+
+      pdfMake.createPdf(docDefinition).open();
+    });
 };
 
 const cancelar = () => {
@@ -151,8 +231,6 @@ watch(
   }
 );
 
-
-
 const validarInput = (index) => {
   if (
     formModel.value[index].cantidad <= 0 ||
@@ -170,16 +248,20 @@ const generar = async () => {
     "Por favor verifica el movimiento, ¿Estás seguro en continuar?"
   );
   if (confirmar) {
-    await salidaInventario({ data: formModel.value, supervisor: props.supervisor, distrito: props.distrito })
+    await salidaInventario({
+      data: formModel.value,
+      supervisor: props.supervisor,
+      distrito: props.distrito,
+    })
       .then((result) => {
-        alert("Salida registrada correctamente.")
+        alert("Salida registrada correctamente.");
         emits("limpiar");
         formModel.value = [];
       })
       .catch((error) => {
         console.log(error);
       });
-      generatePdf()
+    generatePdf();
   }
 };
 </script>
