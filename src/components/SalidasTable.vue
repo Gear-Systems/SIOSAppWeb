@@ -120,7 +120,7 @@ let generatePdf = async () => {
         content: [
           {
             columns: [
-              { image: base64Image, width: 100, height: 100 },
+              { image: base64Image, width: 100},
               {
                 margin: [320, 0, 0, 0],
                 width: "90%",
@@ -130,21 +130,21 @@ let generatePdf = async () => {
             ],
           },
           { text: "SALIDA DE MATERIAL", margin: [180, 0, 0, 0], fontSize: 16, bold: 300, color: "#204D73" },
-          { text: "Datos:", fontSize: 16, margin: [0, 50, 0, 0], bold: 100, color: "#204D73" },
+          { text: "Datos:", fontSize: 16, margin: [0, 20, 0, 0], bold: 100, color: "#204D73" },
           {
             text: `Distrito: ${props.distrito}`,
-            fontSize: 12,
-            margin: [10, 20, 0, 0],
+            fontSize: 11,
+            margin: [10, 10, 0, 0],
           },
           {
             text: `Supervisor: ${props.supervisor}`,
-            fontSize: 12,
-            margin: [10, 10, 0, 0],
+            fontSize: 11,
+            margin: [10, 5, 0, 0],
           },
           {
             text: `Proyecto: Poliza`,
-            fontSize: 12,
-            margin: [10, 10, 0, 0],
+            fontSize: 11,
+            margin: [10, 5, 0, 0],
           },
           {
             text: "Detalles de salida de material:",
