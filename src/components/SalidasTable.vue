@@ -53,7 +53,6 @@
       >
         Generar reporte
       </button>
-      <!-- <SalidasPDF :generarPDF="generarPDF" /> -->
     </div>
   </div>
 </template>
@@ -63,6 +62,13 @@ import { ref, reactive, watch, toRaw } from "vue";
 import SalidasPDF from "./reportes/SalidasPDF.vue";
 import { getDatabase, ref as refDB, update } from "firebase/database";
 import { getFunctions, httpsCallable } from "firebase/functions";
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+import App from "@/App.vue";
+import logo_iosComunicaciones from "../../public/img/logo_iosComunicaciones.jpg";
+import { base } from "@tailwindcss/typography/src/styles";
+
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const functions = getFunctions();
 const salidaInventario = httpsCallable(functions, "salidaInventario");
@@ -70,6 +76,128 @@ const formModel = ref([]);
 const props = defineProps(["data", "supervisor", "distrito"]);
 const emits = defineEmits(["cancelar", "limpiar"]);
 const generarPDF = ref(false);
+
+const toBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+
+props.data.forEach((e) => {
+  formModel.value.push({
+    codigo: e.codigo,
+    descripcion: e.descripcion,
+    unidad: e.unidad,
+    stock: e.stock,
+    cantidad: 1,
+  });
+});
+/* Exportar PDF */
+
+let generatePdf = async () => {
+  await fetch(logo_iosComunicaciones)
+    .then((response) => response.blob())
+    .then((blob) => toBase64(blob))
+    .then((base64Image) => {
+      let fecha = new Date();
+      let materialesArray = []
+      // salidaInventario({
+      //   data: formModel.value,
+      //   supervisor: props.supervisor,
+      //   distrito: props.distrito,
+      // });
+      formModel.value.forEach((material) => {
+        console.log(material)
+        materialesArray.push([material.codigo, material.descripcion, material.cantidad])
+      })
+      let docDefinition = {
+        info: {
+          title: "Salida de materiales",
+          author: "iOS Comunicaciones",
+        },
+        content: [
+          {
+            columns: [
+              { image: base64Image, width: 100},
+              {
+                margin: [320, 0, 0, 0],
+                width: "90%",
+                fontSize: 13,
+                text: `Fecha: ${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}`,
+              },
+            ],
+          },
+          { text: "SALIDA DE MATERIAL", margin: [180, 0, 0, 0], fontSize: 16, bold: 300, color: "#204D73" },
+          { text: "Datos:", fontSize: 16, margin: [0, 20, 0, 0], bold: 100, color: "#204D73" },
+          {
+            text: `Distrito: ${props.distrito}`,
+            fontSize: 11,
+            margin: [10, 10, 0, 0],
+          },
+          {
+            text: `Supervisor: ${props.supervisor}`,
+            fontSize: 11,
+            margin: [10, 5, 0, 0],
+          },
+          {
+            text: `Proyecto: Poliza`,
+            fontSize: 11,
+            margin: [10, 5, 0, 0],
+          },
+          {
+            text: "Detalles de salida de material:",
+            fontSize: 16,
+            margin: [0, 20, 0, 0],
+            bold: 300,
+            color: "#204D73",
+            margin: [0, 20, 0, 10],
+          },
+          {
+            style: "tableExample",
+            table: {
+              widths: [100, 300, 100],
+              body: [
+                [{text:"CODIGO", bold: 300, fillColor: "#E9F0FC"}, {text:"DESCRIPCIÓN", bold: 300, fillColor: "#E9F0FC"}, {text:"CANTIDAD", bold: 300, fillColor: "#E9F0FC"}],
+                ...materialesArray,
+              ],
+            },
+          },
+          {
+            columns: [
+              {
+                width: "50%",
+                margin: [50, 200, 0, 0],
+                text: "Nombre y Firma de Validación",
+                color: "#204D73",
+              },
+              {
+                width: "50%",
+                margin: [50, 200, 0, 0],
+                text: "Nombre y Firma de Almacen",
+                color: "#204D73",
+              },
+            ],
+          },
+          {
+            width: "50%",
+            margin: [160, 70, 0, 0],
+            text: "Nombre y Firma de quien recibe",
+            color: "#204D73",
+          },
+        ],
+        styles: {
+          tableExample: {
+            margin: [0, 5, 0, 15],
+            fontSize: 10
+          },
+        },
+      };
+
+      pdfMake.createPdf(docDefinition).download();
+    });
+};
 
 const cancelar = () => {
   formModel.value = [];
@@ -108,16 +236,6 @@ watch(
   }
 );
 
-props.data.forEach((e) => {
-  formModel.value.push({
-    codigo: e.codigo,
-    descripcion: e.descripcion,
-    unidad: e.unidad,
-    stock: e.stock,
-    cantidad: 1,
-  });
-});
-
 const validarInput = (index) => {
   if (
     formModel.value[index].cantidad <= 0 ||
@@ -135,16 +253,21 @@ const generar = async () => {
     "Por favor verifica el movimiento, ¿Estás seguro en continuar?"
   );
   if (confirmar) {
-    await salidaInventario({ data: formModel.value, supervisor: props.supervisor, distrito: props.distrito })
-      .then((result) => {
-        alert("Salida registrada correctamente.")
+    await salidaInventario({
+      data: formModel.value,
+      supervisor: props.supervisor,
+      distrito: props.distrito,
+    })
+      .then(async(result) => {
+        await generatePdf();
+        alert("Salida registrada correctamente.");
         emits("limpiar");
         formModel.value = [];
       })
       .catch((error) => {
         console.log(error);
       });
-    generarPDF.value = true;
+    
   }
 };
 </script>
