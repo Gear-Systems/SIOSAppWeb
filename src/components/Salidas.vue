@@ -1,7 +1,7 @@
 <template>
   <div class="h-full w-full">
     <form>
-      <div class="flex flex-col lg:flex-row w-full lg:space-x-6">
+      <div class="flex w-full flex-col lg:flex-row lg:space-x-6">
         <div class="mb-6 w-[250px]">
           <label
             for="distrito"
@@ -182,20 +182,25 @@ async function cargarFiltro() {
       key = snapshot.key;
     });
   });
-  await get(refDB(db, "almacen/materiales/totalplay")).then(async (snapshot) => {
-    await get(refDB(db, "almacen/inventario")).then((snapshot2) => {
-      snapshot.forEach((element) => {
-        if (snapshot2.val()[element.key].stock > 0) {
-          formData.materiales.push({
-            codigo: element.val().code,
-            descripcion: element.key,
-            stock: snapshot2.val()[element.key].stock,
-            unidad: snapshot2.val()[element.key].unidad.id,
-          });
-        }
+  await get(refDB(db, "almacen/materiales/totalplay")).then(
+    async (snapshot) => {
+      snapshot.forEach((e) => {
+        // console.log(e.key)
       });
-    });
-  });
+      await get(refDB(db, "almacen/inventario")).then((snapshot2) => {
+        snapshot.forEach((element) => {
+          if (snapshot2.val()[element.key].stock > 0) {
+            formData.materiales.push({
+              codigo: element.val().code,
+              descripcion: element.key,
+              stock: snapshot2.val()[element.key].stock,
+              unidad: snapshot2.val()[element.key].unidad.id,
+            });
+          }
+        });
+      });
+    }
+  );
 }
 
 cargarFiltro();
@@ -228,5 +233,5 @@ const limpiar = () => {
     supervisor: "Supervisor",
     materiales: [],
   });
-}
+};
 </script>
