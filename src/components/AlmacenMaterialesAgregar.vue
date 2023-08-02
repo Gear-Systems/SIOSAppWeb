@@ -199,9 +199,7 @@ async function crearMaterial() {
   set(
     refDB(
       db,
-      `almacen/materiales/${formData.tipoMaterial.name.toLowerCase()}/${
-        (formData.name).trim()
-      }`
+      `almacen/materiales/${formData.tipoMaterial.name.toLowerCase()}/${formData.name.trim()}`
     ),
     {
       creado: serverTimestamp(),
@@ -209,7 +207,7 @@ async function crearMaterial() {
       unidad: formData.unidadMedida.id,
     }
   ).then(async (snapshot) => {
-    await set(refDB(db, `almacen/inventario/${formData.name}`), {
+    await set(refDB(db, `almacen/inventario/${formData.name.trim()}`), {
       code: formData.code,
       unidad: formData.unidadMedida,
       entradas: 0,
