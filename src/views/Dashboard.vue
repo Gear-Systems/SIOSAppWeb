@@ -12,6 +12,7 @@
       comentarios agradecemos nos escribas un mensaje al
       siguiente correo soporte@ioscomunicaciones.com
     </p>
+    <p>prueba</p>
   </div>
 </template>
 
