@@ -10,7 +10,7 @@
     <p>
       Cualquier duda sobre SIOS App, asi como sugerencias o
       comentarios agradecemos nos escribas un mensaje al
-      siguiente correo soporte@iosgs.com
+      siguiente correo soporte@ioscomunicaciones.com
     </p>
   </div>
 </template>
