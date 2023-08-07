@@ -18,17 +18,14 @@
             <!-- Contenido proporcioando por los archivos -->
 
             <tbody>
-                <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800" v-for="item in data" :key="item.nombre">
+                <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800" >
                     <th scope="row"
                         class="whitespace-nowrap text-center py-4 px-6 font-medium text-gray-900 dark:text-white">
-                        {{ item.nombre }}
+                        item nombre
                     </th>
-                    <td class="py-4 px-6 text-center">{{ `${new Date(item.creado).getDate()}/${new
-                        Date(item.creado).getMonth() + 1}/${new Date(item.creado).getFullYear()} ${new
-                            Date(item.creado).getHours()}:${new Date(item.creado).getMinutes()}`
-                    }}</td>
+                    <td class="py-4 px-6 text-center">Fecha</td>
                     <td class="py-4 px-6 text-center">
-                        <div class="flex justify-center cursor-pointer" @click="descargar(item.url)">
+                        <div class="flex justify-center cursor-pointer">
                             <DownloadIcon class="w-5 h-5" aria-hidden="true" />
                         </div>
                     </td>
@@ -40,25 +37,6 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
-import { db } from "@/firebase/firebase";
-import { get, ref as refDB, orderByChild, query, endAt } from "firebase/database";
 import { DownloadIcon } from "@heroicons/vue/outline";
 
-const data = reactive([])
-
-const fetchData = async () => {
-    let queryDb = query(refDB(db, "almacen/historico/entradas"), orderByChild("creado", "asc"), endAt(new Date().getTime()))
-    await get(queryDb).then((snapshot) => {
-        snapshot.forEach((element) => {
-            data.push({ ...element.val() })
-        })
-    })
-}
-
-await fetchData();
-
-const descargar = (url) => {
-    window.location.href = url;
-}
 </script>

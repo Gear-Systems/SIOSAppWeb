@@ -103,13 +103,7 @@ let generatePdf = async () => {
     .then((base64Image) => {
       let fecha = new Date();
       let materialesArray = []
-      // salidaInventario({
-      //   data: formModel.value,
-      //   supervisor: props.supervisor,
-      //   distrito: props.distrito,
-      // });
       formModel.value.forEach((material) => {
-        console.log(material)
         materialesArray.push([material.codigo, material.descripcion, material.cantidad])
       })
       let docDefinition = {
@@ -196,6 +190,7 @@ let generatePdf = async () => {
       };
 
       pdfMake.createPdf(docDefinition).download();
+      
     });
 };
 
@@ -258,7 +253,7 @@ const generar = async () => {
       supervisor: props.supervisor,
       distrito: props.distrito,
     })
-      .then(async(result) => {
+      .then(async() => {
         await generatePdf();
         alert("Salida registrada correctamente.");
         emits("limpiar");

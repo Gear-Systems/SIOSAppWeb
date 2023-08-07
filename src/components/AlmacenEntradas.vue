@@ -1,48 +1,55 @@
+
+<!-------------------------- Contenido de la opción Entradas ------------------------>
+
 <template>
   <div class="h-full w-full">
     <div class="flex w-full flex-col space-y-4">
-      <!-- Tabla -->
       <div class="min-h-[400px] w-full bg-[#F8FAFB] py-3 px-2 lg:px-28 shadow-md">
+
+        <!-- Submenu entradas e hisorico -->
+
         <TabGroup>
           <TabList class="border-b-2">
             <div class="flex justify-center lg:justify-start w-full space-x-4">
-              <!-- materiales -->
+
+              <!-- Botón Entradas -->
+
               <Tab v-slot="{ selected }">
-                <button
-                  :class="[
-                    'px-14 py-2',
-                    selected ? 'font-semibold text-primario' : '',
-                  ]"
-                >
+                <button :class="[
+                  'px-14 py-2',
+                  selected ? 'font-semibold text-primario' : '',
+                ]">
                   Entradas
                 </button>
               </Tab>
-              <!-- inventario -->
+
+              <!-- Botón Historico -->
+
               <Tab v-slot="{ selected }">
-                <button
-                  :class="[
-                    'px-14 py-2',
-                    selected ? 'font-semibold text-primario' : '',
-                  ]"
-                >
+                <button :class="[
+                  'px-14 py-2',
+                  selected ? 'font-semibold text-primario' : '',
+                ]">
                   Histórico
                 </button>
               </Tab>
+
             </div>
           </TabList>
+
+          <!-- Contenido de la tabla -->
+
           <TabPanels class="mt-12">
             <TabPanel class="flex w-full justify-center">
+
+              <!-- Vista para subir los archivos en entradas-->
+
               <div v-if="!data.length" class="min-w-[400px] max-w-[500px]">
-                <DropZone
-                  #default="{ dropZoneActive }"
-                  @files-dropped="readFile"
-                >
-                  <div
-                    :class="[
-                      'flex justify-center border-2 border-dashed bg-white p-28',
-                      dropZoneActive ? 'bg-gray-50' : '',
-                    ]"
-                  >
+                <DropZone #default="{ dropZoneActive }" @files-dropped="readFile">
+                  <div :class="[
+                    'flex justify-center border-2 border-dashed bg-white p-28',
+                    dropZoneActive ? 'bg-gray-50' : '',
+                  ]">
                     <div v-if="dropZoneActive">
                       <div>Suelta</div>
                     </div>
@@ -52,19 +59,23 @@
                   </div>
                 </DropZone>
               </div>
+
+              <!-- Vista para cuando recibe el archivo -->
+
               <div v-else class="h-full w-full">
-                <EntradasTable
-                  :data="data"
-                  @cancelar="data = []"
-                  @subir="upload"
-                />
+                <EntradasTable :data="data" @cancelar="data = []" @subir="upload" />
               </div>
+
             </TabPanel>
+
+            <!-- Vista de la tabla con el historial de archivos -->
+            
             <TabPanel>
               <Suspense>
                 <AlmacenEntradasHistorico />
               </Suspense>
             </TabPanel>
+            
           </TabPanels>
         </TabGroup>
       </div>
