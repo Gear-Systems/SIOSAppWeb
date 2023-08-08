@@ -63,12 +63,9 @@ import SalidasPDF from "./reportes/SalidasPDF.vue";
 import { getDatabase, ref as refDB, update } from "firebase/database";
 import { getFunctions, httpsCallable } from "firebase/functions";
 import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
 import App from "@/App.vue";
 import logo_iosComunicaciones from "../../public/img/logo_iosComunicaciones.jpg";
 import { base } from "@tailwindcss/typography/src/styles";
-
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const functions = getFunctions();
 const salidaInventario = httpsCallable(functions, "salidaInventario");
