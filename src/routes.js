@@ -24,6 +24,7 @@ export const routes = [
   {
     path: "/dashboard",
     component: Dashboard,
+    name: "Dashboard",
     meta: { title: "Dashboard", authorization: true, adminRequired: false },
   },
   {

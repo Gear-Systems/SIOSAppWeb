@@ -25,6 +25,7 @@ module.exports = {
         "pausados": "#F28705",
         "programados": "#F5CE5D",
         "default": "#E5E6EA",
+        "rojo": "#F20C1F"
       },
       transitionDuration: {
         '0': '0ms',

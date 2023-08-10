@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="flex h-screen min-h-screen w-screen items-center justify-center">
     <div class="flex h-[70%] min-h-[500px] w-[70%] bg-red-200">
       <div
@@ -7,7 +7,7 @@
       <div class="flex h-[100%] w-[50%] flex-col items-center bg-orange-200">
         <div class="mt-10 mb-10 flex w-full justify-center">
           <span class="text-3xl font-semibold tracking-wide"
-            >Iniciar Sesión</span
+            >Iniciar Sesión Hola</span
           >
         </div>
         <div
@@ -90,4 +90,4 @@ const login = () => {
 const vaciarErrores = () => {
   errorMessage.value = "";
 };
-</script>
+</script> -->
